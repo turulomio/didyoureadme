@@ -1,2 +1,4 @@
-20121220 Correo suplantación de identidad en windows live
+20121220 Correo suplantación de identidad en windows live, ver si faltan cabeceras
 20121220 Exportar informe
+20121220 A veces da error de cursor ya cerrado poner con en thread updatedata y meter en __del__ un join a ambos despues de parar timers
+20121220 Bottle da erro 104, reiniciado remote machine , creo es proiteccion de descarga windows
