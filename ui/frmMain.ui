@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Mariano Muñoz</author>
+ <class>frmMain</class>
+ <widget class="QMainWindow" name="frmMain">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>437</width>
+    <height>531</height>
+   </rect>
+  </property>
+  <property name="cursor">
+   <cursorShape>PointingHandCursor</cursorShape>
+  </property>
+  <property name="windowTitle">
+   <string>DidYouReadMe 2012 ©</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../images/didyoureadme.qrc">
+    <normaloff>:/didyoureadme.png</normaloff>:/didyoureadme.png</iconset>
+  </property>
+  <property name="toolButtonStyle">
+   <enum>Qt::ToolButtonTextUnderIcon</enum>
+  </property>
+  <widget class="QWidget" name="wdg">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QTabWidget" name="tab">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Groups</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QTableWidget" name="tblGroups">
+          <property name="contextMenuPolicy">
+           <enum>Qt::CustomContextMenu</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Users</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>Users</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="chkUsersInactive">
+            <property name="text">
+             <string>Show inactive users</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="tblUsers">
+            <property name="contextMenuPolicy">
+             <enum>Qt::CustomContextMenu</enum>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Start date</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Post</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Full Name</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Mail</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Read</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Sent</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Documents</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QCheckBox" name="chkDocumentsClosed">
+            <property name="text">
+             <string>Show documents readed by everybody or closed</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="tblDocuments">
+            <property name="contextMenuPolicy">
+             <enum>Qt::CustomContextMenu</enum>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderHighlightSections">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Datetime</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Title</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Filename</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Planned</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Sent</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Read</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>437</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuAyuda">
+    <property name="title">
+     <string>H&amp;elp</string>
+    </property>
+    <addaction name="actionHelp"/>
+    <addaction name="separator"/>
+    <addaction name="actionUpdates"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuJugar">
+    <property name="title">
+     <string>S&amp;ystem</string>
+    </property>
+    <addaction name="actionTablesUpdate"/>
+    <addaction name="separator"/>
+    <addaction name="actionSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuDocuments">
+    <property name="title">
+     <string>D&amp;ocuments</string>
+    </property>
+    <addaction name="actionDocumentNew"/>
+   </widget>
+   <widget class="QMenu" name="menuGroups">
+    <property name="title">
+     <string>G&amp;roups</string>
+    </property>
+    <addaction name="actionGroupNew"/>
+   </widget>
+   <widget class="QMenu" name="menuU_sers">
+    <property name="title">
+     <string>U&amp;sers</string>
+    </property>
+    <addaction name="actionUserNew"/>
+   </widget>
+   <addaction name="menuJugar"/>
+   <addaction name="menuGroups"/>
+   <addaction name="menuU_sers"/>
+   <addaction name="menuDocuments"/>
+   <addaction name="menuAyuda"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionDocumentNew"/>
+   <addaction name="separator"/>
+   <addaction name="actionTablesUpdate"/>
+   <addaction name="separator"/>
+   <addaction name="actionExit"/>
+  </widget>
+  <widget class="QStatusBar" name="status"/>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/exit.png</normaloff>:/exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>E&amp;xit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Esc</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/star.png</normaloff>:/star.png</iconset>
+   </property>
+   <property name="text">
+    <string>About DidYouReadMe</string>
+   </property>
+   <property name="toolTip">
+    <string>About DidYouReadMe</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/configure.png</normaloff>:/configure.png</iconset>
+   </property>
+   <property name="text">
+    <string>Settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/help.png</normaloff>:/help.png</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="toolTip">
+    <string>Help</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionUpdates">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/update.png</normaloff>:/update.png</iconset>
+   </property>
+   <property name="text">
+    <string>Look for updates</string>
+   </property>
+   <property name="toolTip">
+    <string>Look for updates</string>
+   </property>
+  </action>
+  <action name="actionDocumentNew">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/didyoureadme.png</normaloff>:/didyoureadme.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Document</string>
+   </property>
+  </action>
+  <action name="actionDocumentDelete">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Document</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete Document</string>
+   </property>
+  </action>
+  <action name="actionGroupNew">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/add.png</normaloff>:/add.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Group</string>
+   </property>
+   <property name="toolTip">
+    <string>New Group</string>
+   </property>
+  </action>
+  <action name="actionGroupDelete">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete Group</string>
+   </property>
+  </action>
+  <action name="actionGroupEdit">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/editar.png</normaloff>:/editar.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Group</string>
+   </property>
+  </action>
+  <action name="actionUserNew">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/user-add.png</normaloff>:/user-add.png</iconset>
+   </property>
+   <property name="text">
+    <string>New User</string>
+   </property>
+   <property name="toolTip">
+    <string>New User</string>
+   </property>
+  </action>
+  <action name="actionUserDelete">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/delete.png</normaloff>:/delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete User</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete User</string>
+   </property>
+  </action>
+  <action name="actionUserEdit">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/editar.png</normaloff>:/editar.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit User</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit User</string>
+   </property>
+  </action>
+  <action name="actionTablesUpdate">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/update.png</normaloff>:/update.png</iconset>
+   </property>
+   <property name="text">
+    <string>Update tables</string>
+   </property>
+   <property name="toolTip">
+    <string>Update tables</string>
+   </property>
+  </action>
+  <action name="actionDocumentClose">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Document closed</string>
+   </property>
+   <property name="toolTip">
+    <string>Document closed</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../images/didyoureadme.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>frmMain</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>259</x>
+     <y>275</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

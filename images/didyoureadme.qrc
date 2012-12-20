@@ -1,0 +1,23 @@
+<RCC>
+  <qresource>
+    <file>editar.png</file>
+    <file>add.png</file>
+    <file>delete.png</file>
+    <file>user-add.png</file>
+    <file>exit.png</file>
+    <file>france.png</file>
+    <file>help.png</file>
+    <file>kbabel.png</file>
+    <file>open.png</file>
+    <file>rumania.png</file>
+    <file>rusia.png</file>
+    <file>save.png</file>
+    <file>spain.png</file>
+    <file>star.png</file>
+    <file>uk.png</file>
+    <file>update.png</file>
+    <file>configure.png</file>
+    <file>didyoureadme.png</file>
+    <file>exit.png</file>
+  </qresource>
+</RCC>

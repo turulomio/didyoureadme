@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=DidYouReadMe
+GenericName=DidYouReadMe
+GenericName[en]=DidYouReadMe
+Type=Application
+Comment=Sistema de envío registrado de documentos
+Exec=didyoureadme
+TryExec=didyoureadme
+Icon=/usr/share/pixmaps/didyoureadme.png
+Categories=Office;
