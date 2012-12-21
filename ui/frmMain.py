@@ -1,4 +1,4 @@
-import   datetime,  urllib.request,  multiprocessing
+import   datetime,  urllib.request,  multiprocessing,  sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from libdidyoureadme import *
@@ -16,8 +16,9 @@ from frmUsersIBM import *
 class frmMain(QMainWindow, Ui_frmMain):#    
     def __init__(self, cfgfile, parent = 0,  flags = False):
         QMainWindow.__init__(self)
-        self.closing=False#Se usa cuando hay que reiniciar por settings
+        self.confirmclose=True
         self.cfgfile=cfgfile
+        self.accesspass=False
         
         self.documents=[]
         self.users=[]
@@ -35,8 +36,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.mem=Mem(cfgfile)
         access=frmAccess(self.mem)
         access.setWindowTitle(self.trUtf8("Login to DidYouReadMe"))
-        QObject.connect(access.cmdYN, SIGNAL("rejected()"), self.close)
-        access.exec_()
+        salida=access.exec_()
+        if salida==QDialog.Rejected:
+            sys.exit(255)
+            return
+            
+        self.accesspass=True#Se usa en el destructor
+            
         
         self.mem.con=self.mem.connect()
 
@@ -79,12 +85,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         
     def __del__(self):
-        self.timerSendMessages.stop()
-        self.timerUpdateData.stop()
-        self.server.terminate()
-        self.tsend.join()
-        self.tupdatedata.join()
-        self.mem.__del__() 
+        if self.accesspass==True:
+            self.timerSendMessages.stop()
+            self.timerUpdateData.stop()
+            self.server.terminate()
+            self.tsend.join()
+            self.tupdatedata.join()
+            self.mem.__del__() 
         
     def httpserver(self):
         from bottle import route, run,  error, static_file
@@ -179,6 +186,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             if d.numreads==d.numplanned and d.numplanned>0:
                 for column in range( 3, 6):
                     self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
+
+        self.tblDocuments.setCurrentCell(len(self.documents)-1, 0)                    
         self.tblDocuments.clearSelection()    
 
     def updateData(self):
@@ -213,7 +222,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             m.setIcon(QMessageBox.Information)
             m.setText(self.trUtf8("DidYouReadMe is going to be closed to save settings."))
             m.exec_()    
-            self.closing=True       
+            self.confirmclose=False    
             self.close()
         
         
@@ -255,7 +264,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 
     @pyqtSlot(QEvent)   
     def closeEvent(self,event):        
-        if self.closing==False:#Si es un cerrado interactivo
+        if self.confirmclose==True:#Si es un cerrado interactivo
             reply = QMessageBox.question(self, self.trUtf8("Quit DidYouReadMe?"), self.trUtf8("If you close the app, the web server will be closed too. Users won't be able to get files.Do you with to exit?"), QMessageBox.Yes, QMessageBox.No)
         else:
             reply=QMessageBox.Yes
@@ -280,14 +289,14 @@ class frmMain(QMainWindow, Ui_frmMain):#
             selected=self.documents[i.row()]
         doc=QTextDocument()
         s=("<center><h1>"+self.trUtf8("DidYouReadMe Report")+"</h1>"+
-           self.trUtf8("Generation time: {0}".format(str(now(self.mem.cfgfile.localzone))[:19])) +"</center>"+
+           self.trUtf8("Generation time")+": {0}".format(str(now(self.mem.cfgfile.localzone))[:19]) +"</center>"+
            "<h2>"+self.trUtf8("Document data")+"</h2>"+
-           self.trUtf8("Created: {0}".format(str(selected.datetime)[:19])+ "<p>"+
-           self.trUtf8("Title: {0}".format(selected.title)) + "<p>"+
-           self.trUtf8("Filename: {0}".format(selected.filename)) +"<p>"+
-           self.trUtf8("Comment: {0}".format(selected.comment)) +"<p>"+
+           self.trUtf8("Created")+": {0}".format(str(selected.datetime)[:19])+ "<p>"+
+           self.trUtf8("Title")+": {0}".format(selected.title) + "<p>"+
+           self.trUtf8("Filename")+": {0}".format(selected.filename) +"<p>"+
+           self.trUtf8("Comment")+": {0}".format(selected.comment) +"<p>"+
            "<h2>"+self.trUtf8("User reads")+"</h2>"+
-           "<table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.trUtf8("User"), self.trUtf8("Sent"), self.trUtf8("First read"), self.trUtf8("Number of reads")))
+           "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.trUtf8("User"), self.trUtf8("Sent"), self.trUtf8("First read"), self.trUtf8("Number of reads"))
            )
            
                     
@@ -308,8 +317,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         
         m=QMessageBox()
-        m.setIcon(QMessageBox.Information)
-        m.setText(self.trUtf8("Document generate in:\n{0}".format(file)))
+        m.setIcon(QMessageBox.Information)                    
+        m.setTextFormat(Qt.RichText)
+        m.setText(self.trUtf8("Document generated in:")+"\n<a href='file://{0}'>{0}</a>".format(file))
         m.exec_() 
                 
     @pyqtSlot()   

@@ -156,7 +156,7 @@
           <item>
            <widget class="QCheckBox" name="chkDocumentsClosed">
             <property name="text">
-             <string>Show documents readed by everybody or closed</string>
+             <string>Show documents closed</string>
             </property>
            </widget>
           </item>

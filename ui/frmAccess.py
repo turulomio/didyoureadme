@@ -1,7 +1,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-import sys, psycopg2,  psycopg2.extras
+import psycopg2,  psycopg2.extras
 from Ui_frmAccess import *
 
 class frmAccess(QDialog, Ui_frmAccess):
@@ -40,10 +40,11 @@ class frmAccess(QDialog, Ui_frmAccess):
             m=QMessageBox()
             m.setText(self.trUtf8("Connection error. Try it again"))
             m.exec_()        
-            sys.exit(255)
+            self.reject()
+            return
         self.mem.cfgfile.save()
-        self.done(0)
+        self.accept()
 
     @pyqtSignature("")
     def on_cmdYN_rejected(self):
-        sys.exit(255)
+        self.reject()

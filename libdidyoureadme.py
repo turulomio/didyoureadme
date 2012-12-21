@@ -558,7 +558,8 @@ class Mem:
         self.con=None
         
     def __del__(self):
-        self.disconnect(self.con)
+        if self.con:#Needed when reject frmAccess
+            self.disconnect(self.con)
         
     def cargar_datos(self):       
         self.users=SetUsers(self)     
