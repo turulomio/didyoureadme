@@ -366,7 +366,7 @@
         <translation>Leídos</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.ui" line="208"/>
+        <location filename="ui/frmMain.py" line="281"/>
         <source>Sent</source>
         <translation>Enviados</translation>
     </message>
@@ -476,7 +476,7 @@
         <translation>Borrar usuario</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="358"/>
+        <location filename="ui/frmMain.py" line="394"/>
         <source>You can&apos;t delete it, because user is in a group or DidYouReadMe sent him some documents.
 You can deactivate him.</source>
         <translation>No puede borrarlo, porque el usuario está en un grupo o DidYouReadMe le ha enviado algún documento. Puede desactivarlo.</translation>
@@ -487,7 +487,7 @@ You can deactivate him.</source>
         <translation>DidYouReadMe se va a cerrar para actualizar la configuración.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="475"/>
+        <location filename="ui/frmMain.py" line="517"/>
         <source>This message have been read for everybody.
 Do you want to close and hide it?</source>
         <translation>Este mensaje ha sido leído por todos sus receptores.
@@ -524,24 +524,75 @@ Do you want to close and hide it?</source>
         <translation>Planificados</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="489"/>
+        <location filename="ui/frmMain.py" line="531"/>
         <source>Everybody read the document.</source>
         <translation>Todos leyeron el documento.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="449"/>
+        <location filename="ui/frmMain.py" line="491"/>
         <source>User doesn&apos;t belong to any group.</source>
         <translation>El usuario no pertenece a ningún grupo.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="451"/>
+        <location filename="ui/frmMain.py" line="493"/>
         <source>User belongs to the following groups:</source>
         <translation>El usuario pertenece a los siguientes grupos:</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="484"/>
+        <location filename="ui/frmMain.py" line="526"/>
         <source>Users haven&apos;t read the selected document:</source>
         <translation>Usuarios que no han leído este documento:</translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.ui" line="487"/>
+        <source>Generate report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="281"/>
+        <source>DidYouReadMe Report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="281"/>
+        <source>Datetime: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="281"/>
+        <source>Title: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="308"/>
+        <source>Document generate in:
+{0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="281"/>
+        <source>User</source>
+        <translation type="unfinished">Usuario</translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="281"/>
+        <source>First read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="281"/>
+        <source>Number of reads</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="281"/>
+        <source>Filename: {0}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="281"/>
+        <source>Comment: {0}</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

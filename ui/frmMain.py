@@ -82,6 +82,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.timerSendMessages.stop()
         self.timerUpdateData.stop()
         self.server.terminate()
+        self.tsend.join()
+        self.tupdatedata.join()
         self.mem.__del__() 
         
     def httpserver(self):
@@ -270,7 +272,43 @@ class frmMain(QMainWindow, Ui_frmMain):#
         f.exec_()
         self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
         
+    
+    @pyqtSlot()   
+    def on_actionDocumentReport_triggered(self):
+        print ("Aquiço")
+        selected=None
+        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
+            selected=self.documents[i.row()]
+        doc=QTextDocument()
+        s=("<center><h1>"+self.trUtf8("DidYouReadMe Report")+"</h1></center>"+
+           self.trUtf8("Datetime: {0}".format(selected.datetime))+ "<p>"+
+           self.trUtf8("Title: {0}".format(selected.title)) + "<p>"+
+           self.trUtf8("Filename: {0}".format(selected.filename)) +"<p>"+
+           self.trUtf8("Comment: {0}".format(selected.comment)) +"<p>"+
+           "<table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.trUtf8("User"), self.trUtf8("Sent"), self.trUtf8("First read"), self.trUtf8("Number of reads"))
+           )
+           
+                    
+        cur=self.mem.con.cursor()     
+        cur.execute("select * from users, userdocuments where id_documents=%s and userdocuments.id_users=users.id order by name", (selected.id, ))    
+        for row in cur:
+            s=s+"<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>".format(row['name'], str(row['sent'])[:19], str(row['read'])[:19], row['numreads'])
+        s=s+"</table>"
+        cur.close()
         
+        doc.setHtml(s)
+        printer=QPrinter()
+        file=os.path.expanduser("~/{0} DidYouReadMe document.pdf".format(str(selected.datetime)[:19]))
+        printer.setOutputFileName(file)
+        printer.setOutputFormat(QPrinter.PdfFormat);
+        doc.print(printer)
+        printer.newPage()
+        
+        
+        m=QMessageBox()
+        m.setIcon(QMessageBox.Information)
+        m.setText(self.trUtf8("Document generate in:\n{0}".format(file)))
+        m.exec_() 
                 
     @pyqtSlot()   
     def on_actionDocumentClose_triggered(self):
@@ -371,11 +409,15 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.addAction(self.actionDocumentDelete)
         menu.addSeparator()
         menu.addAction(self.actionDocumentClose)
+        menu.addSeparator()
+        menu.addAction(self.actionDocumentReport)
                     
         
         
         if selected ==None:
             self.actionDocumentDelete.setEnabled(False)
+            self.actionDocumentClose.setEnabled(False)
+            self.actionDocumentReport.setEnabled(False)
         else:
             print (selected)
             if (now(self.mem.cfgfile.localzone)-selected.datetime)>datetime.timedelta(seconds=45):
@@ -383,6 +425,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             else:
                 self.actionDocumentDelete.setEnabled(True)
 
+            self.actionDocumentReport.setEnabled(True)
+            self.actionDocumentClose.setEnabled(True)
             if selected.closed==True:
                 self.actionDocumentClose.setChecked(Qt.Checked)
             else:

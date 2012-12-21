@@ -238,13 +238,14 @@ class TUpdateData(threading.Thread):
     
     def run(self):    
         inicio=datetime.datetime.now()
-        cur=self.mem.con.cursor()
+        con=self.mem.connect()
+        cur=con.cursor()
         #Actualiza userdocuments
         for file in os.listdir(dirReaded):
             (userhash, documenthash)=file.split("l")
             ud=UserDocument(self.mem.users.user_from_hash(userhash), self.mem.documents.document_from_hash(documenthash), self.mem)
             ud.readed( self.mem.cfgfile.localzone)
-            self.mem.con.commit()
+            con.commit()
             os.remove(dirReaded+file)
             
         #Actualiza users
@@ -257,6 +258,7 @@ class TUpdateData(threading.Thread):
             if d.closed==False:
                 d.updateNums(cur)            
         cur.close()  
+        self.mem.disconnect(con)
         print ("updateData took",  datetime.datetime.now()-inicio)
 
 class TSend(threading.Thread):
