@@ -275,17 +275,19 @@ class frmMain(QMainWindow, Ui_frmMain):#
     
     @pyqtSlot()   
     def on_actionDocumentReport_triggered(self):
-        print ("Aquiço")
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
             selected=self.documents[i.row()]
         doc=QTextDocument()
-        s=("<center><h1>"+self.trUtf8("DidYouReadMe Report")+"</h1></center>"+
-           self.trUtf8("Datetime: {0}".format(selected.datetime))+ "<p>"+
+        s=("<center><h1>"+self.trUtf8("DidYouReadMe Report")+"</h1>"+
+           self.trUtf8("Generation time: {0}".format(str(now(self.mem.cfgfile.localzone))[:19])) +"</center>"+
+           "<h2>"+self.trUtf8("Document data")+"</h2>"+
+           self.trUtf8("Created: {0}".format(str(selected.datetime)[:19])+ "<p>"+
            self.trUtf8("Title: {0}".format(selected.title)) + "<p>"+
            self.trUtf8("Filename: {0}".format(selected.filename)) +"<p>"+
            self.trUtf8("Comment: {0}".format(selected.comment)) +"<p>"+
-           "<table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.trUtf8("User"), self.trUtf8("Sent"), self.trUtf8("First read"), self.trUtf8("Number of reads"))
+           "<h2>"+self.trUtf8("User reads")+"</h2>"+
+           "<table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.trUtf8("User"), self.trUtf8("Sent"), self.trUtf8("First read"), self.trUtf8("Number of reads")))
            )
            
                     
@@ -293,7 +295,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         cur.execute("select * from users, userdocuments where id_documents=%s and userdocuments.id_users=users.id order by name", (selected.id, ))    
         for row in cur:
             s=s+"<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>".format(row['name'], str(row['sent'])[:19], str(row['read'])[:19], row['numreads'])
-        s=s+"</table>"
+        s=s+"</table><p>" 
         cur.close()
         
         doc.setHtml(s)
