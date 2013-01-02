@@ -18,7 +18,7 @@
    <cursorShape>PointingHandCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>DidYouReadMe 2012 ©</string>
+   <string>DidYouReadMe 2012-2013. GNU General Public License</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../images/didyoureadme.qrc">
@@ -485,6 +485,18 @@
    </property>
    <property name="toolTip">
     <string>Generate report</string>
+   </property>
+  </action>
+  <action name="actionDocumentOpen">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/open.png</normaloff>:/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open document</string>
+   </property>
+   <property name="toolTip">
+    <string>Open document</string>
    </property>
   </action>
  </widget>

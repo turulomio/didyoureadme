@@ -280,6 +280,28 @@ class frmMain(QMainWindow, Ui_frmMain):#
         f=frmDocumentsIBM(self.mem)
         f.exec_()
         self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+    
+    @pyqtSlot()   
+    def on_actionDocumentOpen_triggered(self):        
+        selected=None
+        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
+            selected=self.documents[i.row()]
+            
+    
+        try:
+            os.makedirs(dirTmp)
+        except:
+            pass            
+            
+        file=dirTmp+os.path.basename(selected.filename)
+        shutil.copyfile(dirDocs+selected.hash, file)
+            
+        m=QMessageBox()
+        m.setIcon(QMessageBox.Information)                    
+        m.setTextFormat(Qt.RichText)
+        m.setText(self.trUtf8("To see the document click the followling link:")+"<p><a href='file://{0}'>{1}</a>".format(file, os.path.basename(selected.filename)))
+        m.exec_() 
+        os.unlink(file)
         
     
     @pyqtSlot()   
@@ -319,7 +341,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         m=QMessageBox()
         m.setIcon(QMessageBox.Information)                    
         m.setTextFormat(Qt.RichText)
-        m.setText(self.trUtf8("Document generated in:")+"\n<a href='file://{0}'>{0}</a>".format(file))
+        m.setText(self.trUtf8("Document generated in:")+"<p><a href='file://{0}'>{0}</a>".format(file))
         m.exec_() 
                 
     @pyqtSlot()   
@@ -422,6 +444,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.addSeparator()
         menu.addAction(self.actionDocumentClose)
         menu.addSeparator()
+        menu.addAction(self.actionDocumentOpen)
         menu.addAction(self.actionDocumentReport)
                     
         
@@ -430,6 +453,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.actionDocumentDelete.setEnabled(False)
             self.actionDocumentClose.setEnabled(False)
             self.actionDocumentReport.setEnabled(False)
+            self.actionDocumentOpen.setEnabled(False)
         else:
             print (selected)
             if (now(self.mem.cfgfile.localzone)-selected.datetime)>datetime.timedelta(seconds=45):
@@ -438,6 +462,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 self.actionDocumentDelete.setEnabled(True)
 
             self.actionDocumentReport.setEnabled(True)
+            self.actionDocumentOpen.setEnabled(True)
             self.actionDocumentClose.setEnabled(True)
             if selected.closed==True:
                 self.actionDocumentClose.setChecked(Qt.Checked)

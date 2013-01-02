@@ -4,6 +4,7 @@ from PyQt4.QtCore import *
 
 version="20121220"
 
+dirTmp=os.path.expanduser("~/.didyoureadme/tmp/")
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
 dirReaded=os.path.expanduser("~/.didyoureadme/readed/")
 
