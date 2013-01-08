@@ -2,10 +2,9 @@ Nueva release
 =============
 1) Modificar la version en libdidyoureadme
 2) Modificar todos los ficheros RELEASE-ES CHANGELOG con num subversion +1
-3) Ejecutar omegat-integration para los ficheros
 4) Ejecutar linguist
-4) Crear los 4 ficheros (con distribution.sh que pone la version automatico) y subirlo a sourceforge
-4) Colocar las versiones preferidas de windows y linux
+4) Crear los 2 ficheros (con distribution.sh que pone la version automatico) y subirlo a sourceforge
+4) Colocar las versiones preferidas en linux src
 5) Subir al subversion y comprobar que queda subversion +1
 6) Crear un nuevo ebuild con la nueva versión
 8) Subirlo al subversion del portage
@@ -14,6 +13,5 @@ Nueva release
    - Añadir el release a la página
    - Modificar todos los enlaces ojo no cambiar muchas versiones si hago un replace
    - Subirla a internet con bash publicar.sh
-10) Subirlo a la mula
 10) Comprobar enlaces
 11) Publicar news en sourceforge con el CHANGELOG-EN

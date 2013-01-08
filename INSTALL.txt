@@ -1,0 +1,32 @@
+Depends
+=======
+
+DidYouReadMe has the following dependences:
+  - PyQt4
+  - python3
+  - psycopg
+  - pytz
+
+
+
+
+
+Installation from linux sources
+===============================
+
+Uncompress the file
+Change to directory where Makefile is and type
+  # make all
+
+If you use Gentoo, you can download the ebuild from 
+https://xulpymoney.svn.sourceforge.net/svnroot/xulpymoney/myportage/games-board/didyoureadme/
+
+To uninstall use the next command to make a clean uninstall
+  # make uninstall
+
+Create a postgresql database:
+  # createdb -U postgres didyoureadme
+  # psql -U postgres didyoureadme < sql/didyoureadme.sql
+  # psql -U postgres didyoureadme < sql/didyoureadme.data
+
+Run didyoureadme and configure settings

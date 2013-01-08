@@ -2,7 +2,7 @@ import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  py
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-version="20121220"
+version="20130108"
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/")
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
@@ -20,13 +20,13 @@ class SetGroups:
         self.mem=mem
         
         
-    def reload_group_all(self):
-        """Cuando se modifica un usuario puede que se desactive y haya que quitar de todos, por eso se actualiza solo el"""
-        g=self.group(1)
-        g.members=[]
-        for u in self.mem.users.arr:
-            if u.active==True:#Only active
-                g.members.append(u)
+    def reload_from_mem(self):
+        """Cuando se modifica un usuario puede que se desactive y se recargan los grupos"""
+        for g in self.mem.groups.arr:
+            g.members=[]
+            for u in self.mem.users.arr:
+                if u.active==True:#Only active
+                    g.members.append(u)
 
         
     def load(self):
@@ -40,7 +40,9 @@ class SetGroups:
                         members.append(u)
             else:
                 for id_user in row['members']:
-                    members.append(self.mem.users.user(id_user))
+                    u=self.mem.users.user(id_user)
+                    if u.active==True:
+                        members.append(u)
             self.arr.append( Group(row['name'], members, row['id']))        
         cur.close()
     

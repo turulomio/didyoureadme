@@ -49,8 +49,9 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         
         #Genera el userdocument
         for u in list(usuarios):
-            ud=UserDocument(u, d, self.mem)
-            ud.save()
+            if u.active==True:
+                ud=UserDocument(u, d, self.mem)
+                ud.save()
         self.mem.documents.arr.append(d)
         cur.close()
         

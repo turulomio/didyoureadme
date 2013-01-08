@@ -66,7 +66,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
         if datetime.date.today()-datetime.date.fromordinal(self.mem.cfgfile.lastupdate)>=datetime.timedelta(days=30):
             print ("Looking for updates")
-            self.on_actionUpdates_triggered()
+            self.checkUpdates(False)
 
         self.tupdatedata=TUpdateData(self.mem)
         self.tupdatedata.start()
@@ -225,14 +225,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.confirmclose=False    
             self.close()
         
-        
     @pyqtSlot()      
     def on_actionUpdates_triggered(self):
-        return
+        self.checkUpdates(True)
         
-        
-        
-        
+    def checkUpdates(self, showdialogwhennoupdates=False):
         try:
             web=urllib.request.urlopen('https://sourceforge.net/projects/didyoureadme/files/didyoureadme/').read()
         except:
@@ -243,24 +240,34 @@ class frmMain(QMainWindow, Ui_frmMain):#
             m.setText(self.trUtf8("I couldn't look for updates. Try it later.."))
             m.exec_() 
             return
-        for line in web.split("\n"):
-            if line.find('folder warn')!=-1:
-                remoteversion=line.split('didyoureadme-')[1].split('"') [0]
-                print ("Remote version",  remoteversion)
-                if version!=remoteversion:
-                    m=QMessageBox()
-                    m.setIcon(QMessageBox.Information)
-                    m.setTextFormat(Qt.RichText)#this is what makes the links clickable
-                    m.setText(self.trUtf8("There is a new DidYouReadMe version. You can download it from <a href='http://didyoureadme.sourceforge.net'>http://didyoureadme.sourceforge.net</a> or directly from <a href='https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-")+remoteversion+"/'>Sourceforge</a>")
-                    m.exec_() 
-                else:
-                    m=QMessageBox()
-                    m.setIcon(QMessageBox.Information)
-                    m.setText(self.trUtf8("DidYouReadMe is in the last version"))
-                    m.exec_() 
+
+        #Saca la version de internet
+        remoteversion=None
+        for line in web.split(b"\n"):
+            if line.find(b'folder warn')!=-1:
+                remoteversion=line.decode("utf-8").split('didyoureadme-')[1].split('"') [0]
                 break
+        #Si no hay version sale
+        print ("Remote version",  remoteversion)
+        if remoteversion==None:
+            return
+                
+        if remoteversion==version.replace("+", ""):#Quita el más de desarrollo 
+            if showdialogwhennoupdates==True:
+                m=QMessageBox()
+                m.setIcon(QMessageBox.Information)
+                m.setText(self.trUtf8("DidYouReadMe is in the last version"))
+                m.exec_() 
+        else:
+            m=QMessageBox()
+            m.setIcon(QMessageBox.Information)
+            m.setTextFormat(Qt.RichText)#this is what makes the links clickable
+            m.setText(self.trUtf8("There is a new DidYouReadMe version. You can download it from <a href='http://didyoureadme.sourceforge.net'>http://didyoureadme.sourceforge.net</a> or directly from <a href='https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-")+remoteversion+"/'>Sourceforge</a>")
+            m.exec_()                 
+
         self.cfgfile.lastupdate=datetime.date.today().toordinal()
         self.cfgfile.save()
+
                 
     @pyqtSlot(QEvent)   
     def closeEvent(self,event):        
@@ -423,7 +430,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if selected.isDeletable(self.mem)==True:
             selected.delete(self.mem)
             #Recarga grupo de todos
-            self.mem.groups.reload_group_all()
+            self.mem.groups.reload_from_mem()
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
@@ -507,7 +514,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.actionUserDelete.setEnabled(False)
             self.actionUserEdit.setEnabled(False)
         else:
-            print (selected)
             self.actionUserDelete.setEnabled(True)
             self.actionUserEdit.setEnabled(True)
             

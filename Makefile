@@ -38,7 +38,7 @@ install:
 	install -m 644 -o root didyoureadme.desktop $(PREFIXAPPLICATIONS)
 	install -m 644 -o root i18n/*.qm $(PREFIXSHARE)
 	install -m 644 -o root sql/* $(PREFIXSQL)
-#	install -m 644 -o root AUTHORS-EN.txt  AUTHORS-ES.txt  CHANGELOG-EN.txt  CHANGELOG-ES.txt  GPL-3.txt  INSTALL-EN.txt  INSTALL-ES.txt  RELEASES-EN.txt  RELEASES-ES.txt  $(PREFIXSHARE)
+	install -m 644 -o root AUTHORS.txt CHANGELOG.txt GPL-3.txt INSTALL.txt RELEASES.txt $(PREFIXSHARE)
 	install -m 644 -o root images/didyoureadme.ico $(PREFIXSHARE)
 
 uninstall:
