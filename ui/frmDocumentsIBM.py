@@ -16,6 +16,12 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
 
     def on_cmd_pressed(self):
         #Genera los usuarios a los que se enviar´a el documento
+        if self.txtTitle.text()=="":
+            m=QMessageBox()
+            m.setIcon(QMessageBox.Information)
+            m.setText(self.trUtf8("You must add a title of the document"))
+            m.exec_()          
+            return
         
         if not os.path.exists(self.txtFilename.text()):
             m=QMessageBox()
@@ -43,7 +49,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             return
 
         #Genera el documento
-        d=Document(now(self.mem.cfgfile.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.text())
+        d=Document(now(self.mem.cfgfile.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.toPlainText())
         cur=self.mem.con.cursor()
         d.save(self.mem)
         

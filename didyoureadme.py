@@ -14,6 +14,10 @@ from frmMain import *
 from libdidyoureadme import dirDocs, dirReaded, cargarQTranslator
     
 try:
+    os.makedirs("/tmp/didyoureadme")
+except:
+    pass
+try:
     os.makedirs(dirDocs)
     os.makedirs(dirReaded)
 except:

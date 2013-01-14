@@ -3,4 +3,4 @@
 20121220 Dirección ip del intergaz y luego nombre  para enlace 
 20121220 Meter localzone en settings
 20121308 Hacer un informe de que documentos no ha leído
-20120308 Arreglar el update
+20120308 Como no usa un sistema para meter paralelamente en bd, ya que lo hace un proceso migrar a sqlite

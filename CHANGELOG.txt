@@ -1,3 +1,11 @@
+XXXXXXXX
+========
+- Documents are now generated in /tmp/didyoureadme
+- Open documents and reports have been improved
+- You can add several lines in document comment
+- The title of the document is now mandatory
+
+
 20130108
 ========
 - First version, full functional.

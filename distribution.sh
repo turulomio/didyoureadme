@@ -21,6 +21,7 @@ mkdir $DIRSRCLINUX/doc
 mkdir $DIRSRCLINUX/i18n
 mkdir $DIRSRCLINUX/images
 mkdir $DIRSRCLINUX/ui
+mkdir $DIRSRCLINUX/sql
 
 cp      Makefile \
 	AUTHORS.txt \
@@ -28,6 +29,7 @@ cp      Makefile \
         GPL-3.txt \
         INSTALL.txt \
         RELEASES.txt \
+        bottle.py \
         didyoureadme.py \
         didyoureadme.pro \
         libdidyoureadme.py \
@@ -36,6 +38,10 @@ cp      Makefile \
 
 cp      i18n/*.ts \
         $DIRSRCLINUX/i18n
+
+cp 	sql/didyoureadme.data \
+        sql/didyoureadme.sql \
+        $DIRSRCLINUX/sql
 
 cp 	ui/frm* \
 	$DIRSRCLINUX/ui

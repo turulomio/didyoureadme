@@ -97,8 +97,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         from bottle import route, run,  error, static_file
         @route('/get/<filename>/<name>')
         def get(filename,  name):
-            f=open(dirReaded+filename, "w")
-            f.close()
+            if filename.split("l")[0]!="admin":#Para informes no se contabilizar´a, luego no crea file            
+                f=open(dirReaded+filename, "w")
+                f.close()
             return static_file(filename.split("l")[1], root=dirDocs,  download=name)
         
         @error(404)
@@ -290,40 +291,46 @@ class frmMain(QMainWindow, Ui_frmMain):#
     
     @pyqtSlot()   
     def on_actionDocumentOpen_triggered(self):        
+        QApplication.setOverrideCursor(Qt.WaitCursor);
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
             selected=self.documents[i.row()]
             
-    
-        try:
-            os.makedirs(dirTmp)
-        except:
-            pass            
-            
         file=dirTmp+os.path.basename(selected.filename)
         shutil.copyfile(dirDocs+selected.hash, file)
+        
+        self.openWithDefaultApp(file)
             
-        m=QMessageBox()
-        m.setIcon(QMessageBox.Information)                    
-        m.setTextFormat(Qt.RichText)
-        m.setText(self.trUtf8("To see the document click the followling link:")+"<p><a href='file://{0}'>{1}</a>".format(file, os.path.basename(selected.filename)))
-        m.exec_() 
-        os.unlink(file)
+        QApplication.restoreOverrideCursor();
+    
+    def openWithDefaultApp(self, file):
+        if os.path.exists("/usr/bin/kfmclient"):
+            QProcess.startDetached("kfmclient", ["openURL", file] )
+        elif os.path.exists("/usr/bin/gnome-open"):
+            QProcess.startDetached( "gnome-open '" + file + "'" );
+        else:         
+            QDesktopServices.openUrl(QUrl("file://"+file));
+
         
     
     @pyqtSlot()   
     def on_actionDocumentReport_triggered(self):
+        QApplication.setOverrideCursor(Qt.WaitCursor);
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
             selected=self.documents[i.row()]
         doc=QTextDocument()
+        comment=selected.comment.replace("\n\n\n", "<p>")
+        comment=comment.replace("\n\n", "<p>")
+        comment=comment.replace("\n", "<p>")
+        
         s=("<center><h1>"+self.trUtf8("DidYouReadMe Report")+"</h1>"+
            self.trUtf8("Generation time")+": {0}".format(str(now(self.mem.cfgfile.localzone))[:19]) +"</center>"+
            "<h2>"+self.trUtf8("Document data")+"</h2>"+
            self.trUtf8("Created")+": {0}".format(str(selected.datetime)[:19])+ "<p>"+
            self.trUtf8("Title")+": {0}".format(selected.title) + "<p>"+
-           self.trUtf8("Filename")+": {0}".format(selected.filename) +"<p>"+
-           self.trUtf8("Comment")+": {0}".format(selected.comment) +"<p>"+
+           self.trUtf8("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, selected.hash, urllib.parse.quote(os.path.basename(selected.filename.lower())), os.path.basename(selected.filename )) +
+            self.trUtf8("Comment")+": {0}".format(comment) +"<p>"+
            "<h2>"+self.trUtf8("User reads")+"</h2>"+
            "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.trUtf8("User"), self.trUtf8("Sent"), self.trUtf8("First read"), self.trUtf8("Number of reads"))
            )
@@ -338,19 +345,15 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         doc.setHtml(s)
         printer=QPrinter()
-        file=os.path.expanduser("~/{0} DidYouReadMe document.pdf".format(str(selected.datetime)[:19]))
+        file=dirTmp+"{0} DidYouReadMe document.pdf".format(str(selected.datetime)[:19])
         printer.setOutputFileName(file)
         printer.setOutputFormat(QPrinter.PdfFormat);
         doc.print(printer)
         printer.newPage()
         
-        
-        m=QMessageBox()
-        m.setIcon(QMessageBox.Information)                    
-        m.setTextFormat(Qt.RichText)
-        m.setText(self.trUtf8("Document generated in:")+"<p><a href='file://{0}'>{0}</a>".format(file))
-        m.exec_() 
-                
+        self.openWithDefaultApp(file)
+        QApplication.restoreOverrideCursor();
+
     @pyqtSlot()   
     def on_actionDocumentClose_triggered(self):
         selected=None

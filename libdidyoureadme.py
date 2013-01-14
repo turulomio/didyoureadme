@@ -2,9 +2,9 @@ import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  py
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-version="20130108"
+version="20130108+"
 
-dirTmp=os.path.expanduser("~/.didyoureadme/tmp/")
+dirTmp=os.path.expanduser("/tmp/didyoureadme/")
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
 dirReaded=os.path.expanduser("~/.didyoureadme/readed/")
 
@@ -240,7 +240,7 @@ class TUpdateData(threading.Thread):
         self.mem=mem
     
     def run(self):    
-        inicio=datetime.datetime.now()
+#        inicio=datetime.datetime.now()
         con=self.mem.connect()
         cur=con.cursor()
         #Actualiza userdocuments
@@ -262,7 +262,7 @@ class TUpdateData(threading.Thread):
                 d.updateNums(cur)            
         cur.close()  
         self.mem.disconnect(con)
-        print ("updateData took",  datetime.datetime.now()-inicio)
+#        print ("updateData took",  datetime.datetime.now()-inicio)
 
 class TSend(threading.Thread):
     def __init__(self, mem):
@@ -283,7 +283,7 @@ class TSend(threading.Thread):
             mail.send()
             
             if mail.sent==True:
-                print ("Send message of document {0} to {1}".format(mail.document.id, mail.user.name))
+                print ("Send message of document {0} to {1}".format(mail.document.id, mail.user.mail))
                 d=UserDocument(mail.user, mail.document, self.mem)
                 if d.sent==None:
                     d.sent=datetime.datetime.now(pytz.timezone(self.mem.cfgfile.localzone))
@@ -312,17 +312,20 @@ class Mail:
     def message(self):
         url="http://{0}:{1}/get/{2}l{3}/{4}".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.user.hash, self.document.hash, urllib.parse.quote(os.path.basename(self.document.filename.lower())))
         
+        if self.document.comment!="":
+            comment=self.document.comment+"\n\n___________________________________________________________\n\n"
+        
         s= ("From: "+self.mem.cfgfile.smtpfrom+"\n"+
         "To: "+self.user.mail+"\n"+
         "MIME-Version: 1.0\n"+
         "Subject: "+ self.document.title+"\n"+
         "Content-Type: text/plain; charset=UTF-8\n" +
         "\n"+
+        comment +
         QApplication.translate("DidYouReadMe","This is an automatic and personal mail from DidYouReadMe.")+"\n\n"+
         QApplication.translate("DidYouReadMe", "Don't answer and don't resend this mail.")+"\n\n"+
         QApplication.translate("DidYouReadMe", "When you click the next link, you will get the document associated to this mail and it will be registered as read:")+"\n\n"+
         url +"\n\n"+
-        self.document.comment + "\n\n" +
         self.mem.cfgfile.smtpsupport)
         return s.encode('UTF-8')
         
