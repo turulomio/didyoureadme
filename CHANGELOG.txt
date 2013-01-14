@@ -1,4 +1,4 @@
-XXXXXXXX
+20130114
 ========
 - Documents are now generated in /tmp/didyoureadme
 - Open documents and reports have been improved
