@@ -128,6 +128,14 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.updateStatusBar()
 
     @pyqtSlot()      
+    def on_actionBackup_triggered(self):
+        QProcess.startDetached("didyoureadme-backup", [self.cfgfile.server, self.cfgfile.port, self.cfgfile.user, self.cfgfile.database] )
+        m=QMessageBox()
+        m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
+        m.exec_()
+        
+        
+    @pyqtSlot()      
     def on_actionTablesUpdate_triggered(self):
         self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))
         self.tblGroups_reload()

@@ -2,7 +2,7 @@ import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  py
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-version="20130114"
+version="20130114+"
 
 dirTmp=os.path.expanduser("/tmp/didyoureadme/")
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/")

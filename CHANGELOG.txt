@@ -1,3 +1,7 @@
+XXXXXXXX
+========
+- Script added to make backups. It can be launched from console and from UI.
+
 20130114
 ========
 - Documents are now generated in /tmp/didyoureadme
