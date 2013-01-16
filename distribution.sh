@@ -34,6 +34,7 @@ cp      Makefile \
         didyoureadme.pro \
         libdidyoureadme.py \
         didyoureadme.desktop \
+        didyoureadme-backup \
         $DIRSRCLINUX
 
 cp      i18n/*.ts \
@@ -62,6 +63,7 @@ sed -i -e 's:so="src.linux":so="bin.linux":' $DIRBINLINUX/bin/didyoureadme
 cxfreeze-3.2 $DIRBINLINUX/bin/didyoureadme --include-path=$DIRBINLINUX/lib/didyoureadme/ --target-dir=$DIRBINLINUX/dist/didyoureadme
 echo "Execute didyoureadme" > $DIRBINLINUX/dist/README.txt
 cp $DIRBINLINUX/share/didyoureadme/*.qm $DIRBINLINUX/dist/didyoureadme
+cp $DIRBINLINUX/bin/didyoureadme-backup $DIRBINLINUX/dist/didyoureadme
 echo "  * Comprimiendo binario linux..."
 cd $DIRBINLINUX/dist
 tar cvz  -f $CWD/dist/didyoureadme-bin-linux-$VERSION.tar.gz * -C $DIRBINLINUX/dist > /dev/null

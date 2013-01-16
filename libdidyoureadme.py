@@ -2,7 +2,7 @@ import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  py
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-version="20130114+"
+version="20130116"
 
 dirTmp=os.path.expanduser("/tmp/didyoureadme/")
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
@@ -311,10 +311,11 @@ class Mail:
 
     def message(self):
         url="http://{0}:{1}/get/{2}l{3}/{4}".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.user.hash, self.document.hash, urllib.parse.quote(os.path.basename(self.document.filename.lower())))
-        
+
+        comment=""
         if self.document.comment!="":
             comment=self.document.comment+"\n\n___________________________________________________________\n\n"
-        
+
         s= ("From: "+self.mem.cfgfile.smtpfrom+"\n"+
         "To: "+self.user.mail+"\n"+
         "MIME-Version: 1.0\n"+

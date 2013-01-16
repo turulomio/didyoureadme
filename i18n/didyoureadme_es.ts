@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es">
+<!DOCTYPE TS><TS version="2.0" language="es" sourcelanguage="">
 <context>
     <name>DidYouReadMe</name>
     <message>
-        <location filename="libdidyoureadme.py" line="318"/>
+        <location filename="libdidyoureadme.py" line="319"/>
         <source>This is an automatic and personal mail from DidYouReadMe.</source>
         <translation>Este es un correo automático y personal desde DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="318"/>
+        <location filename="libdidyoureadme.py" line="319"/>
         <source>Don&apos;t answer and don&apos;t resend this mail.</source>
         <translation>No lo responda ni lo reenvíe.</translation>
     </message>
@@ -19,12 +18,12 @@
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="585"/>
+        <location filename="libdidyoureadme.py" line="586"/>
         <source>Connection error. Try again</source>
         <translation>Error de conexión. Prueba otra vez</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="318"/>
+        <location filename="libdidyoureadme.py" line="319"/>
         <source>When you click the next link, you will get the document associated to this mail and it will be registered as read:</source>
         <translation>Cuando pulse en el siguiente enlace, se podrá descargar el documento asociado a este correo y se registrará su lectura:</translation>
     </message>
@@ -66,7 +65,7 @@
         <source>Web page is at &lt;a href=&quot;http://didyoureadme.sourceforge.net&quot;&gt;http://didyoureadme.sourceforge.net&lt;/a&gt;&lt;p&gt; &lt;p&gt;</source>
         <translation>La página web del proyecto se encuentra en &lt;a href=&quot;http://didyoureadme.sourceforge.net&quot;&gt;http://didyoureadme.sourceforge.net&lt;/a&gt;&lt;p&gt; &lt;p&gt;</translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="ui/frmAbout.py" line="22"/>
         <source>This app has been developed by Mariano Muñoz.&lt;p&gt;</source>
         <translation>Esta aplicación ha sido desarrollada por Mariano Muñoz.&lt;p&gt;</translation>
@@ -627,12 +626,12 @@ Do you want to close and hide it?</source>
         <source>English</source>
         <translation>English</translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="ui/frmSettings.ui" line="141"/>
         <source>Español</source>
         <translation>Español</translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="ui/frmSettings.ui" line="14"/>
         <source>Configuración de DidYouReadMe</source>
         <translation>Configuración de DidYouReadMe</translation>

@@ -1,6 +1,7 @@
-XXXXXXXX
+20130116
 ========
 - Script added to make backups. It can be launched from console and from UI.
+- Bug solved when sending mail without comment
 
 20130114
 ========
