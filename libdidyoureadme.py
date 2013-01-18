@@ -51,23 +51,7 @@ class SetGroups:
             if p.id==id:
                 return p
         return None
-        
-    def qcombobox(self, combo, selected):
-        """selected lista de group a seleccionar"""
-        
-        self.arr=sorted(self.arr, key=lambda g: g.name)
-        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
-        for i,  g in enumerate(self.arr):
-            item = QStandardItem(g.name)
-            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
-            if g in selected:
-                item.setData(Qt.Checked, Qt.CheckStateRole)
-            else:
-                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
-            item.setData(g.id, Qt.UserRole) # Para el role usuario
-            model.setItem(i, 0, item);
-        combo.setModel(model)
-        combo.setCurrentIndex(-1)
+
         
     def qlistview(self, list, selected):
         """selected lista de group a seleccionar"""
@@ -152,35 +136,7 @@ class SetUsers:
             self.arr.append(User(row['datetime'],  row['post'], row['name'], row['mail'], row['active'], row['hash'],  row['id']))
         cur.close()
             
-    
-    def qcombobox(self, combo, inactivos, selected):
-        """inactivos si muestra inactivos
-        selected lista de user a seleccionar"""
-        self.arr=sorted(self.arr, key=lambda u: u.name)
-        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
-        for i,  u in enumerate(self.arr):
-            if inactivos==False and u.active==False:
-                continue
-            item = QStandardItem(u.name)
-            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
-            if u in selected:
-                item.setData(Qt.Checked, Qt.CheckStateRole)
-            else:
-                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
-            item.setData(u.id, Qt.UserRole) # Para el role usuario
-            model.setItem(i, 0, item);
-        combo.setModel(model)
-        combo.setCurrentIndex(-1)
-        
-    def qcombobox2list(self, combo):
-        """Convierte el qcombox a un alista de usuarios seleccionados """
-        resultado=[]
-        for i in range(combo.count()):
-            if combo.itemData(i, Qt.CheckStateRole)==Qt.Checked:
-                usuario=combo.itemData(i, Qt.UserRole)
-                resultado.append(self.mem.users.user(usuario))    
-        return resultado
-        
+
     
     def qlistview(self, list, inactivos, selected):
         """inactivos si muestra inactivos
