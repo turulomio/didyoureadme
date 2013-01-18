@@ -72,9 +72,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tupdatedata.start()
         
         
-        self.timerUpdateTables=QTimer()
-        QObject.connect(self.timerUpdateTables, SIGNAL("timeout()"), self.updateTables) 
-        self.timerUpdateTables.start(2000)
+        self.timerUpdateTablesOnlyNums=QTimer()
+        QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.updateTablesOnlyNums) 
+        self.timerUpdateTablesOnlyNums.start(2000)
         
         self.timerUpdateData=QTimer()
         QObject.connect(self.timerUpdateData, SIGNAL("timeout()"), self.updateData) 
@@ -142,6 +142,17 @@ class frmMain(QMainWindow, Ui_frmMain):#
         m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
         m.exec_()
         
+    def updateTablesOnlyNums(self):
+        for i, u in enumerate(self.users):
+            self.tblUsers.setItem(i, 4, QTableWidgetItem(str(u.read)))
+            self.tblUsers.setItem(i, 5, QTableWidgetItem(str(u.sent)))
+        for i, d in enumerate(self.documents):
+            self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numplanned)))
+            self.tblDocuments.setItem(i, 4, QTableWidgetItem(str(d.numsents)))
+            self.tblDocuments.setItem(i, 5, QTableWidgetItem(str(d.numreads)))
+            if d.numreads==d.numplanned and d.numplanned>0:
+                for column in range( 3, 6):
+                    self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
         
     def on_actionTablesUpdate_triggered(self):
         self.updateTables()
@@ -409,11 +420,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         f=frmGroupsIBM(self.mem, None)
         f.exec_()
         self.tblGroups_reload()
-#        salida=QInputDialog.getText(self,self.trUtf8("Add new group"),self.trUtf8("Group name:"))
-#        if salida[1]==True:
-#            g=Group(salida[0], [])
-#            g.save(self.mem, cur)
-#        print (salida)
+
 
     @pyqtSlot()   
     def on_actionGroupDelete_triggered(self):

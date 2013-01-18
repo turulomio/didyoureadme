@@ -6,4 +6,3 @@
 20130116 Contador de conexiones htttp
 20130118 Hacer un seguro de errores de correo. Más de 30 errores se para el envio y se avisa..
 20130118 Si en correo se mete mmmarí@gmail.com con acento falla
-20130118 EROR GRAVE el update automatico quita las selecciones, ver si se recorren los items y se actualiza solo campos  y solo se recargar con ibm
