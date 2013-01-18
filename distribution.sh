@@ -29,7 +29,6 @@ cp      Makefile \
         GPL-3.txt \
         INSTALL.txt \
         RELEASES.txt \
-        bottle.py \
         didyoureadme.py \
         didyoureadme.pro \
         libdidyoureadme.py \
