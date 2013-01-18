@@ -71,6 +71,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tupdatedata=TUpdateData(self.mem)
         self.tupdatedata.start()
         
+        
+        self.timerUpdateTables=QTimer()
+        QObject.connect(self.timerUpdateTables, SIGNAL("timeout()"), self.updateTables) 
+        self.timerUpdateTables.start(2000)
+        
         self.timerUpdateData=QTimer()
         QObject.connect(self.timerUpdateData, SIGNAL("timeout()"), self.updateData) 
         self.timerUpdateData.start(10000)
@@ -94,6 +99,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.mem.__del__() 
         
     def httpserver(self):
+        if '/usr/bin' in sys.path: #En gentoo hay un ejecutable bottle.py, que ademas era 2.7, se quita del path
+            sys.path.remove('/usr/bin')
+            print('/usr/bin removed from path, to use site-packaged  version, check if problems')
         from bottle import route, run,  error, static_file
         @route('/get/<filename>/<name>')
         def get(filename,  name):
@@ -135,8 +143,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
         m.exec_()
         
         
-    @pyqtSlot()      
     def on_actionTablesUpdate_triggered(self):
+        self.updateTables()
+        
+    def updateTables(self):
         self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))
         self.tblGroups_reload()
         self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))

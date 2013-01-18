@@ -11,11 +11,35 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         QDialog.__init__(self,  parent)
         self.setupUi(self)   
         self.mem=mem
-        self.mem.users.qcombobox(self.cmbUsers, False, [])
-        self.mem.groups.qcombobox(self.cmbGroups, [])
+        self.mem.users.qlistview(self.lstUsers, False, [])
+        self.mem.groups.qlistview(self.lstGroups, [])
+        self.selectedUsers=set()
+
+    def getSelectedUsers(self):        
+        self.selectedUsers=set()
+        for i in range(self.lstGroups.model().rowCount()):
+            if self.lstGroups.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
+                grupo=self.lstGroups.model().index(i, 0).data(Qt.UserRole)
+                for u in self.mem.groups.group(grupo).members:
+                    self.selectedUsers.add(u)
+        for i in range(self.lstUsers.model().rowCount()):
+            if self.lstUsers.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
+                usuario=self.lstUsers.model().index(i, 0).data(Qt.UserRole)
+                self.selectedUsers.add(self.mem.users.user(usuario))               
+        
+        self.cmd.setText(self.trUtf8("Send document to {0} users".format(len(list(self.selectedUsers)))))
+        
+
+    def on_lstUsers_clicked(self, modelindex):
+        self.getSelectedUsers()
+        
+    def on_lstGroups_clicked(self, modelindex):
+        self.getSelectedUsers()
+        
+    
 
     def on_cmd_pressed(self):
-        #Genera los usuarios a los que se enviar´a el documento
+        #Genera los self.selectedUsers a los que se enviar´a el documento
         if self.txtTitle.text()=="":
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
@@ -29,19 +53,9 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             m.setText(self.trUtf8("I can't find the document"))
             m.exec_()          
             return
-        
-        usuarios=set()
-        for i in range(self.cmbGroups.count()):
-            if self.cmbGroups.itemData(i, Qt.CheckStateRole)==Qt.Checked:
-                grupo=self.cmbGroups.itemData(i, Qt.UserRole)
-                for u in self.mem.groups.group(grupo).members:
-                    usuarios.add(u)
-        for i in range(self.cmbUsers.count()):
-            if self.cmbUsers.itemData(i, Qt.CheckStateRole)==Qt.Checked:
-                usuario=self.cmbUsers.itemData(i, Qt.UserRole)
-                usuarios.add(self.mem.users.user(usuario))               
 
-        if len(list(usuarios))==0:
+
+        if len(list(self.selectedUsers))==0:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
             m.setText(self.trUtf8("You have to select at least one recipient"))
@@ -54,11 +68,12 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         d.save(self.mem)
         
         #Genera el userdocument
-        for u in list(usuarios):
+        for u in list(self.selectedUsers):
             if u.active==True:
                 ud=UserDocument(u, d, self.mem)
                 ud.save()
         self.mem.documents.arr.append(d)
+        d.updateNums(cur)
         cur.close()
         
         #Lo copia

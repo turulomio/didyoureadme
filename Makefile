@@ -32,7 +32,7 @@ install:
 
 	install -m 755 -o root didyoureadme.py $(PREFIXBIN)/didyoureadme
 	install -m 755 -o root didyoureadme-backup $(PREFIXBIN)
-	install -m 644 -o root libdidyoureadme.py bottle.py $(PREFIXLIB)
+	install -m 644 -o root libdidyoureadme.py $(PREFIXLIB)
 	install -m 644 -o root ui/*.py $(PREFIXLIB)
 	install -m 644 -o root images/*.py $(PREFIXLIB)
 	install -m 644 -o root images/didyoureadme.png $(PREFIXPIXMAPS)/didyoureadme.png

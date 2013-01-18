@@ -3,4 +3,7 @@
 20121220 Dirección ip del intergaz y luego nombre  para enlace 
 20121220 Meter localzone en settings
 20121308 Hacer un informe de que documentos no ha leído
-20120308 Como no usa un sistema para meter paralelamente en bd, ya que lo hace un proceso migrar a sqlite
+20130116 Contador de conexiones htttp
+20130118 Hacer un seguro de errores de correo. Más de 30 errores se para el envio y se avisa..
+20130118 Si en correo se mete mmmarí@gmail.com con acento falla
+20130118 Quitar combo de edición de grupos

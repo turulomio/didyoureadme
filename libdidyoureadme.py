@@ -68,7 +68,22 @@ class SetGroups:
             model.setItem(i, 0, item);
         combo.setModel(model)
         combo.setCurrentIndex(-1)
-
+        
+    def qlistview(self, list, selected):
+        """selected lista de group a seleccionar"""
+        
+        self.arr=sorted(self.arr, key=lambda g: g.name)
+        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
+        for i,  g in enumerate(self.arr):
+            item = QStandardItem(g.name)
+            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
+            if g in selected:
+                item.setData(Qt.Checked, Qt.CheckStateRole)
+            else:
+                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
+            item.setData(g.id, Qt.UserRole) # Para el role usuario
+            model.setItem(i, 0, item);
+        list.setModel(model)
 class Group:
     def __init__(self,  name, members,  id=None):
         """members es un array a objetos User"""
@@ -166,7 +181,24 @@ class SetUsers:
                 resultado.append(self.mem.users.user(usuario))    
         return resultado
         
-
+    
+    def qlistview(self, list, inactivos, selected):
+        """inactivos si muestra inactivos
+        selected lista de user a seleccionar"""
+        self.arr=sorted(self.arr, key=lambda u: u.name)
+        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
+        for i,  u in enumerate(self.arr):
+            if inactivos==False and u.active==False:
+                continue
+            item = QStandardItem(u.name)
+            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
+            if u in selected:
+                item.setData(Qt.Checked, Qt.CheckStateRole)
+            else:
+                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
+            item.setData(u.id, Qt.UserRole) # Para el role usuario
+            model.setItem(i, 0, item);
+        list.setModel(model)
 
 class User:
     def __init__(self, dt, post, name, mail, active=True, hash="hash no calculado",  id=None):
@@ -240,7 +272,6 @@ class TUpdateData(threading.Thread):
         self.mem=mem
     
     def run(self):    
-#        inicio=datetime.datetime.now()
         con=self.mem.connect()
         cur=con.cursor()
         #Actualiza userdocuments
@@ -262,7 +293,6 @@ class TUpdateData(threading.Thread):
                 d.updateNums(cur)            
         cur.close()  
         self.mem.disconnect(con)
-#        print ("updateData took",  datetime.datetime.now()-inicio)
 
 class TSend(threading.Thread):
     def __init__(self, mem):
@@ -274,6 +304,7 @@ class TSend(threading.Thread):
     def run(self):    
         con=self.mem.connect()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXI´ON DE PARAMETRO
         cur=con.cursor()
+        cur2=con.cursor()
         #5 minutos delay
         cur.execute("select id_documents, id_users from userdocuments, documents where userdocuments.id_documents=documents.id and sent is null and now() > datetime + interval '1 minute';")
         for row in cur:
@@ -290,10 +321,12 @@ class TSend(threading.Thread):
                 d.save()
                 con.commit()
             else:
-                print ("Sending message error", "to",  mail.receiver,  mail.title)
+                print ("Sending message error", "to",  mail.user.mail,  mail.document.id)
                 self.errorsending=self.errorsending+1            
+            mail.document.updateNums(cur2)
             time.sleep(5)                  
         cur.close()
+        cur2.close()
         self.mem.disconnect(con)
         
 

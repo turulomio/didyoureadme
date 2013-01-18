@@ -290,8 +290,6 @@
    </attribute>
    <addaction name="actionDocumentNew"/>
    <addaction name="separator"/>
-   <addaction name="actionTablesUpdate"/>
-   <addaction name="separator"/>
    <addaction name="actionExit"/>
   </widget>
   <widget class="QStatusBar" name="status"/>

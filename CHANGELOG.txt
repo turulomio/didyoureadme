@@ -1,3 +1,9 @@
+XXXXXXXX
+========
+- User and Group combos chandet to lists, improving user interface
+- frmMain now update tables automatically.
+- Bottle.py remove from project, you must use the bottle.py distribution
+
 20130116
 ========
 - Script added to make backups. It can be launched from console and from UI.
