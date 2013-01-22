@@ -6,3 +6,4 @@
 20130116 Contador de conexiones htttp
 20130118 Hacer un seguro de errores de correo. Más de 30 errores se para el envio y se avisa..
 20130118 Si en correo se mete mmmarí@gmail.com con acento falla
+20130118 Hacer logs de errores en sendmail y en update data( ahora los borro y los pierdo)

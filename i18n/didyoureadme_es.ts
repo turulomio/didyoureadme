@@ -3,12 +3,12 @@
 <context>
     <name>DidYouReadMe</name>
     <message>
-        <location filename="libdidyoureadme.py" line="308"/>
+        <location filename="libdidyoureadme.py" line="314"/>
         <source>This is an automatic and personal mail from DidYouReadMe.</source>
         <translation>Este es un correo automático y personal desde DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="308"/>
+        <location filename="libdidyoureadme.py" line="314"/>
         <source>Don&apos;t answer and don&apos;t resend this mail.</source>
         <translation>No lo responda ni lo reenvíe.</translation>
     </message>
@@ -18,17 +18,17 @@
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="575"/>
+        <location filename="libdidyoureadme.py" line="581"/>
         <source>Connection error. Try again</source>
         <translation>Error de conexión. Prueba otra vez</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="308"/>
+        <location filename="libdidyoureadme.py" line="314"/>
         <source>When you click the next link, you will get the document associated to this mail and it will be registered as read:</source>
         <translation>Cuando pulse en el siguiente enlace, se podrá descargar el documento asociado a este correo y se registrará su lectura:</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="142"/>
+        <location filename="ui/frmMain.py" line="146"/>
         <source>Backup will be created in the home directory</source>
         <translation>La copia de seguridad será creada en el directorio de usuario</translation>
     </message>
@@ -296,12 +296,12 @@
         <translation>Fecha y hora</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>Filename</source>
         <translation>Nombre del fichero</translation>
     </message>
@@ -326,7 +326,7 @@
         <translation>Nombre y apellidos</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="38"/>
+        <location filename="ui/frmMain.py" line="39"/>
         <source>Login to DidYouReadMe</source>
         <translation>Acceso a DidYouReadMe</translation>
     </message>
@@ -376,22 +376,22 @@
         <translation>Leídos</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>Sent</source>
         <translation>Enviados</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="270"/>
+        <location filename="ui/frmMain.py" line="277"/>
         <source>I couldn&apos;t look for updates. Try it later..</source>
         <translation>No he podido comprobar las actualizaciones. Intentelo más tarde..</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="305"/>
+        <location filename="ui/frmMain.py" line="312"/>
         <source>Quit DidYouReadMe?</source>
         <translation>¿Quiere salir de DidYouReadMe?</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="305"/>
+        <location filename="ui/frmMain.py" line="312"/>
         <source>If you close the app, the web server will be closed too. Users won&apos;t be able to get files.Do you with to exit?</source>
         <translation>Si cierra la aplicación, el servidor web será cerrado también. Los usuarios no podrán descargarse documentos. ¿Quiere salir?</translation>
     </message>
@@ -471,18 +471,18 @@
         <translation>Borrar usuario</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="469"/>
+        <location filename="ui/frmMain.py" line="472"/>
         <source>You can&apos;t delete it, because user is in a group or DidYouReadMe sent him some documents.
 You can deactivate him.</source>
         <translation>No puede borrarlo, porque el usuario está en un grupo o DidYouReadMe le ha enviado algún documento. Puede desactivarlo.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="253"/>
+        <location filename="ui/frmMain.py" line="260"/>
         <source>DidYouReadMe is going to be closed to save settings.</source>
         <translation>DidYouReadMe se va a cerrar para actualizar la configuración.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="594"/>
+        <location filename="ui/frmMain.py" line="597"/>
         <source>This message have been read for everybody.
 Do you want to close and hide it?</source>
         <translation>Este mensaje ha sido leído por todos sus receptores.
@@ -499,17 +499,12 @@ Do you want to close and hide it?</source>
         <translation>Documento cerrado</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="125"/>
-        <source>{0} sending errors</source>
-        <translation>{0} errores de envío</translation>
-    </message>
-    <message>
-        <location filename="ui/frmMain.py" line="122"/>
+        <location filename="ui/frmMain.py" line="126"/>
         <source>Running web server at {0}:{1}. </source>
         <translation>Servidor web corriendo en {0}:{1}. </translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="124"/>
+        <location filename="ui/frmMain.py" line="128"/>
         <source>Web server is down. Check configuration. </source>
         <translation>Servidor web está caído. Revise la configuración. </translation>
     </message>
@@ -519,22 +514,22 @@ Do you want to close and hide it?</source>
         <translation>Planificados</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="608"/>
+        <location filename="ui/frmMain.py" line="611"/>
         <source>Everybody read the document.</source>
         <translation>Todos leyeron el documento.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="568"/>
+        <location filename="ui/frmMain.py" line="571"/>
         <source>User doesn&apos;t belong to any group.</source>
         <translation>El usuario no pertenece a ningún grupo.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="570"/>
+        <location filename="ui/frmMain.py" line="573"/>
         <source>User belongs to the following groups:</source>
         <translation>El usuario pertenece a los siguientes grupos:</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="603"/>
+        <location filename="ui/frmMain.py" line="606"/>
         <source>Users haven&apos;t read the selected document:</source>
         <translation>Usuarios que no han leído este documento:</translation>
     </message>
@@ -544,32 +539,32 @@ Do you want to close and hide it?</source>
         <translation>Generar informe</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>DidYouReadMe Report</source>
         <translation>Informe de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>User</source>
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>First read</source>
         <translation>Primera lectura</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>Number of reads</source>
         <translation>Número de lecturas</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>Document data</source>
         <translation>Datos del documento</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>User reads</source>
         <translation>Lecturas de los destinatarios</translation>
     </message>
@@ -579,17 +574,17 @@ Do you want to close and hide it?</source>
         <translation>Mostrar documentos cerrados</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>Generation time</source>
         <translation>Hora de creación</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>Created</source>
         <translation>Creado</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="363"/>
         <source>Comment</source>
         <translation>Comentario</translation>
     </message>
@@ -604,12 +599,12 @@ Do you want to close and hide it?</source>
         <translation>DidYouReadMe 2012-2013. GNU General Public License</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="289"/>
+        <location filename="ui/frmMain.py" line="296"/>
         <source>DidYouReadMe is in the last version</source>
         <translation>DidYouReadMe está en la última versión</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="295"/>
+        <location filename="ui/frmMain.py" line="302"/>
         <source>There is a new DidYouReadMe version. You can download it from &lt;a href=&apos;http://didyoureadme.sourceforge.net&apos;&gt;http://didyoureadme.sourceforge.net&lt;/a&gt; or directly from &lt;a href=&apos;https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-</source>
         <translation>Hay una nueva versión de DidYouReadMe. Puedes bajarla desde &lt;a href=&apos;http://didyoureadme.sourceforge.net&apos;&gt;http://didyoureadme.sourceforge.net&lt;/a&gt; o directamente desde &lt;a href=&apos;https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme- </translation>
     </message>
@@ -617,6 +612,11 @@ Do you want to close and hide it?</source>
         <location filename="ui/frmMain.ui" line="511"/>
         <source>System Backup</source>
         <translation>Copia de seguridad del sistema</translation>
+    </message>
+    <message>
+        <location filename="ui/frmMain.py" line="129"/>
+        <source>{0} sending errors. {1} updating errors.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

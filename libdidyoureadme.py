@@ -226,17 +226,23 @@ class TUpdateData(threading.Thread):
     def __init__(self, mem):
         threading.Thread.__init__(self)
         self.mem=mem
+        self.errorupdating=0
     
     def run(self):    
         con=self.mem.connect()
         cur=con.cursor()
         #Actualiza userdocuments
         for file in os.listdir(dirReaded):
-            (userhash, documenthash)=file.split("l")
-            ud=UserDocument(self.mem.users.user_from_hash(userhash), self.mem.documents.document_from_hash(documenthash), self.mem)
-            ud.readed( self.mem.cfgfile.localzone)
-            con.commit()
-            os.remove(dirReaded+file)
+            try:
+                (userhash, documenthash)=file.split("l")
+                ud=UserDocument(self.mem.users.user_from_hash(userhash), self.mem.documents.document_from_hash(documenthash), self.mem)
+                ud.readed( self.mem.cfgfile.localzone)
+                con.commit()
+            except:
+                self.errorupdating=self.errorupdating+1
+                print("Error updating data with hashs", file)#Muestra si alguien hace porquer´ias, se deber´ian borrar si hay muchos
+            finally:
+                os.remove(dirReaded+file)
             
         #Actualiza users
         for u in self.mem.users.arr:

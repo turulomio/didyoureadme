@@ -24,6 +24,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.users=[]
         
         self.errorsending=0
+        self.errorupdating=0
         
         self.setupUi(self)
 
@@ -113,6 +114,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         @error(404)
         def error404(error):
             return 'Nothing here, sorry'
+        @error(403)
+        def error403(error):
+            return 'Nothing here, sorry'
             
         run (host=self.mem.cfgfile.webserver, port=int(self.mem.cfgfile.webserverport), debug=False)
 
@@ -122,7 +126,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             status=self.trUtf8("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webserver, self.mem.cfgfile.webserverport))
         else:
             status=self.trUtf8("Web server is down. Check configuration. ")
-        self.statusBar().showMessage(status + self.trUtf8("{0} sending errors".format(self.errorsending)))    
+        self.statusBar().showMessage(status + self.trUtf8("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    
 
     def send(self):
 #        print (self.tsend.isAlive(), "send isalive")
@@ -224,9 +228,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         """Parsea el directorio readed y actualizada dotos"""
 #        print (self.tupdatedata.isAlive(), "updatedata isalive")
         if self.tupdatedata.isAlive()==False:
+            self.errorupdating=self.errorupdating+self.tupdatedata.errorupdating
+            del self.tupdatedata#Lo borro porque sino no me volvia a enviar
             QCoreApplication.processEvents()
             self.tupdatedata=TUpdateData(self.mem)
             self.tupdatedata.start()      
+        
             
 
 
