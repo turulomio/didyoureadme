@@ -1,8 +1,9 @@
 XXXXXXXX
 ========
-- User and Group combos chandet to lists, improving user interface
+- User and Group combos changed to lists, improving user interface.
 - frmMain now update tables automatically.
-- Bottle.py remove from project, you must use the bottle.py distribution
+- Bottle.py remove from project, you must use the bottle.py distribution.
+- Adding new document checks if the file selected is really a file.
 
 20130116
 ========

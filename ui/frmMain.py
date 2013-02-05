@@ -151,12 +151,16 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tblUsers.setItem(i, 4, QTableWidgetItem(str(u.read)))
             self.tblUsers.setItem(i, 5, QTableWidgetItem(str(u.sent)))
         for i, d in enumerate(self.documents):
-            self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numplanned)))
-            self.tblDocuments.setItem(i, 4, QTableWidgetItem(str(d.numsents)))
-            self.tblDocuments.setItem(i, 5, QTableWidgetItem(str(d.numreads)))
+            self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
+            self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
+            self.tblDocuments.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
+            self.tblDocuments.item(i, 2).setTextAlignment(Qt.AlignHCenter)
+            self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
+            self.tblDocuments.item(i, 3).setTextAlignment(Qt.AlignHCenter)
             if d.numreads==d.numplanned and d.numplanned>0:
-                for column in range( 3, 6):
+                for column in range( 1, 4):
                     self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
+        self.updateStatusBar()
         
     def on_actionTablesUpdate_triggered(self):
         self.updateTables()
@@ -212,13 +216,15 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.documents=sorted(self.documents, key=lambda d: d.datetime)
         for i, d in enumerate(self.documents):
             self.tblDocuments.setItem(i, 0, qdatetime(d.datetime, self.mem.cfgfile.localzone))
-            self.tblDocuments.setItem(i, 1, QTableWidgetItem(d.title))
-            self.tblDocuments.setItem(i, 2, QTableWidgetItem(os.path.basename(d.filename)))
-            self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numplanned)))
-            self.tblDocuments.setItem(i, 4, QTableWidgetItem(str(d.numsents)))
-            self.tblDocuments.setItem(i, 5, QTableWidgetItem(str(d.numreads)))
+            self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
+            self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
+            self.tblDocuments.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
+            self.tblDocuments.item(i, 2).setTextAlignment(Qt.AlignHCenter)
+            self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
+            self.tblDocuments.item(i, 3).setTextAlignment(Qt.AlignHCenter)
+            self.tblDocuments.setItem(i, 4, QTableWidgetItem(d.title))
             if d.numreads==d.numplanned and d.numplanned>0:
-                for column in range( 3, 6):
+                for column in range( 1, 4):
                     self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
 
         self.tblDocuments.setCurrentCell(len(self.documents)-1, 0)                    

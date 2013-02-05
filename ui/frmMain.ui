@@ -190,16 +190,6 @@
             </column>
             <column>
              <property name="text">
-              <string>Title</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Filename</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>Planned</string>
              </property>
             </column>
@@ -211,6 +201,11 @@
             <column>
              <property name="text">
               <string>Read</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Title</string>
              </property>
             </column>
            </widget>

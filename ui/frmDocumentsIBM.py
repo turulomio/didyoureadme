@@ -28,15 +28,12 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 self.selectedUsers.add(self.mem.users.user(usuario))               
         
         self.cmd.setText(self.trUtf8("Send document to {0} users".format(len(list(self.selectedUsers)))))
-        
 
     def on_lstUsers_clicked(self, modelindex):
         self.getSelectedUsers()
-        
+
     def on_lstGroups_clicked(self, modelindex):
         self.getSelectedUsers()
-        
-    
 
     def on_cmd_pressed(self):
         #Genera los self.selectedUsers a los que se enviar´a el documento
@@ -53,7 +50,13 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             m.setText(self.trUtf8("I can't find the document"))
             m.exec_()          
             return
-
+            
+        if not os.path.isfile(self.txtFilename.text()):
+            m=QMessageBox()
+            m.setIcon(QMessageBox.Information)
+            m.setText(self.trUtf8("You have not select a file. Please, select one."))
+            m.exec_()          
+            return
 
         if len(list(self.selectedUsers))==0:
             m=QMessageBox()

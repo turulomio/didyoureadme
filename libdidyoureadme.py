@@ -240,7 +240,9 @@ class TUpdateData(threading.Thread):
                 con.commit()
             except:
                 self.errorupdating=self.errorupdating+1
-                print("Error updating data with hashs", file)#Muestra si alguien hace porquer´ias, se deber´ian borrar si hay muchos
+                f=open(self.mem.pathlogupdate, "a")
+                f.write(QApplication.translate("didyoureadme","{0} Error updating data with hash: {1}\n").format(now(self.mem.cfgfile.localzone), file))
+                f.close()
             finally:
                 os.remove(dirReaded+file)
             
@@ -283,8 +285,13 @@ class TSend(threading.Thread):
                 d.save()
                 con.commit()
             else:
-                print ("Sending message error", "to",  mail.user.mail,  mail.document.id)
-                self.errorsending=self.errorsending+1            
+                self.errorsending=self.errorsending+1  
+                try: #Unicode en mail
+                    f=open(self.mem.pathlogmail, "a")
+                    f.write(QApplication.translate("didyoureadme","{0} Error sending message {1} to {2}\n").format(now(self.mem.cfgfile.localzone), mail.document.id, mail.user.mail))
+                    f.close()          
+                except:
+                    print ("TSend error al escribir log")
             mail.document.updateNums(cur2)
             time.sleep(5)                  
         cur.close()
@@ -558,6 +565,8 @@ class Mem:
     def __init__(self, cfgfile):     
         self.cfgfile=cfgfile
         self.con=None
+        self.pathlogmail=os.path.expanduser("~/.didyoureadme/mail.log")
+        self.pathlogupdate=os.path.expanduser("~/.didyoureadme/updatedata.log")
         
     def __del__(self):
         if self.con:#Needed when reject frmAccess
