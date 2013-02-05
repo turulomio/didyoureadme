@@ -149,7 +149,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def updateTablesOnlyNums(self):
         for i, u in enumerate(self.users):
             self.tblUsers.setItem(i, 4, QTableWidgetItem(str(u.read)))
+            self.tblUsers.item(i, 4).setTextAlignment(Qt.AlignHCenter)
             self.tblUsers.setItem(i, 5, QTableWidgetItem(str(u.sent)))
+            self.tblUsers.item(i, 5).setTextAlignment(Qt.AlignHCenter)
         for i, d in enumerate(self.documents):
             self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
             self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
@@ -202,7 +204,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tblUsers.setItem(i, 2, QTableWidgetItem(u.name))
             self.tblUsers.setItem(i, 3, QTableWidgetItem(u.mail))
             self.tblUsers.setItem(i, 4, QTableWidgetItem(str(u.read)))
+            self.tblUsers.item(i, 4).setTextAlignment(Qt.AlignHCenter)
             self.tblUsers.setItem(i, 5, QTableWidgetItem(str(u.sent)))
+            self.tblUsers.item(i, 5).setTextAlignment(Qt.AlignHCenter)
         self.tblUsers.clearSelection()   
         
     def tblDocuments_reload(self, closed=False):
