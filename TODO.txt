@@ -5,4 +5,3 @@
 20121308 Hacer un informe de que documentos no ha leído
 20130116 Contador de conexiones http
 20130118 Si en correo se mete mmmarí@gmail.com con acento falla, validar el campo a caracteres permitidos
-20130205 Los acentos pierden el utf-8 en los correos.
