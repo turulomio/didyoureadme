@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="es" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="es">
 <context>
     <name>DidYouReadMe</name>
     <message>
@@ -39,13 +40,15 @@
         <location filename="libdidyoureadme.py" line="244"/>
         <source>{0} Error updating data with hash: {1}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>{0} errores al actualizar los datos con hash: {1}
+</translation>
     </message>
     <message>
         <location filename="libdidyoureadme.py" line="291"/>
         <source>{0} Error sending message {1} to {2}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>{0} errores al enviar el mensaje {1} a {2}
+</translation>
     </message>
 </context>
 <context>
@@ -80,7 +83,7 @@
         <source>Web page is at &lt;a href=&quot;http://didyoureadme.sourceforge.net&quot;&gt;http://didyoureadme.sourceforge.net&lt;/a&gt;&lt;p&gt; &lt;p&gt;</source>
         <translation>La página web del proyecto se encuentra en &lt;a href=&quot;http://didyoureadme.sourceforge.net&quot;&gt;http://didyoureadme.sourceforge.net&lt;/a&gt;&lt;p&gt; &lt;p&gt;</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="ui/frmAbout.py" line="22"/>
         <source>This app has been developed by Mariano Muñoz.&lt;p&gt;</source>
         <translation>Esta aplicación ha sido desarrollada por Mariano Muñoz.&lt;p&gt;</translation>
@@ -204,12 +207,12 @@
     <message>
         <location filename="ui/frmDocumentsIBM.py" line="30"/>
         <source>Send document to {0} users</source>
-        <translation type="unfinished"></translation>
+        <translation>Enviar documento a {0} usuarios</translation>
     </message>
     <message>
         <location filename="ui/frmDocumentsIBM.py" line="57"/>
         <source>You have not select a file. Please, select one.</source>
-        <translation type="unfinished"></translation>
+        <translation>No ha seleccionado ningún documento. Por favor, seleccione uno.</translation>
     </message>
 </context>
 <context>
@@ -531,7 +534,7 @@ Do you want to close and hide it?</source>
     <message>
         <location filename="ui/frmMain.ui" line="193"/>
         <source>Planned</source>
-        <translation type="unfinished">Planeados</translation>
+        <translation>Planeados</translation>
     </message>
     <message>
         <location filename="ui/frmMain.py" line="621"/>
@@ -636,7 +639,7 @@ Do you want to close and hide it?</source>
     <message>
         <location filename="ui/frmMain.py" line="129"/>
         <source>{0} sending errors. {1} updating errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>{0} errores de envío. {1} errores de actualización de datos.</translation>
     </message>
 </context>
 <context>
@@ -651,12 +654,12 @@ Do you want to close and hide it?</source>
         <source>English</source>
         <translation>English</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="ui/frmSettings.ui" line="141"/>
         <source>Español</source>
         <translation>Español</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="ui/frmSettings.ui" line="14"/>
         <source>Configuración de DidYouReadMe</source>
         <translation>Configuración de DidYouReadMe</translation>
