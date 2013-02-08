@@ -1,8 +1,9 @@
 Nueva release
 =============
 1) Modificar la version en libdidyoureadme
-2) Modificar todos los ficheros RELEASE-ES CHANGELOG con num subversion +1
+2) Modificar todos los ficheros RELEASE CHANGELOG con num subversion +1
 4) Ejecutar linguist
+4) Hacer un make uninstall
 4) Crear los 2 ficheros (con distribution.sh que pone la version automatico) y subirlo a sourceforge
 4) Colocar las versiones preferidas en linux src
 5) Subir al subversion y comprobar que queda subversion +1
@@ -14,4 +15,3 @@ Nueva release
    - Modificar todos los enlaces ojo no cambiar muchas versiones si hago un replace
    - Subirla a internet con bash publicar.sh
 10) Comprobar enlaces
-11) Publicar news en sourceforge con el CHANGELOG-EN
