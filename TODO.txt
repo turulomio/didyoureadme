@@ -8,3 +8,4 @@
 20130118 Hay mucha cpu consumida en secretaria
 20130118 Los cerrados no deben estar en memoria, solo los activos
 20130118 Hacer widget monthSelector para controlar los meses dentro de los cerrados
+20130213 Poner un puerto distinto en settings, falla
