@@ -118,12 +118,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         def error403(error):
             return 'Nothing here, sorry'
             
-        run (host=self.mem.cfgfile.webserver, port=int(self.mem.cfgfile.webserverport), debug=False)
+        run (host=self.mem.cfgfile.webinterface, port=int(self.mem.cfgfile.webserverport), debug=False)
 
     def updateStatusBar(self):
         #Actualiza statusbar
         if self.server.is_alive()==True:
-            status=self.trUtf8("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webserver, self.mem.cfgfile.webserverport))
+            status=self.trUtf8("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
         else:
             status=self.trUtf8("Web server is down. Check configuration. ")
         self.statusBar().showMessage(status + self.trUtf8("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    

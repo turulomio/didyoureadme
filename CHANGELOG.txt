@@ -1,3 +1,7 @@
+XXXXXXXX
+========
+- Solved bug when changing web server port
+
 20130208
 ========
 - User and Group combos changed to lists, improving user interface.

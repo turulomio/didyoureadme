@@ -505,6 +505,7 @@ class ConfigFile:
         self.smtpTLS="False"
         self.webserver="127.0.0.1"
         self.webserverport="8000"
+        self.webinterface="127.0.0.1"
         
         self.config=configparser.ConfigParser()
         self.load()
@@ -528,6 +529,7 @@ class ConfigFile:
             self.smtpTLS=self.config.get("smtp", "tls")
             self.webserver=self.config.get("webserver", "ip")
             self.webserverport=self.config.get("webserver", "port")
+            self.webinterface=self.config.get("webserver", "interface")
         except:
             self.error=True
         
@@ -558,6 +560,7 @@ class ConfigFile:
         self.config.set("smtp", "support", self.smtpsupport)
         self.config.set("webserver", "ip", self.webserver)
         self.config.set("webserver", "port", self.webserverport)
+        self.config.set("webserver", "interface", self.webinterface)
         with open(self.file, 'w') as configfile:
             self.config.write(configfile)
             

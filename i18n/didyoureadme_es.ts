@@ -18,7 +18,7 @@
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="590"/>
+        <location filename="libdidyoureadme.py" line="593"/>
         <source>Connection error. Try again</source>
         <translation>Error de conexión. Prueba otra vez</translation>
     </message>
@@ -674,7 +674,7 @@ Do you want to close and hide it?</source>
         <translation>Opciones principales</translation>
     </message>
     <message>
-        <location filename="ui/frmSettings.ui" line="231"/>
+        <location filename="ui/frmSettings.ui" line="251"/>
         <source>SMTP Server</source>
         <translation>Servidor SMTP</translation>
     </message>
@@ -682,11 +682,6 @@ Do you want to close and hide it?</source>
         <location filename="ui/frmSettings.ui" line="175"/>
         <source>Web Server</source>
         <translation>Servidor Web</translation>
-    </message>
-    <message>
-        <location filename="ui/frmSettings.ui" line="183"/>
-        <source>Server IP address</source>
-        <translation>Dirección IP del servidor</translation>
     </message>
     <message>
         <location filename="ui/frmSettings.ui" line="200"/>
@@ -717,27 +712,27 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Por favor, contacte con el administrador de DidYouReadMe ante cualquier problema.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="ui/frmSettings.ui" line="241"/>
+        <location filename="ui/frmSettings.ui" line="261"/>
         <source>SMTP user</source>
         <translation>Usuario SMTP</translation>
     </message>
     <message>
-        <location filename="ui/frmSettings.ui" line="251"/>
+        <location filename="ui/frmSettings.ui" line="271"/>
         <source>SMTP password</source>
         <translation>Contraseña SMTP</translation>
     </message>
     <message>
-        <location filename="ui/frmSettings.ui" line="265"/>
+        <location filename="ui/frmSettings.ui" line="285"/>
         <source>TLS</source>
         <translation>TLS</translation>
     </message>
     <message>
-        <location filename="ui/frmSettings.ui" line="272"/>
+        <location filename="ui/frmSettings.ui" line="292"/>
         <source>From address</source>
         <translation>Remitente</translation>
     </message>
     <message>
-        <location filename="ui/frmSettings.ui" line="285"/>
+        <location filename="ui/frmSettings.ui" line="305"/>
         <source>SMTP Port</source>
         <translation>Puerto SMTP</translation>
     </message>
@@ -745,6 +740,21 @@ p, li { white-space: pre-wrap; }
         <location filename="ui/frmSettings.ui" line="190"/>
         <source>Must be the IP of the server, with visibility for users</source>
         <translation>Debe ser la IP del servidor que tenga visibilidad para los destinatarios</translation>
+    </message>
+    <message>
+        <location filename="ui/frmSettings.ui" line="183"/>
+        <source>Server name/IP address for mails</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmSettings.ui" line="217"/>
+        <source>Interface IP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmSettings.ui" line="230"/>
+        <source>Web server Interface IP</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

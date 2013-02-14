@@ -2,6 +2,7 @@
 import  libdidyoureadme
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.QtNetwork import *
 
 from Ui_frmSettings import *
 
@@ -24,6 +25,13 @@ class frmSettings(QDialog, Ui_frmSettings):
         self.txtSMTPFrom.setText(self.cfgfile.smtpfrom)
         if self.cfgfile.smtpTLS=="True":
             self.chkTLS.setCheckState(Qt.Checked)
+            
+        ifaces = QNetworkInterface.allInterfaces()
+        for iface in ifaces:
+            for addr in iface.addressEntries():
+                self.cmbInterfaces.addItem("{0} - {1}".format(iface.humanReadableName(), addr.ip().toString() ), addr.ip().toString())
+        self.cmbInterfaces.setCurrentIndex(self.cmbInterfaces.findData(self.cfgfile.webinterface))
+        
 
     @pyqtSlot(str)      
     def on_cmbLanguage_currentIndexChanged(self, stri):
@@ -36,9 +44,9 @@ class frmSettings(QDialog, Ui_frmSettings):
         self.retranslateUi(self)
         
     def on_buttonBox_accepted(self):
-        self.on_cmbLanguage_currentIndexChanged(self.cmbLanguage.currentText())
         self.cfgfile.webserver=self.txtWebServerIP.text()
         self.cfgfile.webserverport=self.txtWebServerPort.text()
+        self.cfgfile.webinterface=self.cmbInterfaces.itemData(self.cmbInterfaces.currentIndex())
         self.cfgfile.smtpsupport=self.txtSupport.toPlainText()
         self.cfgfile.smtppwd=self.txtSMTPPwd.text()
         self.cfgfile.smtpserver=self.txtSMTPServer.text()
@@ -51,3 +59,4 @@ class frmSettings(QDialog, Ui_frmSettings):
             self.cfgfile.smtpTLS="False"
         self.cfgfile.save()
         
+        self.on_cmbLanguage_currentIndexChanged(self.cmbLanguage.currentText())#Debe hacerse al final para que no afecte valores
