@@ -322,6 +322,7 @@ class Mail:
         "To: "+self.user.mail+"\n"+
         "MIME-Version: 1.0\n"+
         "Subject: "+ self.document.title+"\n"+
+        "Date: " + datetime.datetime.now(pytz.timezone(self.mem.cfgfile.localzone)).strftime("%a, %d %b %Y %X %z") +"\n"+
         "Content-Type: text/plain; charset=UTF-8\n" +
         "\n"+
         comment +
