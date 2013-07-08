@@ -1,6 +1,7 @@
 XXXXXXXX
 ========
 - Solved bug when changing web server port
+- Ahora el correo tiene la fecha y hora en formato internacional
 
 20130208
 ========

@@ -10,8 +10,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>437</width>
-    <height>531</height>
+    <width>699</width>
+    <height>676</height>
    </rect>
   </property>
   <property name="cursor">
@@ -161,6 +161,9 @@
            </widget>
           </item>
           <item>
+           <widget class="wdgYearMonth" name="wdgYearMonth" native="true"/>
+          </item>
+          <item>
            <widget class="QTableWidget" name="tblDocuments">
             <property name="contextMenuPolicy">
              <enum>Qt::CustomContextMenu</enum>
@@ -223,7 +226,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>437</width>
+     <width>699</width>
      <height>20</height>
     </rect>
    </property>
@@ -507,6 +510,14 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>wdgYearMonth</class>
+   <extends>QWidget</extends>
+   <header location="global">wdgYearMonth</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../images/didyoureadme.qrc"/>
  </resources>
