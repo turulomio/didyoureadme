@@ -24,12 +24,12 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
     @pyqtSlot(str)      
     def on_cmbYear_currentIndexChanged(self, text):
         self.year=int(text)
-        self.emit(SIGNAL("changed()"))
+        self.emit(SIGNAL("changed"))
         
     @pyqtSlot(int)      
     def on_cmbMonth_currentIndexChanged(self, integ):
-        self.mont=integ+1
-        self.emit(SIGNAL("changed()"))
+        self.month=integ+1
+        self.emit(SIGNAL("changed"))
         
     def on_cmdNext_pressed(self):
         if self.month==12:
@@ -38,14 +38,12 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
         else:
             self.month=self.month+1
         self.set(self.year, self.month)
-        self.emit(SIGNAL("changed()"))
         
     def on_cmdPrevious_pressed(self):
         if self.month==1:
             self.month=12
             self.year=self.year-1
         else:
-            self.month=self.month+1
+            self.month=self.month-1
         self.set(self.year, self.month)
-        self.emit(SIGNAL("changed()"))
 

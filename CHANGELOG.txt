@@ -1,7 +1,8 @@
 XXXXXXXX
 ========
 - Solved bug when changing web server port
-- Ahora el correo tiene la fecha y hora en formato internacional
+- El correo muestra la fecha y hora en formato internacional
+- Se ha añadido un selector por meses para mostrar documentos cerrados
 
 20130208
 ========

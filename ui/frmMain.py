@@ -31,7 +31,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.setupUi(self)                
         self.wym.hide()
         self.wym.initiate(2011,  datetime.date.today().year, datetime.date.today().year, datetime.date.today().month)
-
+        QObject.connect(self.wym, SIGNAL("changed"), self.on_wym_changed)
         
 #        
 #        self.trayIcon = QSystemTrayIcon(QIcon(":/didyoureadme.png"), None)
@@ -101,11 +101,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         self.timerUpdateTablesOnlyNums=QTimer()
         QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.updateTablesOnlyNums) 
-        self.timerUpdateTablesOnlyNums.start(2000)
+        self.timerUpdateTablesOnlyNums.start(10000)
         
         self.timerUpdateData=QTimer()
         QObject.connect(self.timerUpdateData, SIGNAL("timeout()"), self.updateData) 
-        self.timerUpdateData.start(10000)
+        self.timerUpdateData.start(20000)
         
         
         self.tsend=TSend(self.mem)#Lanza TSend desde arranque
@@ -113,7 +113,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         self.timerSendMessages=QTimer()
         QObject.connect(self.timerSendMessages, SIGNAL("timeout()"), self.send) 
-        self.timerSendMessages.start(10000)
+        self.timerSendMessages.start(20000)
         
         
     def __del__(self):
@@ -239,10 +239,16 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tblUsers.item(i, 5).setTextAlignment(Qt.AlignHCenter)
         self.tblUsers.clearSelection()   
         
+    @pyqtSlot()      
+    def on_wym_changed(self):
+        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+        
     def tblDocuments_reload(self, closed=False):
         self.documents=[]
         for i, d in enumerate(self.mem.documents.arr):
             if (closed==False and d.closed==True) or (closed==True and d.closed==False):
+                continue
+            if d.datetime.year!=self.wym.year or d.datetime.month!=self.wym.month:
                 continue
             self.documents.append(d)
         
@@ -266,7 +272,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     def updateData(self):
         """Parsea el directorio readed y actualizada dotos"""
-#        print (self.tupdatedata.isAlive(), "updatedata isalive")
         if self.tupdatedata.isAlive()==False:
             self.errorupdating=self.errorupdating+self.tupdatedata.errorupdating
             del self.tupdatedata#Lo borro porque sino no me volvia a enviar
