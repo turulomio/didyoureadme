@@ -7,5 +7,6 @@
 20130118 Hay mucha cpu consumida en secretaria, poner en config, only nums 10000, updatedata 20000, send 20000
 20130118 Los cerrados no deben estar en memoria, solo los activos
 20130118 Hacer widget monthSelector para controlar los meses dentro de los cerrados
+20130421 Hacer icono en barra de tareas y minimizar.
 20130218 Cuando es 09_57:00 no muestra bien en documentos ni en fecha alta usuarios
 20130708 Los enlaces no se abren con tipos mime siempre ventanas de firefox. 

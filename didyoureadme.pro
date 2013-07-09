@@ -15,7 +15,9 @@ SOURCES         = libdidyoureadme.py \
                   ui/frmSettings.py \
                   ui/Ui_frmSettings.py \
                   ui/frmAccess.py \
-                  ui/Ui_frmAccess.py
+                  ui/Ui_frmAccess.py \
+                  ui/wdgYearMonth.py \
+                  ui/Ui_wdgYearMonth.py
 
 FORMS           = ui/frmAbout.ui \
                   ui/frmAccess.ui \
@@ -24,7 +26,8 @@ FORMS           = ui/frmAbout.ui \
                   ui/frmGroupsIBM.ui \
                   ui/frmDocumentsIBM.ui \
                   ui/frmUsersIBM.ui \
-                  ui/frmSettings.ui
+                  ui/frmSettings.ui \
+                  ui/wdgYearMonth.ui
 
 
 TRANSLATIONS    = i18n/didyoureadme_es.ts  

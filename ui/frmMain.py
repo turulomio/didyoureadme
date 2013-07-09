@@ -13,9 +13,36 @@ from frmGroupsIBM import *
 from frmUsersIBM import *
 
             
+#class SystemTrayIcon(QSystemTrayIcon):
+#    def __init__(self, parent=None):
+#        QSystemTrayIcon.__init__(self, QIcon(":/didyoureadme.png"), parent)
+#        self.setToolTip(self.trUtf8("DidYouReadMe is active"))
+##        self.menu = QMenu(parent)
+##        self.setContextMenu(self.menu)
+#        
+#    @pyqtSlot()     
+#    def on_activated (self, reason):
+#        print ("hola", reason)
+#        self.menu.show()
+#        
 class frmMain(QMainWindow, Ui_frmMain):#    
     def __init__(self, cfgfile, parent = 0,  flags = False):
         QMainWindow.__init__(self)
+        self.setupUi(self)                
+        self.wym.hide()
+        self.wym.initiate(2011,  datetime.date.today().year, datetime.date.today().year, datetime.date.today().month)
+
+        
+#        
+#        self.trayIcon = QSystemTrayIcon(QIcon(":/didyoureadme.png"), None)
+##        self.trayIcon.menu.addAction(self.actionExit)
+##        self.trayIcon.menu.addSeparator()
+##        self.trayIcon.menu.addAction(self.actionAbout)
+#        QObject.connect(self.trayIcon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),   self.on_trayIcon_activated) 
+#        self.trayIcon.show()
+#        
+        
+        
         self.confirmclose=True
         self.cfgfile=cfgfile
         self.accesspass=False
@@ -26,7 +53,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.errorsending=0
         self.errorupdating=0
         
-        self.setupUi(self)
 
         sb = QStatusBar()
         sb.setFixedHeight(18)
@@ -138,6 +164,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tsend.start()      
             
         self.updateStatusBar()
+
+    
+    def on_trayIcon_activated(self, reason):
+        print ("hola")
 
     @pyqtSlot()      
     def on_actionBackup_triggered(self):
@@ -636,6 +666,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_chkDocumentsClosed_stateChanged(self, state):
         if state==Qt.Unchecked:
             self.tblDocuments_reload(False)
+            self.wym.hide()
         else:
             self.tblDocuments_reload(True)
+            self.wym.show()
             

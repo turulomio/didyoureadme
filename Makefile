@@ -18,6 +18,7 @@ compile:
 	pyuic4 ui/frmDocumentsIBM.ui > ui/Ui_frmDocumentsIBM.py
 	pyuic4 ui/frmGroupsIBM.ui > ui/Ui_frmGroupsIBM.py
 	pyuic4 ui/frmUsersIBM.ui > ui/Ui_frmUsersIBM.py
+	pyuic4 ui/wdgYearMonth.ui > ui/Ui_wdgYearMonth.py
 	pyrcc4 -py3  images/didyoureadme.qrc > images/didyoureadme_rc.py
 	pylupdate4 -noobsolete didyoureadme.pro
 	lrelease didyoureadme.pro

@@ -3,12 +3,16 @@ from PyQt4.QtGui import *
 from Ui_wdgYearMonth import *
 
 class wdgYearMonth(QWidget, Ui_wdgYearMonth):
-    def __init__(self, firstyear,  lastyear, currentyear, currentmonth,  parent = None, name = None):
+    def __init__(self,  parent = None, name = None):
         QWidget.__init__(self,  parent)
-        self.setupUi(self)   
+        self.setupUi(self)
+        
+        
+    def initiate(self, firstyear,  lastyear, currentyear, currentmonth):
+        """Debe ser la primera funci´on despu´es del constructor"""
         self.firstyear=firstyear
         for year in range(firstyear, lastyear+1):
-            self.cmbYear.addItem(year, year)
+            self.cmbYear.addItem(str(year), year)
         self.set(currentyear, currentmonth)
         
     def set(self,  year , month):
@@ -27,7 +31,7 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
         self.mont=integ+1
         self.emit(SIGNAL("changed()"))
         
-    def on_cmdNext_clicked(self):
+    def on_cmdNext_pressed(self):
         if self.month==12:
             self.month=1
             self.year=self.year+1
@@ -36,7 +40,7 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
         self.set(self.year, self.month)
         self.emit(SIGNAL("changed()"))
         
-    def on_cmdPrevious_clicked(self):
+    def on_cmdPrevious_pressed(self):
         if self.month==1:
             self.month=12
             self.year=self.year-1
