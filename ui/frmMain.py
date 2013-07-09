@@ -47,8 +47,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.cfgfile=cfgfile
         self.accesspass=False
         
-        self.documents=[]
         self.users=[]
+        self.listed_documents=[]
         
         self.errorsending=0
         self.errorupdating=0
@@ -98,15 +98,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tupdatedata=TUpdateData(self.mem)
         self.tupdatedata.start()
         
-        
-        self.timerUpdateTablesOnlyNums=QTimer()
-        QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.updateTablesOnlyNums) 
-        self.timerUpdateTablesOnlyNums.start(10000)
-        
         self.timerUpdateData=QTimer()
         QObject.connect(self.timerUpdateData, SIGNAL("timeout()"), self.updateData) 
         self.timerUpdateData.start(20000)
-        
         
         self.tsend=TSend(self.mem)#Lanza TSend desde arranque
         self.tsend.start()
@@ -115,6 +109,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
         QObject.connect(self.timerSendMessages, SIGNAL("timeout()"), self.send) 
         self.timerSendMessages.start(20000)
         
+        
+        self.timerUpdateTablesOnlyNums=QTimer()
+        QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.updateTablesOnlyNums) 
+        self.timerUpdateTablesOnlyNums.start(10000)
         
     def __del__(self):
         if self.accesspass==True:
@@ -182,16 +180,19 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tblUsers.item(i, 4).setTextAlignment(Qt.AlignHCenter)
             self.tblUsers.setItem(i, 5, QTableWidgetItem(str(u.sent)))
             self.tblUsers.item(i, 5).setTextAlignment(Qt.AlignHCenter)
-        for i, d in enumerate(self.documents):
-            self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
-            self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
-            self.tblDocuments.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
-            self.tblDocuments.item(i, 2).setTextAlignment(Qt.AlignHCenter)
-            self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
-            self.tblDocuments.item(i, 3).setTextAlignment(Qt.AlignHCenter)
-            if d.numreads==d.numplanned and d.numplanned>0:
-                for column in range( 1, 4):
-                    self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
+            
+        #Solo actualiza activos
+        if self.chkDocumentsClosed.checkState()==Qt.Unchecked:
+            for i, d in enumerate(self.mem.documents.arr):
+                self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
+                self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
+                self.tblDocuments.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
+                self.tblDocuments.item(i, 2).setTextAlignment(Qt.AlignHCenter)
+                self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
+                self.tblDocuments.item(i, 3).setTextAlignment(Qt.AlignHCenter)
+                if d.numreads==d.numplanned and d.numplanned>0:
+                    for column in range( 1, 4):
+                        self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
         self.updateStatusBar()
         
     def on_actionTablesUpdate_triggered(self):
@@ -205,7 +206,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
     def tblGroups_reload(self):
         self.tblGroups.setRowCount(len(self.mem.groups.arr))
-        self.mem.groups.arr=sorted(self.mem.groups.arr, key=lambda g: g.name)
+        self.mem.groups.sort()
         for i, p in enumerate(self.mem.groups.arr):
             self.tblGroups.setItem(i, 0, QTableWidgetItem(p.name))
             p.members=sorted(p.members, key=lambda u: u.name)
@@ -244,17 +245,23 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
         
     def tblDocuments_reload(self, closed=False):
-        self.documents=[]
-        for i, d in enumerate(self.mem.documents.arr):
-            if (closed==False and d.closed==True) or (closed==True and d.closed==False):
-                continue
-            if d.datetime.year!=self.wym.year or d.datetime.month!=self.wym.month:
-                continue
-            self.documents.append(d)
+        if closed==False:
+            self.listed_documents=self.mem.documents.arr
+        else:
+            closed=SetDocuments(self.mem)
+            closed.load("select * from documents where closed=true and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
+            self.listed_documents=closed.arr
+
+#        for i, d in enumerate(self.mem.documents.arr):
+#            if (closed==False and d.closed==True) or (closed==True and d.closed==False):
+#                continue
+#            if closed==True:
+#                if d.datetime.year!=self.wym.year or d.datetime.month!=self.wym.month:
+#                    continue
+#            self.listed_documents.append(d)
         
-        self.tblDocuments.setRowCount(len(self.documents))
-        self.documents=sorted(self.documents, key=lambda d: d.datetime)
-        for i, d in enumerate(self.documents):
+        self.tblDocuments.setRowCount(len(self.listed_documents))
+        for i, d in enumerate(self.listed_documents):
             self.tblDocuments.setItem(i, 0, qdatetime(d.datetime, self.mem.cfgfile.localzone))
             self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
             self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
@@ -267,7 +274,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 for column in range( 1, 4):
                     self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
 
-        self.tblDocuments.setCurrentCell(len(self.documents)-1, 0)                    
+        self.tblDocuments.setCurrentCell(len(self.listed_documents)-1, 0)                    
         self.tblDocuments.clearSelection()    
 
     def updateData(self):
@@ -375,7 +382,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         QApplication.setOverrideCursor(Qt.WaitCursor);
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.documents[i.row()]
+            selected=self.listed_documents[i.row()]
             
         file=dirTmp+os.path.basename(selected.filename)
         shutil.copyfile(dirDocs+selected.hash, file)
@@ -399,7 +406,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         QApplication.setOverrideCursor(Qt.WaitCursor);
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.documents[i.row()]
+            selected=self.listed_documents[i.row()]
         doc=QTextDocument()
         comment=selected.comment.replace("\n\n\n", "<p>")
         comment=comment.replace("\n\n", "<p>")
@@ -439,13 +446,16 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_actionDocumentClose_triggered(self):
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.documents[i.row()]
+            selected=self.listed_documents[i.row()]
         selected.closed=not selected.closed
         selected.save(self.mem)
-        
-            
-        
-        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState())        )
+        #Se añado a mem.documents es decir a activos
+        if selected.closed==False:#Pasa de cerrado a activos, ha de insertarse en self.mem.documents
+            self.mem.documents.arr.append(selected)
+            self.mem.documents.sort()
+        else:#Pasa de activo a cerrado, ha de borrarse de self.mem.documents
+            self.mem.documents.arr.remove(selected)                     
+        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()) )
                 
     @pyqtSlot()   
     def on_actionDocumentDelete_triggered(self):
@@ -453,10 +463,15 @@ class frmMain(QMainWindow, Ui_frmMain):#
         #Borra el registro de base de datosv
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.documents[i.row()]
-        
-        selected.delete(self.mem)
-        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+            selected=self.listed_documents[i.row()]
+        if self.chkDocumentsClosed.checkState()==Qt.Unchecked:
+            selected.delete(self.mem)#Delete ya lo quita del array self.mem.documents
+            self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+        else:
+            m=QMessageBox()
+            m.setIcon(QMessageBox.Information)
+            m.setText(self.trUtf8("You can't delete a closed document"))
+            m.exec_()   
         
     @pyqtSlot()   
     def on_actionGroupEdit_triggered(self):
@@ -509,8 +524,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             
         if selected.isDeletable(self.mem)==True:
             selected.delete(self.mem)
-            #Recarga grupo de todos
-            self.mem.groups.reload_from_mem()
+            self.mem.groups.quit_user_from_all_groups(selected)
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
@@ -523,7 +537,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_tblDocuments_customContextMenuRequested(self,  pos):
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.documents[i.row()]
+            selected=self.listed_documents[i.row()]
 
         menu=QMenu()
         menu.addAction(self.actionDocumentNew)    
@@ -627,7 +641,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_tblDocuments_cellDoubleClicked(self, row, column):
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.documents[i.row()]
+            selected=self.listed_documents[i.row()]
             
         if selected==None:
             return

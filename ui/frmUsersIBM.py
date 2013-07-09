@@ -30,8 +30,8 @@ class frmUsersIBM(QDialog, Ui_frmUsersIBM):
         self.user.mail=self.txtMail.text()
         self.user.active=c2b(self.chkActive.checkState())
         self.user.save(self.mem)
-        #Recarga grupo de todos
-        self.mem.groups.reload_from_mem()
+        if self.user.active==False:
+            self.mem.groups.quit_user_from_all_groups(self.user)
         self.accept()
         
     def on_buttonBox_rejected(self):

@@ -76,6 +76,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 ud=UserDocument(u, d, self.mem)
                 ud.save()
         self.mem.documents.arr.append(d)
+        self.mem.documents.sort()
         d.updateNums(cur)
         cur.close()
         

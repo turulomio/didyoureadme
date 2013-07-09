@@ -11,6 +11,7 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
     def initiate(self, firstyear,  lastyear, currentyear, currentmonth):
         """Debe ser la primera funci´on despu´es del constructor"""
         self.firstyear=firstyear
+        self.lastyear=lastyear
         for year in range(firstyear, lastyear+1):
             self.cmbYear.addItem(str(year), year)
         self.set(currentyear, currentmonth)
@@ -33,6 +34,12 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
         
     def on_cmdNext_pressed(self):
         if self.month==12:
+            if self.year==self.lastyear:
+                m=QMessageBox()
+                m.setIcon(QMessageBox.Information)
+                m.setText(self.trUtf8("I can't show the next month"))
+                m.exec_()   
+                return
             self.month=1
             self.year=self.year+1
         else:
@@ -41,6 +48,12 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
         
     def on_cmdPrevious_pressed(self):
         if self.month==1:
+            if self.firstyear==self.year:
+                m=QMessageBox()
+                m.setIcon(QMessageBox.Information)
+                m.setText(self.trUtf8("I can't show the previous month"))
+                m.exec_()   
+                return
             self.month=12
             self.year=self.year-1
         else:

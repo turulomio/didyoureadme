@@ -1,4 +1,4 @@
-020121220 Correo suplantación de identidad en windows live, ver si faltan cabeceras
+20121220 Correo suplantación de identidad en windows live, ver si faltan cabeceras
 20121220 Bottle da erro 104, reiniciado remote machine , creo es proiteccion de descarga windows
 20121220 Meter localzone en settings
 20121308 Hacer un informe de que documentos no ha leído
@@ -6,5 +6,7 @@
 20130118 Si en correo se mete mmmarí@gmail.com con acento falla, validar el campo a caracteres permitidos
 20130118 Los cerrados no deben estar en memoria, solo los activos
 20130421 Hacer icono en barra de tareas y minimizar.
-20130218 Cuando es 09_57:00 no muestra bien en documentos ni en fecha alta usuarios
 20130708 Los enlaces no se abren con tipos mime siempre ventanas de firefox. 
+20130709 Al añadir un nuevo usuario se mete en todos los grupos por defecto
+20130709 Cuando pase a closed, ya no se mostrará, pero buscará en close para que salga en estadísticas
+20130810 members debe ser un set de usuarios no un array, cuando se modifica puede redundarse si está activo programar en frmibmusers

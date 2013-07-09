@@ -19,16 +19,15 @@ class SetGroups:
         self.arr=[]
         self.mem=mem
         
-        
-    def reload_from_mem(self):
-        """Cuando se modifica un usuario puede que se desactive y se recargan los grupos"""
-        for g in self.mem.groups.arr:
-            g.members=[]
-            for u in self.mem.users.arr:
-                if u.active==True:#Only active
-                    g.members.append(u)
-
-        
+    def quit_user_from_all_groups(self, user):
+        """Se quita un usuario de todos los grupos tanto l´ogicamente como f´isicamente"""
+        for g in self.arr:
+            for u in g.members:
+                if u==user:
+                    g.members.remove(user)
+                    g.save(self.mem)# Para no grabar en bd salvoi que encuente se pone aqu´i
+                    
+   
     def load(self):
         cur=self.mem.con.cursor()
         cur.execute("select * from groups order by name")
@@ -55,8 +54,7 @@ class SetGroups:
         
     def qlistview(self, list, selected):
         """selected lista de group a seleccionar"""
-        
-        self.arr=sorted(self.arr, key=lambda g: g.name)
+        self.sort()
         model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
         for i,  g in enumerate(self.arr):
             item = QStandardItem(g.name)
@@ -68,6 +66,10 @@ class SetGroups:
             item.setData(g.id, Qt.UserRole) # Para el role usuario
             model.setItem(i, 0, item);
         list.setModel(model)
+        
+    def sort(self):
+        self.arr=sorted(self.arr, key=lambda g: g.name)
+        
 class Group:
     def __init__(self,  name, members,  id=None):
         """members es un array a objetos User"""
@@ -141,7 +143,7 @@ class SetUsers:
     def qlistview(self, list, inactivos, selected):
         """inactivos si muestra inactivos
         selected lista de user a seleccionar"""
-        self.arr=sorted(self.arr, key=lambda u: u.name)
+        self.sort()
         model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
         for i,  u in enumerate(self.arr):
             if inactivos==False and u.active==False:
@@ -155,6 +157,9 @@ class SetUsers:
             item.setData(u.id, Qt.UserRole) # Para el role usuario
             model.setItem(i, 0, item);
         list.setModel(model)
+        
+    def sort(self):
+        self.arr=sorted(self.arr, key=lambda u: u.name)
 
 class User:
     def __init__(self, dt, post, name, mail, active=True, hash="hash no calculado",  id=None):
@@ -191,6 +196,7 @@ class User:
         mem.con.commit()
         cur.close()
         mem.users.arr.remove(self)
+        mem.groups.group(1).members.remove(self)#Añade el usuario al grupo uno. el de todos
         
     def getHash(self):
         if self.id==None:
@@ -207,6 +213,7 @@ class User:
             self.read=0
             cur.execute("update users set hash=%s where id=%s", (self.hash, self.id))
             mem.users.arr.append(self)
+            mem.groups.group(1).members.append(self)#Añade el usuario al grupo uno. el de todos
         else:
             cur.execute("update users set datetime=%s, post=%s, name=%s, mail=%s, active=%s where id=%s", (self.datetime, self.post, self.name, self.mail,  self.active, self.id))
         mem.con.commit()
@@ -365,17 +372,22 @@ class Mail:
 class SetDocuments:
     def __init__(self, mem):
         self.arr=[]
-        self.mem=mem
+        self.mem=mem #solo se usa para conexion, los datos se guardan en arr
                 
-    def load(self):
+    def load(self, sql):
+        """Carga seg´un el sql pasado debe ser un select * from documents ...."""
         cur=self.mem.con.cursor()
-        cur.execute("select * from documents order by datetime")
+        cur.execute(sql)
         for row in cur:
             d=Document(row['datetime'], row['title'], row['filename'], row['comment'], row['closed'],   row['hash'], row['id']  )
             self.arr.append(d)        
         for d in self.arr:
             d.updateNums(cur)
         cur.close()
+        
+    def sort(self):
+        """Ordena por datetime"""
+        self.arr=sorted(self.arr, key=lambda d: d.datetime)        
             
     def document(self, id):
         for d in self.arr:
@@ -580,9 +592,9 @@ class Mem:
         self.users=SetUsers(self)     
         self.users.load() 
         self.groups=SetGroups(self)
-        self.documents=SetDocuments(self)
         self.groups.load()
-        self.documents.load()
+        self.documents=SetDocuments(self) #Son documentos activos
+        self.documents.load("select * from documents where closed=false order by datetime")
 
     def connect(self):
         strmq="dbname='%s' port='%s' user='%s' host='%s' password='%s'" % (self.cfgfile.database,  self.cfgfile.port, self.cfgfile.user, self.cfgfile.server,  self.cfgfile.pwd)
@@ -620,12 +632,7 @@ def qdatetime(dt, localzone):
         resultado="None"
     else:
         dt=dt_changes_tz(dt,  localzone)#sE CONVIERTE A LOCAL DE dt_changes_tz 2012-07-11 08:52:31.311368-04:00 2012-07-11 14:52:31.311368+02:00
-        if dt.microsecond==4 or (dt.hour==23 and dt.minute==59 and dt.second==59):
-            resultado=str(dt.date())
-        elif dt.second>0:
-            resultado=str(dt.date())+" "+str(dt.hour).zfill(2)+":"+str(dt.minute).zfill(2)+":"+str(dt.second).zfill(2)
-        else:
-            resultado=str(dt.date())+" "+str(dt.hour).zfill(2)+":"+str(dt.minute).zfill(2)
+        resultado=str(dt.date())+" "+str(dt.hour).zfill(2)+":"+str(dt.minute).zfill(2)+":"+str(dt.second).zfill(2)
     a=QTableWidgetItem(resultado)
     if dt==None:
         a.setTextColor(QColor(0, 0, 255))

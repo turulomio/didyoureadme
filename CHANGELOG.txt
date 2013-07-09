@@ -3,6 +3,7 @@ XXXXXXXX
 - Solved bug when changing web server port
 - El correo muestra la fecha y hora en formato internacional
 - Se ha añadido un selector por meses para mostrar documentos cerrados
+- Ahora no recorta los datetimes con 00 segundos
 
 20130208
 ========
