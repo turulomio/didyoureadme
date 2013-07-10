@@ -633,17 +633,17 @@ Do you want to close and hide it?</source>
     <message>
         <location filename="ui/frmMain.py" line="364"/>
         <source>Quit DidYouReadMe?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Quieres salir de DidYouReadMe?</translation>
     </message>
     <message>
         <location filename="ui/frmMain.py" line="364"/>
         <source>If you close the app, the web server will be closed too. Users won&apos;t be able to get files.Do you with to exit?</source>
-        <translation type="unfinished"></translation>
+        <translation>Si cierras la aplicación, el servidor web se cerrará también. Los usuarios no podrán descargarse los documentos. ¿Quieres cerrarla?</translation>
     </message>
     <message>
         <location filename="ui/frmMain.py" line="473"/>
         <source>You can&apos;t delete a closed document</source>
-        <translation type="unfinished"></translation>
+        <translation>No puedes borrar un documento cerrado</translation>
     </message>
 </context>
 <context>
@@ -749,17 +749,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/Ui_frmSettings.py" line="202"/>
         <source>Server name/IP address for mails</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del servidor/Dirección IP para correos</translation>
     </message>
     <message>
         <location filename="ui/Ui_frmSettings.py" line="206"/>
         <source>Interface IP</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirección IP del dispositivo</translation>
     </message>
     <message>
         <location filename="ui/Ui_frmSettings.py" line="207"/>
         <source>Web server Interface IP</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirección IP del servidor web</translation>
     </message>
 </context>
 <context>
@@ -805,92 +805,92 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="67"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="68"/>
         <source>Select a month and a year</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona un mes y un año</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="69"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="70"/>
         <source>January</source>
-        <translation type="unfinished"></translation>
+        <translation>Enero</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="71"/>
         <source>February</source>
-        <translation type="unfinished"></translation>
+        <translation>Febrero</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="72"/>
         <source>March</source>
-        <translation type="unfinished"></translation>
+        <translation>Marzo</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="73"/>
         <source>April</source>
-        <translation type="unfinished"></translation>
+        <translation>Abril</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="74"/>
         <source>May</source>
-        <translation type="unfinished"></translation>
+        <translation>Mayo</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="75"/>
         <source>June</source>
-        <translation type="unfinished"></translation>
+        <translation>Junio</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="76"/>
         <source>July</source>
-        <translation type="unfinished"></translation>
+        <translation>Julio</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="77"/>
         <source>August</source>
-        <translation type="unfinished"></translation>
+        <translation>Agosto</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="78"/>
         <source>September</source>
-        <translation type="unfinished"></translation>
+        <translation>Septiembre</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="79"/>
         <source>October</source>
-        <translation type="unfinished"></translation>
+        <translation>Octubre</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="80"/>
         <source>November</source>
-        <translation type="unfinished"></translation>
+        <translation>Noviembre</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="81"/>
         <source>December</source>
-        <translation type="unfinished"></translation>
+        <translation>Diciembre</translation>
     </message>
     <message>
         <location filename="ui/Ui_wdgYearMonth.py" line="82"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="ui/wdgYearMonth.py" line="40"/>
         <source>I can&apos;t show the next month</source>
-        <translation type="unfinished"></translation>
+        <translation>No puedo mostrar el mes siguiente</translation>
     </message>
     <message>
         <location filename="ui/wdgYearMonth.py" line="54"/>
         <source>I can&apos;t show the previous month</source>
-        <translation type="unfinished"></translation>
+        <translation>No puedo mostrar el mes anterior</translation>
     </message>
 </context>
 </TS>

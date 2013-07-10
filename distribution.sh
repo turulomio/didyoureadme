@@ -44,6 +44,7 @@ cp 	sql/didyoureadme.data \
         $DIRSRCLINUX/sql
 
 cp 	ui/frm* \
+	ui/wdg* \
 	$DIRSRCLINUX/ui
 
 cp	images/*.png \
@@ -59,7 +60,7 @@ cd $CWD
 ####### binaries linux
 DESTDIR=$DIRBINLINUX make all
 sed -i -e 's:so="src.linux":so="bin.linux":' $DIRBINLINUX/bin/didyoureadme
-cxfreeze-3.2 $DIRBINLINUX/bin/didyoureadme --include-path=$DIRBINLINUX/lib/didyoureadme/ --target-dir=$DIRBINLINUX/dist/didyoureadme
+cxfreeze $DIRBINLINUX/bin/didyoureadme --include-path=$DIRBINLINUX/lib/didyoureadme/ --target-dir=$DIRBINLINUX/dist/didyoureadme
 echo "Execute didyoureadme" > $DIRBINLINUX/dist/README.txt
 cp $DIRBINLINUX/share/didyoureadme/*.qm $DIRBINLINUX/dist/didyoureadme
 cp $DIRBINLINUX/bin/didyoureadme-backup $DIRBINLINUX/dist/didyoureadme

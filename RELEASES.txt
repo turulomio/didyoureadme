@@ -2,4 +2,4 @@ didyoureadme-20130108 <==> svn -r 11 checkout svn://svn.code.sf.net/p/didyouread
 didyoureadme-20130114 <==> svn -r 13 checkout svn://svn.code.sf.net/p/didyoureadme/code/trunk didyoureadme
 didyoureadme-20130116 <==> svn -r 15 checkout svn://svn.code.sf.net/p/didyoureadme/code/trunk didyoureadme
 didyoureadme-20130208 <==> svn -r 24 checkout svn://svn.code.sf.net/p/didyoureadme/code/trunk didyoureadme
-
+didyoureadme-20130710 <==> svn -r 34 checkout svn://svn.code.sf.net/p/didyoureadme/code/trunk didyoureadme
