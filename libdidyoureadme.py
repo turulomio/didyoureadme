@@ -2,7 +2,7 @@ import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  py
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-version="20130710"
+version="20130710+"
 
 dirTmp=os.path.expanduser("/tmp/didyoureadme/")
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
@@ -323,17 +323,34 @@ class Mail:
 
 
     def message(self):
+        def weekday(noww):
+            """Se hace esta funci´on para que no haya problemas con la localizaci´on de %a"""
+            if noww.isoweekday()==1:
+                return "Mon"
+            if noww.isoweekday()==2:
+                return "Tue"
+            if noww.isoweekday()==3:
+                return "Wed"
+            if noww.isoweekday()==4:
+                return "Thu"
+            if noww.isoweekday()==5:
+                return "Fri"
+            if noww.isoweekday()==6:
+                return "Sat"
+            if noww.isoweekday()==7:
+                return "Sun"
+            
         url="http://{0}:{1}/get/{2}l{3}/{4}".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.user.hash, self.document.hash, urllib.parse.quote(os.path.basename(self.document.filename.lower())))
 
         comment=""
         if self.document.comment!="":
             comment=self.document.comment+"\n\n___________________________________________________________\n\n"
-
+        noww=now(self.mem.cfgfile.localzone)
         s= ("From: "+self.mem.cfgfile.smtpfrom+"\n"+
         "To: "+self.user.mail+"\n"+
         "MIME-Version: 1.0\n"+
         "Subject: "+ self.document.title+"\n"+
-        "Date: " + datetime.datetime.now(pytz.timezone(self.mem.cfgfile.localzone)).strftime("%a, %d %b %Y %X %z") +"\n"+
+        "Date: " + weekday(noww)+", " + str(noww.strftime("%d %b %Y %X %z")) +"\n"+
         "Content-Type: text/plain; charset=UTF-8\n" +
         "\n"+
         comment +
@@ -343,7 +360,7 @@ class Mail:
         url +"\n\n"+
         self.mem.cfgfile.smtpsupport)
         return s.encode('UTF-8')
-        
+    
     def send(self):      
         if self.mem.cfgfile.smtpTLS=="True":
             server = smtplib.SMTP(self.mem.cfgfile.smtpserver)

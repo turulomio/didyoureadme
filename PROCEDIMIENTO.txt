@@ -10,8 +10,10 @@ Nueva release
 6) Crear un nuevo ebuild con la nueva versión
 8) Subirlo al subversion del portage
 9) Modificar la pagina web
+   - Actualizar svn update myweb
    - Crear objeto de Noticia
    - Añadir el release a la página
    - Modificar todos los enlaces ojo no cambiar muchas versiones si hago un replace
    - Subirla a internet con bash publicar.sh
+   - Subir al subervsion los cambios 3en la web
 10) Comprobar enlaces

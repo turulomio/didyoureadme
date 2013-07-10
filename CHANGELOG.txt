@@ -1,10 +1,14 @@
+XXXXXXXX
+========
+- Solved bug with weekday in mail date
+
 20130710
 ========
 - Solved bug when changing web server port
-- El correo muestra la fecha y hora en formato internacional
-- Se ha añadido un selector por meses para mostrar documentos cerrados
-- Ahora no recorta los datetimes con 00 segundos
-- Ahora members es un set, no un list
+- Mail shows datetime in interantional format
+- Closed docs can be searched by month and year
+- Datetime view doesn't cut 00 seconds
+- members is now a set, not a list
 
 20130208
 ========

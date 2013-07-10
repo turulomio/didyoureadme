@@ -3,12 +3,12 @@
 <context>
     <name>DidYouReadMe</name>
     <message>
-        <location filename="libdidyoureadme.py" line="332"/>
+        <location filename="libdidyoureadme.py" line="348"/>
         <source>This is an automatic and personal mail from DidYouReadMe.</source>
         <translation>Este es un correo automático y personal desde DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="332"/>
+        <location filename="libdidyoureadme.py" line="348"/>
         <source>Don&apos;t answer and don&apos;t resend this mail.</source>
         <translation>No lo responda ni lo reenvíe.</translation>
     </message>
@@ -18,12 +18,12 @@
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="610"/>
+        <location filename="libdidyoureadme.py" line="627"/>
         <source>Connection error. Try again</source>
         <translation>Error de conexión. Prueba otra vez</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="332"/>
+        <location filename="libdidyoureadme.py" line="348"/>
         <source>When you click the next link, you will get the document associated to this mail and it will be registered as read:</source>
         <translation>Cuando pulse en el siguiente enlace, se podrá descargar el documento asociado a este correo y se registrará su lectura:</translation>
     </message>
