@@ -32,6 +32,8 @@ class frmUsersIBM(QDialog, Ui_frmUsersIBM):
         self.user.save(self.mem)
         if self.user.active==False:
             self.mem.groups.quit_user_from_all_groups(self.user)
+        else:#usuario activo
+            self.mem.groups.group(1).members.add(self.user)
         self.accept()
         
     def on_buttonBox_rejected(self):

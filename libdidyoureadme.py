@@ -21,27 +21,31 @@ class SetGroups:
         
     def quit_user_from_all_groups(self, user):
         """Se quita un usuario de todos los grupos tanto l´ogicamente como f´isicamente"""
+        
+        todelete=None#Se usa para no borrar en iteracion
         for g in self.arr:
             for u in g.members:
                 if u==user:
-                    g.members.remove(user)
-                    g.save(self.mem)# Para no grabar en bd salvoi que encuente se pone aqu´i
+                    todelete=u
+            if todelete!=None:
+                g.members.remove(user)
+                g.save(self.mem)# Para no grabar en bd salvoi que encuente se pone aqu´i
                     
    
     def load(self):
         cur=self.mem.con.cursor()
         cur.execute("select * from groups order by name")
         for row in cur:
-            members=[]
+            members=set()
             if row['id']==1:#Caso de todos
                 for u in self.mem.users.arr:
                     if u.active==True:#Only active
-                        members.append(u)
+                        members.add(u)
             else:
                 for id_user in row['members']:
                     u=self.mem.users.user(id_user)
                     if u.active==True:
-                        members.append(u)
+                        members.add(u)
             self.arr.append( Group(row['name'], members, row['id']))        
         cur.close()
     

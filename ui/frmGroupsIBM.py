@@ -14,7 +14,7 @@ class frmGroupsIBM(QDialog, Ui_frmGroupsIBM):
         if group==None:
             self.group=Group("", [])
             self.setWindowTitle(self.trUtf8("New Group"))
-            self.mem.users.qlistview(self.lstMembers, False, [])
+            self.mem.users.qlistview(self.lstMembers, False, set())
         else:
             self.group=group
             self.setWindowTitle(self.trUtf8("Edit Group"))
@@ -24,11 +24,11 @@ class frmGroupsIBM(QDialog, Ui_frmGroupsIBM):
         
     def on_buttonBox_accepted(self):
         self.group.name=self.txtName.text()
-        self.group.members=[]
+        self.group.members=set()
         for i in range(self.lstMembers.model().rowCount()):
             if self.lstMembers.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
                 usuario=self.lstMembers.model().index(i, 0).data(Qt.UserRole)
-                self.group.members.append(self.mem.users.user(usuario))        
+                self.group.members.add(self.mem.users.user(usuario))        
         self.group.save(self.mem)
         self.accept()
         

@@ -209,9 +209,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.mem.groups.sort()
         for i, p in enumerate(self.mem.groups.arr):
             self.tblGroups.setItem(i, 0, QTableWidgetItem(p.name))
-            p.members=sorted(p.members, key=lambda u: u.name)
+            members=sorted(list(p.members), key=lambda u: u.name)#no se ordene un set se usa members
             users=""
-            for u in p.members:
+            for u in members:
                 users=users+u.name+"\n"
             self.tblGroups.setItem(i, 1, QTableWidgetItem(users[:-1]))
         self.tblGroups.clearSelection()    

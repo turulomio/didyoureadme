@@ -3,12 +3,12 @@
 <context>
     <name>DidYouReadMe</name>
     <message>
-        <location filename="libdidyoureadme.py" line="328"/>
+        <location filename="libdidyoureadme.py" line="332"/>
         <source>This is an automatic and personal mail from DidYouReadMe.</source>
         <translation>Este es un correo automático y personal desde DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="328"/>
+        <location filename="libdidyoureadme.py" line="332"/>
         <source>Don&apos;t answer and don&apos;t resend this mail.</source>
         <translation>No lo responda ni lo reenvíe.</translation>
     </message>
@@ -18,12 +18,12 @@
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="606"/>
+        <location filename="libdidyoureadme.py" line="610"/>
         <source>Connection error. Try again</source>
         <translation>Error de conexión. Prueba otra vez</translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="328"/>
+        <location filename="libdidyoureadme.py" line="332"/>
         <source>When you click the next link, you will get the document associated to this mail and it will be registered as read:</source>
         <translation>Cuando pulse en el siguiente enlace, se podrá descargar el documento asociado a este correo y se registrará su lectura:</translation>
     </message>
@@ -36,14 +36,14 @@
 <context>
     <name>didyoureadme</name>
     <message>
-        <location filename="libdidyoureadme.py" line="251"/>
+        <location filename="libdidyoureadme.py" line="255"/>
         <source>{0} Error updating data with hash: {1}
 </source>
         <translation>{0} errores al actualizar los datos con hash: {1}
 </translation>
     </message>
     <message>
-        <location filename="libdidyoureadme.py" line="298"/>
+        <location filename="libdidyoureadme.py" line="302"/>
         <source>{0} Error sending message {1} to {2}
 </source>
         <translation>{0} errores al enviar el mensaje {1} a {2}
