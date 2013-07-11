@@ -1,4 +1,4 @@
-XXXXXXXX
+20130711
 ========
 - Solved bug with weekday in mail date
 
