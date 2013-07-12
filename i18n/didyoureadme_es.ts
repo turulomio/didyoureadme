@@ -289,6 +289,16 @@
         <source>To know the groups a user belongs, just double click in a user in the users table.</source>
         <translation>Para saber los grupos a los que pertenece un usuario, haga doble click en un usuario de la tabla de usuarios.</translation>
     </message>
+    <message>
+        <location filename="ui/frmHelp.py" line="18"/>
+        <source>&lt;h3&gt;Mails&lt;/h3&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/frmHelp.py" line="18"/>
+        <source>Some mail clients detect the Didyoureadme mail as phising, if the url in the mail, has an IP instead of a DNS name. To avoid this you have to accept the mail in the client.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>frmMain</name>

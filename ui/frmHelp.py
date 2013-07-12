@@ -22,6 +22,8 @@ class frmHelp(QDialog, Ui_frmHelp):
         self.trUtf8("If the document has been read by all receipts, it will be colored in blue to highlight it, in order to be closed.")+
         self.trUtf8("<h4>Delete documents</h4>") +
         self.trUtf8("You have 1 minute to delete a document you have created, before the sending starts") +
+        self.trUtf8("<h3>Mails</h3>") +
+        self.trUtf8("Some mail clients detect the Didyoureadme mail as phising, if the url in the mail, has an IP instead of a DNS name. To avoid this you have to accept the mail in the client.")+
         self.trUtf8("<h3>Users</h3>") +
         self.trUtf8("To know the groups a user belongs, just double click in a user in the users table.")
         )

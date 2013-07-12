@@ -1,4 +1,3 @@
-20121220 Correo suplantación de identidad en windows live, ver si faltan cabeceras
 20121220 Bottle da erro 104, reiniciado remote machine , creo es proiteccion de descarga windows
 20121220 Meter localzone en settings
 20121308 Hacer un informe de que documentos no ha leído

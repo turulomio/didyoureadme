@@ -12,8 +12,7 @@ Nueva release
 9) Modificar la pagina web
    - Actualizar svn update myweb
    - Crear objeto de Noticia
-   - Añadir el release a la página
-   - Modificar todos los enlaces ojo no cambiar muchas versiones si hago un replace
+   - Modificar la fecha en los enlaces y el r21 de la versíón
    - Subirla a internet con bash publicar.sh
    - Subir al subervsion los cambios 3en la web
 10) Comprobar enlaces
