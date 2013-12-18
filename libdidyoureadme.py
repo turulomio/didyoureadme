@@ -339,6 +339,33 @@ class Mail:
                 return "Sat"
             if noww.isoweekday()==7:
                 return "Sun"
+                
+        def month(noww):
+            """Se hace esta funci´on para que no haya problemas con la localizaci´on de %b"""
+            if noww.month==1:
+                return "Jan"
+            elif noww.month==2:
+                return "Feb"
+            elif noww.month==3:
+                return "Mar"
+            elif noww.month==4:
+                return "Apr"
+            elif noww.month==5:
+                return "May"
+            elif noww.month==6:
+                return "Jun"
+            elif noww.month==7:
+                return "Jul"
+            elif noww.month==8:
+                return "Aug"
+            elif noww.month==9:
+                return "Sep"
+            elif noww.month==10:
+                return "Oct"
+            elif noww.month==11:
+                return "Nov"
+            elif noww.month==12:
+                return "Dec"
             
         url="http://{0}:{1}/get/{2}l{3}/{4}".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.user.hash, self.document.hash, urllib.parse.quote(os.path.basename(self.document.filename.lower())))
 
@@ -350,7 +377,7 @@ class Mail:
         "To: "+self.user.mail+"\n"+
         "MIME-Version: 1.0\n"+
         "Subject: "+ self.document.title+"\n"+
-        "Date: " + weekday(noww)+", " + str(noww.strftime("%d %b %Y %X %z")) +"\n"+
+        "Date: " + weekday(noww)+", " + str(noww.strftime("%d"))+" "+ month(noww)+" "+ str(noww.strftime("%Y %X %z")) +"\n"+
         "Content-Type: text/plain; charset=UTF-8\n" +
         "\n"+
         comment +
