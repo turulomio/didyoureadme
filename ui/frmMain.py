@@ -109,10 +109,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
         QObject.connect(self.timerSendMessages, SIGNAL("timeout()"), self.send) 
         self.timerSendMessages.start(20000)
         
-        
-        self.timerUpdateTablesOnlyNums=QTimer()
-        QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.updateTablesOnlyNums) 
-        self.timerUpdateTablesOnlyNums.start(10000)
+        if self.cfgfile.autoupdate=="True":
+            self.timerUpdateTablesOnlyNums=QTimer()
+            QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.updateTablesOnlyNums) 
+            self.timerUpdateTablesOnlyNums.start(10000)
         
     def __del__(self):
         if self.accesspass==True:
@@ -417,6 +417,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
            "<h2>"+self.trUtf8("Document data")+"</h2>"+
            self.trUtf8("Created")+": {0}".format(str(selected.datetime)[:19])+ "<p>"+
            self.trUtf8("Title")+": {0}".format(selected.title) + "<p>"+
+           self.trUtf8("Internal id")+": {0}".format(selected.id) + "<p>"+
            self.trUtf8("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, selected.hash, urllib.parse.quote(os.path.basename(selected.filename.lower())), os.path.basename(selected.filename )) +
             self.trUtf8("Comment")+": {0}".format(comment) +"<p>"+
            "<h2>"+self.trUtf8("User reads")+"</h2>"+

@@ -25,6 +25,8 @@ class frmSettings(QDialog, Ui_frmSettings):
         self.txtSMTPFrom.setText(self.cfgfile.smtpfrom)
         if self.cfgfile.smtpTLS=="True":
             self.chkTLS.setCheckState(Qt.Checked)
+        if self.cfgfile.autoupdate=="False":
+            self.chkAutoUpdate.setCheckState(Qt.Unchecked)
             
         ifaces = QNetworkInterface.allInterfaces()
         for iface in ifaces:
@@ -57,6 +59,10 @@ class frmSettings(QDialog, Ui_frmSettings):
             self.cfgfile.smtpTLS="True"
         else:
             self.cfgfile.smtpTLS="False"
+        if self.chkAutoUpdate.checkState()==Qt.Checked:
+            self.cfgfile.autoupdate="True"
+        else:
+            self.cfgfile.autoupdate="False"
         self.cfgfile.save()
         
         self.on_cmbLanguage_currentIndexChanged(self.cmbLanguage.currentText())#Debe hacerse al final para que no afecte valores

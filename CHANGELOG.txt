@@ -1,3 +1,9 @@
+XXXXXXXX
+========
+- Solved bug with mail dates.
+- Added autoupdate tables in frmSettings
+- Report shows document internal id
+
 20130711
 ========
 - Solved bug with weekday in mail date

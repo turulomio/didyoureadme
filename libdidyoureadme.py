@@ -567,6 +567,7 @@ class ConfigFile:
         self.webserver="127.0.0.1"
         self.webserverport="8000"
         self.webinterface="127.0.0.1"
+        self.autoupdate="True"
         
         self.config=configparser.ConfigParser()
         self.load()
@@ -591,6 +592,7 @@ class ConfigFile:
             self.webserver=self.config.get("webserver", "ip")
             self.webserverport=self.config.get("webserver", "port")
             self.webinterface=self.config.get("webserver", "interface")
+            self.autoupdate=self.config.get("frmSettings", "autoupdate")
         except:
             self.error=True
         
@@ -611,6 +613,7 @@ class ConfigFile:
         self.config.set("frmAccess",  'server', self.server)
         self.config.set("frmSettings",  'language', self.language)
         self.config.set("frmSettings",  'localzone', self.localzone)
+        self.config.set("frmSettings",  'autoupdate', self.autoupdate)
         self.config.set("frmMain",  'lastupdate', str(self.lastupdate))
         self.config.set("smtp", "from", self.smtpfrom)
         self.config.set("smtp", "smtpserver", self.smtpserver)
