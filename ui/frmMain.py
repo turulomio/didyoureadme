@@ -100,14 +100,14 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         self.timerUpdateData=QTimer()
         QObject.connect(self.timerUpdateData, SIGNAL("timeout()"), self.updateData) 
-        self.timerUpdateData.start(20000)
+        self.timerUpdateData.start(60000)
         
         self.tsend=TSend(self.mem)#Lanza TSend desde arranque
         self.tsend.start()
         
         self.timerSendMessages=QTimer()
         QObject.connect(self.timerSendMessages, SIGNAL("timeout()"), self.send) 
-        self.timerSendMessages.start(20000)
+        self.timerSendMessages.start(50000)
         
         if self.cfgfile.autoupdate=="True":
             self.timerUpdateTablesOnlyNums=QTimer()

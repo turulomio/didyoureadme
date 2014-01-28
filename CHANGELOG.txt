@@ -1,4 +1,4 @@
-XXXXXXXX
+20140128
 ========
 - Solved bug with mail dates.
 - Added autoupdate tables in frmSettings

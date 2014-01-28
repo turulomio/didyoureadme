@@ -172,7 +172,7 @@ p, li { white-space: pre-wrap; }
          <item>
           <widget class="QCheckBox" name="chkAutoUpdate">
            <property name="text">
-            <string>Auto update screens</string>
+            <string>Autoupdate tables</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -183,7 +183,6 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
       <zorder></zorder>
-      <zorder>chkAutoUpdate</zorder>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">

@@ -16,6 +16,8 @@ class frmHelp(QDialog, Ui_frmHelp):
             self.setObjectName(name)
         self.setupUi(self)
         s=(self.trUtf8("<h2>User manual</h2>") +
+        self.trUtf8("<h3>Configuration</h3>") +
+        self.trUtf8("If you select 'auto update tables' tables will be updated each 10 seconds (Not recommended for slow computers).")+"<p>"+
         self.trUtf8("<h3>Documents</h3>") +
         self.trUtf8("To know people who haven't read the document, doubleclick in the documents table.")+" "+
         self.trUtf8("You can copy the text of the message.")+"<p>"+

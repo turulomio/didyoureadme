@@ -292,12 +292,22 @@
     <message>
         <location filename="ui/frmHelp.py" line="18"/>
         <source>&lt;h3&gt;Mails&lt;/h3&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Correos electrónicos&lt;/h3&gt;</translation>
     </message>
     <message>
         <location filename="ui/frmHelp.py" line="18"/>
         <source>Some mail clients detect the Didyoureadme mail as phising, if the url in the mail, has an IP instead of a DNS name. To avoid this you have to accept the mail in the client.</source>
-        <translation type="unfinished"></translation>
+        <translation>Algunos clientes detectan los correos de Didyoureadme como phising, si el enlace web del correo tiene una dirección IP, en vez de un nombre de dominio. Para evitar esto, acepte el correo en el cliente.</translation>
+    </message>
+    <message>
+        <location filename="ui/frmHelp.py" line="18"/>
+        <source>&lt;h3&gt;Configuration&lt;/h3&gt;</source>
+        <translation>&lt;h3&gt;Configuración&lt;/h3&gt;</translation>
+    </message>
+    <message>
+        <location filename="ui/frmHelp.py" line="18"/>
+        <source>If you select &apos;auto update tables&apos; tables will be updated each 10 seconds (Not recommended for slow computers).</source>
+        <translation>Si selecciona &apos;Actualización de tablas automático&apos;, las tablas serán actualizadas cada 10 segundos (No recomendado en ordenadores lentos).</translation>
     </message>
 </context>
 <context>
@@ -653,12 +663,12 @@ Do you want to close and hide it?</source>
     <message>
         <location filename="ui/Ui_frmMain.py" line="261"/>
         <source>DidYouReadMe 2012-2014. GNU General Public License</source>
-        <translation type="unfinished"></translation>
+        <translation>DidYouReadMe 2012-2014. GNU General Public License</translation>
     </message>
     <message>
         <location filename="ui/frmMain.py" line="415"/>
         <source>Internal id</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificador interno</translation>
     </message>
 </context>
 <context>
@@ -778,8 +788,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="ui/Ui_frmSettings.py" line="208"/>
-        <source>Auto update screens</source>
-        <translation type="unfinished"></translation>
+        <source>Autoupdate tables</source>
+        <translation>Actualización de tablas automático</translation>
     </message>
 </context>
 <context>

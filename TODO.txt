@@ -6,3 +6,4 @@
 20130421 Hacer icono en barra de tareas y minimizar.
 20130708 Los enlaces no se abren con tipos mime siempre ventanas de firefox. 
 20130709 Cuando pase a closed, ya no se mostrará, pero buscará en close para que salga en estadísticas
+20140128 Aviso de nueva versión no funciona
