@@ -1,4 +1,4 @@
-import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  pytz,  smtplib,  urllib.parse, threading,  time
+import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  pytz,  smtplib,  urllib.parse, threading,  time,  shutil
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
@@ -264,7 +264,7 @@ class TUpdateData(threading.Thread):
             
         #Consulta
         for i, d in enumerate(self.mem.documents.arr):
-            if d.closed==False:
+            if d.isExpired()==False:
                 d.updateNums(cur)            
         cur.close()  
         self.mem.disconnect(con)
@@ -427,7 +427,7 @@ class SetDocuments:
         cur=self.mem.con.cursor()
         cur.execute(sql)
         for row in cur:
-            d=Document(row['datetime'], row['title'], row['filename'], row['comment'], row['closed'],   row['hash'], row['id']  )
+            d=Document(self.mem, row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'],  row['hash'], row['id']  )
             self.arr.append(d)        
         for d in self.arr:
             d.updateNums(cur)
@@ -452,20 +452,26 @@ class SetDocuments:
         return None
 
 class Document:
-    def __init__(self, dt, title, filename, comment, closed=False,  hash='Not calculated',  id=None):
+    def __init__(self, mem,  dt, title, filename, comment, expiration,  hash='Not calculated',  id=None):
+        self.mem=mem
         self.id=id
         self.datetime=dt
         self.title=title
         self.filename=filename
         self.comment=comment
-        self.closed=closed
         self.hash=hash
         self.numreads=0
         self.numsents=0
         self.numplanned=0
+        self.expiration=expiration
         
     def __repr__(self):
         return "{0} ({1})".format(self.title, self.id)
+        
+    def isExpired(self):
+        if self.expiration>now(self.mem.cfgfile.localzone):
+            return False
+        return True
         
     def getHash(self):
         """Se mete el datetime porque sino se podr´ia adivinar el ocmunicado"""
@@ -516,17 +522,21 @@ class Document:
         
     def save(self, mem):
         """No se puede modificar, solo insertar de nuevo
+        Modificar es cambiar closed
         Si hubiera necesidad de modificar ser´ia borrar y crear"""
         cur=mem.con.cursor()        
         if self.id==None:
-            cur.execute("insert into documents (datetime, title, comment, filename, hash, closed) values (%s, %s, %s, %s, %s, %s) returning id", (self.datetime, self.title, self.comment, self.filename, self.hash,  self.closed))
+            cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id", (self.datetime, self.title, self.comment, self.filename, self.hash,  self.expiration))
             self.id=cur.fetchone()[0]
             self.hash=self.getHash()
-            cur.execute("update documents set hash=%s where id=%s", (self.hash, self.id))
+            shutil.copyfile(self.filename, "/tmp/"+self.hash)#Copia a /tmp (permisos postgres)
+            cur.execute("update documents set hash=%s,file=lo_import(%s) where id=%s", (self.hash, "/tmp/"+self.hash,  self.id))
+            os.system("mv {} {}".format("/tmp/" +self.hash, dirDocs+self.hash))
         else:
-            cur.execute("update documents set closed=%s where id=%s", (self.closed, self.id ))
+            cur.execute("update documents set expiration=%s where id=%s", (self.expiration, self.id ))
         mem.con.commit()
         cur.close()
+        
 
     def updateNums(self, cur):
         cur.execute("select count(*) from userdocuments where id_documents=%s and sent is not null;", (self.id, ))
@@ -675,7 +685,7 @@ class Mem:
         self.groups=SetGroups(self)
         self.groups.load()
         self.documents=SetDocuments(self) #Son documentos activos
-        self.documents.load("select * from documents where closed=false order by datetime")
+        self.documents.load("select * from documents where expiration>now() order by datetime")
 
     def connect(self):
         strmq="dbname='%s' port='%s' user='%s' host='%s' password='%s'" % (self.cfgfile.database,  self.cfgfile.port, self.cfgfile.user, self.cfgfile.server,  self.cfgfile.pwd)
@@ -718,6 +728,14 @@ def qdatetime(dt, localzone):
     if dt==None:
         a.setTextColor(QColor(0, 0, 255))
     a.setTextAlignment(Qt.AlignVCenter|Qt.AlignRight)
+    return a
+    
+def dt(date, hour, zonename):
+    """Función que devuleve un datetime con zone info.
+    Zone is an object."""
+    z=pytz.timezone(zonename)
+    a=datetime.datetime(date.year,  date.month,  date.day,  hour.hour,  hour.minute,  hour.second, hour.microsecond)
+    a=z.localize(a)
     return a
 
 def dt_changes_tz(dt,  tztarjet):

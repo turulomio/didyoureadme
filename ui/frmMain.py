@@ -96,7 +96,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
         self.tblGroups_reload()
         self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))
-        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
 
         if datetime.date.today()-datetime.date.fromordinal(self.mem.cfgfile.lastupdate)>=datetime.timedelta(days=30):
             print ("Looking for updates")
@@ -189,7 +189,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tblUsers.item(i, 5).setTextAlignment(Qt.AlignHCenter)
             
         #Solo actualiza activos
-        if self.chkDocumentsClosed.checkState()==Qt.Unchecked:
+        if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
             for i, d in enumerate(self.mem.documents.arr):
                 self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
                 self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
@@ -208,7 +208,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def updateTables(self):
         self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))
         self.tblGroups_reload()
-        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
         self.updateStatusBar()
         
     def tblGroups_reload(self):
@@ -249,14 +249,14 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
     @pyqtSlot()      
     def on_wym_changed(self):
-        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
         
     def tblDocuments_reload(self, closed=False):
         if closed==False:
             self.listed_documents=self.mem.documents.arr
         else:
             closed=SetDocuments(self.mem)
-            closed.load("select * from documents where closed=true and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
+            closed.load("select * from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
             self.listed_documents=closed.arr
 
 #        for i, d in enumerate(self.mem.documents.arr):
@@ -382,7 +382,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_actionDocumentNew_triggered(self):
         f=frmDocumentsIBM(self.mem)
         f.exec_()
-        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
     
     @pyqtSlot()   
     def on_actionDocumentOpen_triggered(self):        
@@ -451,19 +451,18 @@ class frmMain(QMainWindow, Ui_frmMain):#
         QApplication.restoreOverrideCursor();
 
     @pyqtSlot()   
-    def on_actionDocumentClose_triggered(self):
+    def on_actionDocumentExpire_triggered(self):
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
             selected=self.listed_documents[i.row()]
-        selected.closed=not selected.closed
-        selected.save(self.mem)
-        #Se añado a mem.documents es decir a activos
-        if selected.closed==False:#Pasa de cerrado a activos, ha de insertarse en self.mem.documents
-            self.mem.documents.arr.append(selected)
-            self.mem.documents.sort()
-        else:#Pasa de activo a cerrado, ha de borrarse de self.mem.documents
+        if selected.isExpired():
+            f=frmDocumentsIBM(self.mem, selected)
+            f.exec_()
+        else:
+            selected.expiration=now(self.mem.cfgfile.localzone)
+            selected.save(self.mem)#Update changes expiration
             self.mem.documents.arr.remove(selected)                     
-        self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()) )
+        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()) )
                 
     @pyqtSlot()   
     def on_actionDocumentDelete_triggered(self):
@@ -472,13 +471,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
             selected=self.listed_documents[i.row()]
-        if self.chkDocumentsClosed.checkState()==Qt.Unchecked:
+        if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
             selected.delete(self.mem)#Delete ya lo quita del array self.mem.documents
-            self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+            self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("You can't delete a closed document"))
+            m.setText(self.trUtf8("You can't delete an expired document"))
             m.exec_()   
         
     @pyqtSlot()   
@@ -551,7 +550,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.addAction(self.actionDocumentNew)    
         menu.addAction(self.actionDocumentDelete)
         menu.addSeparator()
-        menu.addAction(self.actionDocumentClose)
+        menu.addAction(self.actionDocumentExpire)
         menu.addSeparator()
         menu.addAction(self.actionDocumentOpen)
         menu.addAction(self.actionDocumentReport)
@@ -560,7 +559,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         if selected ==None:
             self.actionDocumentDelete.setEnabled(False)
-            self.actionDocumentClose.setEnabled(False)
+            self.actionDocumentExpire.setEnabled(False)
             self.actionDocumentReport.setEnabled(False)
             self.actionDocumentOpen.setEnabled(False)
         else:
@@ -570,13 +569,14 @@ class frmMain(QMainWindow, Ui_frmMain):#
             else:
                 self.actionDocumentDelete.setEnabled(True)
 
+            if selected.isExpired():
+                self.actionDocumentExpire.setText(self.tr("Change expiration"))
+            else:
+                self.actionDocumentExpire.setText(self.tr("Expire document"))
+                
             self.actionDocumentReport.setEnabled(True)
             self.actionDocumentOpen.setEnabled(True)
-            self.actionDocumentClose.setEnabled(True)
-            if selected.closed==True:
-                self.actionDocumentClose.setChecked(Qt.Checked)
-            else:
-                self.actionDocumentClose.setChecked(Qt.Unchecked)       
+            self.actionDocumentExpire.setEnabled(True)    
             
         menu.exec_(self.tblDocuments.mapToGlobal(pos))
         
@@ -665,7 +665,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             if reply == QMessageBox.Yes:
                 selected.closed=True
                 selected.save(self.mem)
-                self.tblDocuments_reload(c2b(self.chkDocumentsClosed.checkState()))
+                self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
                 cur.close()
             return
                 
@@ -690,7 +690,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         else:
             self.tblUsers_reload(True)
         
-    def on_chkDocumentsClosed_stateChanged(self, state):
+    def on_chkDocumentsExpired_stateChanged(self, state):
         if state==Qt.Unchecked:
             self.tblDocuments_reload(False)
             self.wym.hide()

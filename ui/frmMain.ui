@@ -150,18 +150,48 @@
        <attribute name="title">
         <string>Documents</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QCheckBox" name="chkDocumentsClosed">
+           <widget class="QCheckBox" name="chkDocumentsExpired">
             <property name="text">
-             <string>Show documents closed</string>
+             <string>Show documents expired</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="wdgYearMonth" name="wym" native="true"/>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="wdgYearMonth" name="wym" native="true"/>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
           <item>
            <widget class="QTableWidget" name="tblDocuments">
@@ -464,15 +494,16 @@
     <string>Update tables</string>
    </property>
   </action>
-  <action name="actionDocumentClose">
-   <property name="checkable">
-    <bool>true</bool>
+  <action name="actionDocumentExpire">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/editar.png</normaloff>:/editar.png</iconset>
    </property>
    <property name="text">
-    <string>Document closed</string>
+    <string>Expire document</string>
    </property>
    <property name="toolTip">
-    <string>Document closed</string>
+    <string>Expire document</string>
    </property>
   </action>
   <action name="actionDocumentReport">

@@ -1,19 +1,34 @@
-import os,  shutil
+import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from Ui_frmDocumentsIBM import *
 from libdidyoureadme import *
 
 class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
-    def __init__(self, mem, parent = None, name = None, modal = False):
+    def __init__(self, mem, document=None, parent = None, name = None, modal = False):
         # tipo 1 - Insertar selDate=None
         # tipo2 - Modificar selDate!=None
         QDialog.__init__(self,  parent)
         self.setupUi(self)   
         self.mem=mem
-        self.mem.users.qlistview(self.lstUsers, False, [])
-        self.mem.groups.qlistview(self.lstGroups, [])
-        self.selectedUsers=set()
+        self.document=document
+        if self.document==None:#New
+            self.mem.users.qlistview(self.lstUsers, False, [])
+            self.mem.groups.qlistview(self.lstGroups, [])
+            self.selectedUsers=set()
+            self.teExpiration.setDate(datetime.date.today()+datetime.timedelta(days=90))
+        else:
+            self.lstUsers.setEnabled(False)
+            self.txtTitle.setEnabled(False)
+            self.lstGroups.setEnabled(False)
+            self.laySend.setEnabled(False)
+            self.txtComment.setEnabled(False)
+            self.txtFilename.setEnabled(False)
+            self.cmdFile.setEnabled(False)
+            self.txtTitle.setText(self.document.title)
+            self.txtComment.setDocument(QTextDocument(self.document.comment))
+            self.teExpiration.setDate(self.document.expiration)
+            self.cmd.setText(self.tr("Change expiration"))
 
     def getSelectedUsers(self):        
         self.selectedUsers=set()
@@ -36,52 +51,59 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         self.getSelectedUsers()
 
     def on_cmd_pressed(self):
-        #Genera los self.selectedUsers a los que se enviar´a el documento
-        if self.txtTitle.text()=="":
-            m=QMessageBox()
-            m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("You must add a title of the document"))
-            m.exec_()          
-            return
-        
-        if not os.path.exists(self.txtFilename.text()):
-            m=QMessageBox()
-            m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("I can't find the document"))
-            m.exec_()          
-            return
+    
+
+        if self.document==None:
+            #Genera los self.selectedUsers a los que se enviar´a el documento
+            if self.txtTitle.text()=="":
+                m=QMessageBox()
+                m.setIcon(QMessageBox.Information)
+                m.setText(self.trUtf8("You must add a title of the document"))
+                m.exec_()          
+                return
             
-        if not os.path.isfile(self.txtFilename.text()):
-            m=QMessageBox()
-            m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("You have not select a file. Please, select one."))
-            m.exec_()          
-            return
-
-        if len(list(self.selectedUsers))==0:
-            m=QMessageBox()
-            m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("You have to select at least one recipient"))
-            m.exec_()          
-            return
-
-        #Genera el documento
-        d=Document(now(self.mem.cfgfile.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.toPlainText())
-        cur=self.mem.con.cursor()
-        d.save(self.mem)
-        
-        #Genera el userdocument
-        for u in list(self.selectedUsers):
-            if u.active==True:
-                ud=UserDocument(u, d, self.mem)
-                ud.save()
-        self.mem.documents.arr.append(d)
-        self.mem.documents.sort()
-        d.updateNums(cur)
-        cur.close()
-        
-        #Lo copia
-        shutil.copyfile(self.txtFilename.text(), dirDocs+d.hash)
+            if not os.path.exists(self.txtFilename.text()):
+                m=QMessageBox()
+                m.setIcon(QMessageBox.Information)
+                m.setText(self.trUtf8("I can't find the document"))
+                m.exec_()          
+                return
+                
+            if not os.path.isfile(self.txtFilename.text()):
+                m=QMessageBox()
+                m.setIcon(QMessageBox.Information)
+                m.setText(self.trUtf8("You have not select a file. Please, select one."))
+                m.exec_()          
+                return
+    
+            if len(list(self.selectedUsers))==0:
+                m=QMessageBox()
+                m.setIcon(QMessageBox.Information)
+                m.setText(self.trUtf8("You have to select at least one recipient"))
+                m.exec_()          
+                return            
+            #Genera el documento
+            self.document=Document(self.mem, now(self.mem.cfgfile.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.toPlainText(),  dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone))
+            self.document.save(self.mem)
+            
+            #Genera el userdocument
+            for u in list(self.selectedUsers):
+                if u.active==True:
+                    ud=UserDocument(u, d, self.mem)
+                    ud.save()
+            self.mem.documents.arr.append(d)
+            self.mem.documents.sort()
+            cur=self.mem.con.cursor()
+            d.updateNums(cur)
+            cur.close()
+        else:
+            self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone)
+            self.document.save(self.mem)
+            if self.document.expiration>now(self.mem.cfgfile.localzone):
+                self.mem.documents.arr.append(self.document)        
+                self.mem.documents.sort()
+            
+            
         self.done(0)
 
     def on_cmdFile_released(self):

@@ -26,27 +26,60 @@ class Update:
             cur.close()
             self.mem.con.commit()
             self.set_database_version(201501260851)
-        if self.dbversion<201501261042: #Documentos a base de datos
+        if self.dbversion<201501261046: #Documentos a base de datos
+        
+            print ("**** Migrating old didyoureadme files")
             cur=self.mem.con.cursor()
             cur2=self.mem.con.cursor()
             cur.execute("select * from documents;")
             for row in cur:
                 if os.path.exists(dirDocs+row['hash'])==False:
-                    print ("No existe",  row['hash'])
+                    print ("No existe y no se puede cargar a base de datos",  row['hash'])
+                    continue
                 if row['file']==None:
-                    print ("oid vacio ",  row['hash'])
                     os.system("cp {} /tmp".format(dirDocs+row['hash']))
-                    cur2.execute("update documents set file=lo_import(%s)", ("/tmp/"+row['hash'], ))
+                    cur2.execute("update documents set file=lo_import(%s) where id=%s", ("/tmp/"+row['hash'], row['id']))
+                    print ("Insertando en database para oid vacio ",  row['hash'])
+                    os.system("rm /tmp/{}".format(row['hash']))
             cur2.close()
             cur.close()
             self.mem.con.commit()
-            self.set_database_version(201501261042)
- 
+            self.set_database_version(201501261046)
+        if self.dbversion<201501261228: #Removes closed and update expiration to 3 months
+            cur=self.mem.con.cursor()
+            cur.execute("alter table documents rename datetime_end to expiration;")
+            cur.execute("alter table documents drop column closed;")      
+            cur2=self.mem.con.cursor()
+            cur.execute("select * from documents;")
+            for row in cur:
+                cur2.execute("update documents set expiration=datetime + interval '3 months' where id=%s", (row['id'], ))
+            cur2.close()
+            cur.close()
+            self.mem.con.commit()
+            self.set_database_version(201501261228)
 
         """AFTER EXECUTING I MUST RUN SQL UPDATE SCRIPT TO UPDATE FUTURE INSTALLATIONS
     
     OJO EN LOS REEMPLAZOS MASIVOS PORQUE UN ACTIVE DE PRODUCTS LUEGO PASA A LLAMARSE AUTOUPDATE PERO DEBERA MANTENERSSE EN SU MOMENTO TEMPORAL"""  
+        self.load_files()
         print ("**** Database already updated")
+   
+   
+    def load_files(self):
+        """THis function download all files from database to .didyoureadme/docs/  when needed"""
+        print ("**** Regenerating files in .didyoureadme/docs")
+        cur=self.mem.con.cursor()
+        cur2=self.mem.con.cursor()
+        cur.execute("select * from documents;")
+        for row in cur:
+            if os.path.exists(dirDocs+row['hash'])==False:
+                cur2.execute("select lo_export(%s, %s);", (row['file'],"/tmp/"+row['hash']))
+                os.system("mv /tmp/{} {}".format(row['hash'], dirDocs))
+                print ("Copying a .didyoureadme/docs",  row['hash'])
+        cur2.close()
+        cur.close()
+        
+   
    
     def get_database_version(self):
         """REturns None or an Int"""

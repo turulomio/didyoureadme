@@ -40,8 +40,7 @@ CREATE TABLE documents (
     comment text,
     filename text,
     hash text NOT NULL,
-    closed boolean NOT NULL,
-    datetime_end timestamp with time zone DEFAULT (now() + '3 mons'::interval) NOT NULL,
+    expiration timestamp with time zone DEFAULT (now() + '3 mons'::interval) NOT NULL,
     file oid
 );
 
@@ -280,7 +279,7 @@ SET search_path = public, pg_catalog;
 -- Data for Name: globals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO globals VALUES (1, 'Version', '201501261042');
+INSERT INTO globals VALUES (1, 'Version', '201501261228');
 
 
 --
