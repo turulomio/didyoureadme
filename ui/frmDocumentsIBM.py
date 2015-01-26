@@ -13,8 +13,8 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         self.mem=mem
         self.document=document
         if self.document==None:#New
-            self.mem.users.qlistview(self.lstUsers, False, [])
-            self.mem.groups.qlistview(self.lstGroups, [])
+            self.mem.data.users_active.qlistview(self.lstUsers, False, [])
+            self.mem.data.groups.qlistview(self.lstGroups, [])
             self.selectedUsers=set()
             self.teExpiration.setDate(datetime.date.today()+datetime.timedelta(days=90))
         else:
@@ -25,7 +25,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             self.txtComment.setEnabled(False)
             self.txtFilename.setEnabled(False)
             self.cmdFile.setEnabled(False)
-            self.txtTitle.setText(self.document.title)
+            self.txtTitle.setText(self.document.name)
             self.txtComment.setDocument(QTextDocument(self.document.comment))
             self.teExpiration.setDate(self.document.expiration)
             self.setWindowTitle(self.tr("Change expiration to document"))
@@ -36,12 +36,12 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         for i in range(self.lstGroups.model().rowCount()):
             if self.lstGroups.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
                 grupo=self.lstGroups.model().index(i, 0).data(Qt.UserRole)
-                for u in self.mem.groups.group(grupo).members:
+                for u in self.mem.data.groups.find(grupo).members.arr:
                     self.selectedUsers.add(u)
         for i in range(self.lstUsers.model().rowCount()):
             if self.lstUsers.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
                 usuario=self.lstUsers.model().index(i, 0).data(Qt.UserRole)
-                self.selectedUsers.add(self.mem.users.user(usuario))               
+                self.selectedUsers.add(self.mem.data.users_active.find(usuario))               
         
         self.cmd.setText(self.trUtf8("Send document to {0} users".format(len(list(self.selectedUsers)))))
 
@@ -52,9 +52,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         self.getSelectedUsers()
 
     def on_cmd_pressed(self):
-    
-
-        if self.document==None:
+        if self.document==None: #Nuevo
             #Genera los self.selectedUsers a los que se enviar´a el documento
             if self.txtTitle.text()=="":
                 m=QMessageBox()
@@ -92,8 +90,8 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 if u.active==True:
                     ud=UserDocument(u, self.document, self.mem)
                     ud.save()
-            self.mem.documents.arr.append(self.document)
-            self.mem.documents.sort()
+            self.mem.data.documents_active.append(self.document)
+            self.mem.data.documents_active.order_by_name()
             cur=self.mem.con.cursor()
             self.document.updateNums(cur)
             cur.close()
@@ -101,8 +99,8 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone)
             self.document.save(self.mem)
             if self.document.expiration>now(self.mem.cfgfile.localzone):
-                self.mem.documents.arr.append(self.document)        
-                self.mem.documents.sort()
+                self.mem.data.documents_active.append(self.document)        
+                self.mem.data.documents_active.order_by_name()
             
             
         self.done(0)

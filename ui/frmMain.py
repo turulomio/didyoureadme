@@ -43,14 +43,14 @@ class frmMain(QMainWindow, Ui_frmMain):#
 #        QObject.connect(self.trayIcon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),   self.on_trayIcon_activated) 
 #        self.trayIcon.show()
 #        
+        self.users=None#Pointer
+        self.documents=None#Pointer
         
         
         self.confirmclose=True
         self.mem=mem
         self.accesspass=False
         
-        self.users=[]
-        self.listed_documents=[]
         
         self.errorsending=0
         self.errorupdating=0
@@ -78,10 +78,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         ##Update database
         libdbupdates.Update(self.mem)
         
-
-        self.mem.cargar_datos()
-
         
+        self.mem.data.load()
+
         ##Admin mode
         if self.mem.adminmodeinparameters:
             m=QMessageBox()
@@ -109,11 +108,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
                     m.setText(self.trUtf8("Bad 'Admin mode' password. You are logged as a normal user"))
                     m.exec_()   
 
-        
-
-
-
-
         self.server = multiprocessing.Process(target=self.httpserver, args=())
         self.server.start()
 
@@ -126,9 +120,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tblDocuments.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
         self.tblDocuments.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 
-        self.tblGroups_reload()
-        self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))
-        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
+        self.mem.data.groups.qtablewidget(self.tblGroups)
+        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        self.on_chkUsersInactive_stateChanged(self.chkUsersInactive.checkState())
 
         if datetime.date.today()-datetime.date.fromordinal(self.mem.cfgfile.lastupdate)>=datetime.timedelta(days=30):
             print ("Looking for updates")
@@ -214,108 +208,30 @@ class frmMain(QMainWindow, Ui_frmMain):#
         m.exec_()
         
     def updateTablesOnlyNums(self):
-        for i, u in enumerate(self.users):
-            self.tblUsers.setItem(i, 4, QTableWidgetItem(str(u.read)))
-            self.tblUsers.item(i, 4).setTextAlignment(Qt.AlignHCenter)
-            self.tblUsers.setItem(i, 5, QTableWidgetItem(str(u.sent)))
-            self.tblUsers.item(i, 5).setTextAlignment(Qt.AlignHCenter)
+        self.mem.data.users_set(self.chkUsersInactive.checkState()).updateTablesOnlyNums(self.tblUsers)
             
         #Solo actualiza activos
         if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
-            for i, d in enumerate(self.mem.documents.arr):
-                self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
-                self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
-                self.tblDocuments.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
-                self.tblDocuments.item(i, 2).setTextAlignment(Qt.AlignHCenter)
-                self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
-                self.tblDocuments.item(i, 3).setTextAlignment(Qt.AlignHCenter)
-                if d.numreads==d.numplanned and d.numplanned>0:
-                    for column in range( 1, 4):
-                        self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
+            self.mem.data.documents_set(self.chkDocumentsExpired.checkState()).updateTablesOnlyNums(self.tblDocuments)
         self.updateStatusBar()
+        
+        
         
     def on_actionTablesUpdate_triggered(self):
         self.updateTables()
         
     def updateTables(self):
-        self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))
+        self.mem.users_set(c2b(self.chkUsersInactive.checkState())).qtablewidget(self.tblUsers)
+        self.mem.users_set(c2b(self.chkUsersInactive.checkState())).qtablewidget(self.tblUsers)
         self.tblGroups_reload()
-        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
+        self.mem.data.groups_set(True).qtablewidget(self.tblGroups)
+        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
         self.updateStatusBar()
-        
-    def tblGroups_reload(self):
-        self.tblGroups.setRowCount(len(self.mem.groups.arr))
-        self.mem.groups.sort()
-        for i, p in enumerate(self.mem.groups.arr):
-            self.tblGroups.setItem(i, 0, QTableWidgetItem(p.name))
-            members=sorted(list(p.members), key=lambda u: u.name)#no se ordene un set se usa members
-            users=""
-            for u in members:
-                users=users+u.name+"\n"
-            self.tblGroups.setItem(i, 1, QTableWidgetItem(users[:-1]))
-        self.tblGroups.clearSelection()    
 
-    def tblUsers_reload(self, inactive=False):
-        self.users=[]
-        for i, u in enumerate(self.mem.users.arr):
-            if (inactive==True and u.active==True) or (inactive==False and u.active==False):
-                continue
-            self.users.append(u)
-        
-        self.tblUsers.setRowCount(len(self.users))
-        self.users=sorted(self.users, key=lambda u: u.name)
-        for i, u in enumerate(self.users):
-            self.tblUsers.setItem(i, 0, qdatetime(u.datetime, self.mem.cfgfile.localzone))
-            if u.post==None:
-                post=""
-            else:
-                post=u.post
-            self.tblUsers.setItem(i, 1, QTableWidgetItem(post))
-            self.tblUsers.setItem(i, 2, QTableWidgetItem(u.name))
-            self.tblUsers.setItem(i, 3, QTableWidgetItem(u.mail))
-            self.tblUsers.setItem(i, 4, QTableWidgetItem(str(u.read)))
-            self.tblUsers.item(i, 4).setTextAlignment(Qt.AlignHCenter)
-            self.tblUsers.setItem(i, 5, QTableWidgetItem(str(u.sent)))
-            self.tblUsers.item(i, 5).setTextAlignment(Qt.AlignHCenter)
-        self.tblUsers.clearSelection()   
-        
     @pyqtSlot()      
     def on_wym_changed(self):
-        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
-        
-    def tblDocuments_reload(self, closed=False):
-        if closed==False:
-            self.listed_documents=self.mem.documents.arr
-        else:
-            closed=SetDocuments(self.mem)
-            closed.load("select * from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
-            self.listed_documents=closed.arr
+        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
 
-#        for i, d in enumerate(self.mem.documents.arr):
-#            if (closed==False and d.closed==True) or (closed==True and d.closed==False):
-#                continue
-#            if closed==True:
-#                if d.datetime.year!=self.wym.year or d.datetime.month!=self.wym.month:
-#                    continue
-#            self.listed_documents.append(d)
-        
-        self.tblDocuments.setRowCount(len(self.listed_documents))
-        for i, d in enumerate(self.listed_documents):
-            self.tblDocuments.setItem(i, 0, qdatetime(d.datetime, self.mem.cfgfile.localzone))
-            self.tblDocuments.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
-            self.tblDocuments.item(i, 1).setTextAlignment(Qt.AlignHCenter)
-            self.tblDocuments.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
-            self.tblDocuments.item(i, 2).setTextAlignment(Qt.AlignHCenter)
-            self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
-            self.tblDocuments.item(i, 3).setTextAlignment(Qt.AlignHCenter)
-            self.tblDocuments.setItem(i, 4, qdatetime(d.expiration, self.mem.cfgfile.localzone))
-            self.tblDocuments.setItem(i, 5, QTableWidgetItem(d.title))
-            if d.numreads==d.numplanned and d.numplanned>0:
-                for column in range( 1, 4):
-                    self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
-
-        self.tblDocuments.setCurrentCell(len(self.listed_documents)-1, 0)                    
-        self.tblDocuments.clearSelection()    
 
     def updateData(self):
         """Parsea el directorio readed y actualizada dotos"""
@@ -415,7 +331,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_actionDocumentNew_triggered(self):
         f=frmDocumentsIBM(self.mem)
         f.exec_()
-        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
+        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
+        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
     
     @pyqtSlot()   
     def on_actionDocumentOpen_triggered(self):        
@@ -456,7 +373,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
            self.trUtf8("Generation time")+": {0}".format(str(now(self.mem.cfgfile.localzone))[:19]) +"</center>"+
            "<h2>"+self.trUtf8("Document data")+"</h2>"+
            self.trUtf8("Created")+": {0}".format(str(selected.datetime)[:19])+ "<p>"+
-           self.trUtf8("Title")+": {0}".format(selected.title) + "<p>"+
+           self.trUtf8("name")+": {0}".format(selected.name) + "<p>"+
            self.trUtf8("Internal id")+": {0}".format(selected.id) + "<p>"+
            self.trUtf8("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, selected.hash, urllib.parse.quote(os.path.basename(selected.filename.lower())), os.path.basename(selected.filename )) +
             self.trUtf8("Comment")+": {0}".format(comment) +"<p>"+
@@ -487,15 +404,15 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_actionDocumentExpire_triggered(self):
         selected=None
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.listed_documents[i.row()]
+            selected=self.mem.data.documents_set(not self.chkDocumentsExpired.checkState()).arr[i.row()]
         if selected.isExpired():
             f=frmDocumentsIBM(self.mem, selected)
             f.exec_()
         else:
             selected.expiration=now(self.mem.cfgfile.localzone)
             selected.save(self.mem)#Update changes expiration
-            self.mem.documents.arr.remove(selected)                     
-        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()) )
+            self.mem.data.documents_active.remove(selected)    
+        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
                 
     @pyqtSlot()   
     def on_actionDocumentDelete_triggered(self):
@@ -508,9 +425,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             selected.delete()#Delete ya lo quita del array self.mem.documents
             self.mem.con.commit()
             #Elimina el documento de self.mem.documents.
-            self.mem.documents.arr.remove(selected)
-
-            self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
+            self.mem.documents.remove(selected)
+            self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
@@ -527,53 +443,44 @@ class frmMain(QMainWindow, Ui_frmMain):#
         selected.delete()#Delete ya lo quita del array self.mem.documents
         self.mem.con.commit()
         if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
-            self.mem.documents.arr.remove(selected)
+            self.mem.documents.remove(selected)
         
-        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
+        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
 
         
     @pyqtSlot()   
     def on_actionGroupEdit_triggered(self):
-        for i in self.tblGroups.selectedItems():#itera por cada item no row.
-            selected=self.mem.groups.arr[i.row()]
-        f=frmGroupsIBM(self.mem, selected)
+        f=frmGroupsIBM(self.mem, self.mem.data.groups.selected)
         f.exec_()
-        self.tblGroups_reload()  
+        self.mem.data.groups.qtablewidget(self.tblGroups)
   
   
     @pyqtSlot()   
     def on_actionGroupNew_triggered(self):
         f=frmGroupsIBM(self.mem, None)
         f.exec_()
-        self.tblGroups_reload()
+        self.mem.data.groups.qtablewidget(self.tblGroups)
 
 
     @pyqtSlot()   
     def on_actionGroupDelete_triggered(self):
-        #Borra el registro de la base de datos
-        for i in self.tblGroups.selectedItems():#itera por cada item no row.
-            selected=self.mem.groups.arr[i.row()]
-            
-        selected.delete(self.mem)
-        
-        
-        self.tblGroups_reload()
+        self.mem.data.groups.selected.delete()
+        self.mem.con.commit()
+        self.mem.data.groups.remove(self.mem.data.groups.selected)
 
     @pyqtSlot()   
     def on_actionUserEdit_triggered(self):
-        for i in self.tblUsers.selectedItems():#itera por cada item no row.
-            selected=self.users[i.row()]
-        f=frmUsersIBM(self.mem, selected)
+        f=frmUsersIBM(self.mem, self.users.selected)
         f.exec_()
-        self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))  
-        self.tblGroups_reload()#Se actualiza grupo 1
+        self.users.qtablewidget(self.tblUsers)
+        self.mem.data.groups.qtablewidget(self.tblGroups)
   
   
     @pyqtSlot()   
     def on_actionUserNew_triggered(self):
         f=frmUsersIBM(self.mem, None)
         f.exec_()
-        self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))
+        self.mem.users_set(c2b(self.chkUsersInactive.checkState())).qtablewidget(self.tblUsers)
         self.tblGroups_reload()#Se actualiza grupo 1
 
     @pyqtSlot()   
@@ -590,14 +497,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
             m.setText(self.trUtf8("You can't delete it, because user is in a group or DidYouReadMe sent him some documents.\nYou can deactivate him."))
             m.exec_()          
             return
-        self.tblUsers_reload(c2b(self.chkUsersInactive.checkState()))
+        self.mem.users_set(c2b(self.chkUsersInactive.checkState())).qtablewidget(self.tblUsers)
         self.tblGroups_reload()#Se actualiza grupo 1
 
     def on_tblDocuments_customContextMenuRequested(self,  pos):
-        selected=None
-        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.listed_documents[i.row()]
-
         menu=QMenu()
         menu.addAction(self.actionDocumentNew)    
         menu.addAction(self.actionDocumentDelete)
@@ -609,23 +512,20 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.addAction(self.actionDocumentOpen)
         menu.addAction(self.actionDocumentReport)
                     
-        
-        
-        if selected ==None:
+        if self.documents.selected==None:
             self.actionDocumentDelete.setEnabled(False)
             self.actionDocumentDeleteAdmin.setEnabled(False)
             self.actionDocumentExpire.setEnabled(False)
             self.actionDocumentReport.setEnabled(False)
             self.actionDocumentOpen.setEnabled(False)
         else:
-            print (selected)
-            if (now(self.mem.cfgfile.localzone)-selected.datetime)>datetime.timedelta(seconds=45):
+            if (now(self.mem.cfgfile.localzone)-self.documents.selected.datetime)>datetime.timedelta(seconds=45):
                 self.actionDocumentDelete.setEnabled(False)
             else:
                 self.actionDocumentDelete.setEnabled(True)
             self.actionDocumentDeleteAdmin.setEnabled(True)
 
-            if selected.isExpired():
+            if self.documents.selected.isExpired():
                 self.actionDocumentExpire.setText(self.tr("Change expiration"))
             else:
                 self.actionDocumentExpire.setText(self.tr("Expire document"))
@@ -635,22 +535,25 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.actionDocumentExpire.setEnabled(True)    
             
         menu.exec_(self.tblDocuments.mapToGlobal(pos))
+
+    def on_tblDocuments_itemSelectionChanged(self):
+        print (self.documents.__class__)
+        self.documents.selected=None
+        for i in self.tblDocuments.selectedItems():
+            if i.column()==0:#only once per row
+                self.documents.selected=self.documents.arr[i.row()]
+#        print (self.documents.selected)
         
     def on_tblGroups_customContextMenuRequested(self,  pos):
-        selected=None
-        for i in self.tblGroups.selectedItems():#itera por cada item no row.
-            selected=self.mem.groups.arr[i.row()]
-
         menu=QMenu()
         menu.addAction(self.actionGroupNew)    
         menu.addAction(self.actionGroupEdit)    
         menu.addAction(self.actionGroupDelete)
-        if selected ==None:
+        if self.mem.data.groups.selected==None:
             self.actionGroupDelete.setEnabled(False)
             self.actionGroupEdit.setEnabled(False)
         else:
-            print (selected)
-            if selected.id==1:# Todos los activos
+            if self.mem.data.groups.selected.id==1:# Todos los activos
                 self.actionGroupDelete.setEnabled(False)   
                 self.actionGroupEdit.setEnabled(False)           
             else:
@@ -659,16 +562,19 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.exec_(self.tblGroups.mapToGlobal(pos))
         
         
-    def on_tblUsers_customContextMenuRequested(self,  pos):
-        selected=None
-        for i in self.tblUsers.selectedItems():#itera por cada item no row.
-            selected=self.users[i.row()]
+    def on_tblGroups_itemSelectionChanged(self):
+        self.mem.data.groups.selected=None
+        for i in self.tblGroups.selectedItems():
+            if i.column()==0:#only once per row
+                self.mem.data.groups.selected=self.mem.data.groups.arr[i.row()]
+#        print (self.mem.data.groups.selected)
 
+    def on_tblUsers_customContextMenuRequested(self,  pos):
         menu=QMenu()
         menu.addAction(self.actionUserNew)    
         menu.addAction(self.actionUserEdit)
         menu.addAction(self.actionUserDelete)
-        if selected ==None:
+        if self.users.selected==None:
             self.actionUserDelete.setEnabled(False)
             self.actionUserEdit.setEnabled(False)
         else:
@@ -702,16 +608,16 @@ class frmMain(QMainWindow, Ui_frmMain):#
         m.setText(s[:-1])
         m.exec_()           
         
+    def on_tblUsers_itemSelectionChanged(self):
+        self.users.selected=None
+        for i in self.tblUsers.selectedItems():
+            if i.column()==0:#only once per row
+                self.users.selected=self.users.arr[i.row()]
+#        print (self.users.selected)
+        
     def on_tblDocuments_cellDoubleClicked(self, row, column):
-        selected=None
-        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.listed_documents[i.row()]
-            
-        if selected==None:
+        if self.documents.selected==None:
             return
-        
-        
-            
             
         cur=self.mem.con.cursor()     
         cur.execute("select id_users from userdocuments where id_documents=%s and sent is not null and read is null;", (selected.id, ))
@@ -721,7 +627,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             if reply == QMessageBox.Yes:
                 selected.closed=True
                 selected.save(self.mem)
-                self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
+                self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
                 cur.close()
             return
                 
@@ -742,15 +648,20 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
     def on_chkUsersInactive_stateChanged(self, state):
         if state==Qt.Unchecked:
-            self.tblUsers_reload(False)
+            self.users=self.mem.data.users_active
         else:
-            self.tblUsers_reload(True)
+            self.users=self.mem.data.users_inactive
+        self.users.qtablewidget(self.tblUsers)
         
     def on_chkDocumentsExpired_stateChanged(self, state):
-        if state==Qt.Unchecked:
-            self.tblDocuments_reload(False)
+        if state==Qt.Unchecked:        
+            self.documents=self.mem.data.documents_active
+            self.documents.qtablewidget(self.tblDocuments)
             self.wym.hide()
         else:
-            self.tblDocuments_reload(True)
+            self.mem.data.documents_inactive=SetDocuments(self.mem)
+            self.mem.data.documents_inactive.load("select * from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
+            self.documents=self.mem.data.documents_inactive
+            self.documents.qtablewidget(self.tblDocuments)
             self.wym.show()
             

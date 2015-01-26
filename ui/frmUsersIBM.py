@@ -11,16 +11,19 @@ class frmUsersIBM(QDialog, Ui_frmUsersIBM):
         
         if user==None:   
             self.lbl.setText(self.trUtf8("Add a new user"))
-            self.user=User(None, None, None, None, True)
+            self.user=User(self.mem, None, None, None, None, True)
             self.setWindowTitle(self.trUtf8("New user"))
             self.chkActive.setEnabled(False)
+            self.type=1#New
         else:
             self.user=user
+            self.was_active=self.user.active
             self.setWindowTitle(self.trUtf8("Edit user"))
             self.txtName.setText(self.user.name)
             self.txtPost.setText(self.user.post)
             self.txtMail.setText(self.user.mail)
             self.chkActive.setCheckState(b2c(self.user.active))
+            self.type=2#Edit
 
         
     def on_buttonBox_accepted(self):
@@ -29,11 +32,22 @@ class frmUsersIBM(QDialog, Ui_frmUsersIBM):
         self.user.name=self.txtName.text()
         self.user.mail=self.txtMail.text()
         self.user.active=c2b(self.chkActive.checkState())
-        self.user.save(self.mem)
-        if self.user.active==False:
-            self.mem.groups.quit_user_from_all_groups(self.user)
-        else:#usuario activo
-            self.mem.groups.group(1).members.add(self.user)
+        self.user.save()
+        if type==1:#new
+            self.mem.data.users_active.append(self.user)
+            self.mem.groups.group(1).members.append(self.user)#Añade el usuario al grupo uno. el de todos
+        else:#edit
+            if self.was_active==True:
+                if self.user.active==False:#Cambia
+                    self.mem.data.users_active.remove(self.user)
+                    self.mem.data.users_inactive.append(self.user)  
+                    self.mem.data.groups.quit_user_from_all_groups(self.user)
+            else:#Cambia de inactivo a activo
+                if self.user.active==True:#Cambia
+                    self.mem.data.users_active.append(self.user)
+                    self.mem.data.users_inactive.remove(self.user)
+                    self.mem.groups.group(1).members.append(self.user)#Añade el usuario al grupo uno. el de todos     
+        self.mem.con.commit()
         self.accept()
         
     def on_buttonBox_rejected(self):

@@ -110,36 +110,6 @@
             <attribute name="verticalHeaderVisible">
              <bool>false</bool>
             </attribute>
-            <column>
-             <property name="text">
-              <string>Start date</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Post</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Full Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Mail</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Read</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Sent</string>
-             </property>
-            </column>
            </widget>
           </item>
          </layout>

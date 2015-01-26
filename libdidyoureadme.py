@@ -14,106 +14,6 @@ class Backup:
         pass
     def save(self):
         pass
-
-class SetGroups:
-    def __init__(self, mem):
-        self.arr=[]
-        self.mem=mem
-        
-    def quit_user_from_all_groups(self, user):
-        """Se quita un usuario de todos los grupos tanto l´ogicamente como f´isicamente"""
-        
-        todelete=None#Se usa para no borrar en iteracion
-        for g in self.arr:
-            for u in g.members:
-                if u==user:
-                    todelete=u
-            if todelete!=None:
-                g.members.remove(user)
-                g.save(self.mem)# Para no grabar en bd salvoi que encuente se pone aqu´i
-                    
-   
-    def load(self):
-        cur=self.mem.con.cursor()
-        cur.execute("select * from groups order by name")
-        for row in cur:
-            members=set()
-            if row['id']==1:#Caso de todos
-                for u in self.mem.users.arr:
-                    if u.active==True:#Only active
-                        members.add(u)
-            else:
-                for id_user in row['members']:
-                    u=self.mem.users.user(id_user)
-                    if u.active==True:
-                        members.add(u)
-            self.arr.append( Group(row['name'], members, row['id']))        
-        cur.close()
-    
-    def group(self, id):
-        for p in self.arr:
-            if p.id==id:
-                return p
-        return None
-
-        
-    def qlistview(self, list, selected):
-        """selected lista de group a seleccionar"""
-        self.sort()
-        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
-        for i,  g in enumerate(self.arr):
-            item = QStandardItem(g.name)
-            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
-            if g in selected:
-                item.setData(Qt.Checked, Qt.CheckStateRole)
-            else:
-                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
-            item.setData(g.id, Qt.UserRole) # Para el role usuario
-            model.setItem(i, 0, item);
-        list.setModel(model)
-        
-    def sort(self):
-        self.arr=sorted(self.arr, key=lambda g: g.name)
-        
-class Group:
-    def __init__(self,  name, members,  id=None):
-        """members es un array a objetos User"""
-        self.id=id
-        self.members=members
-        self.name=name
-        
-    def delete(self, mem):
-        #Borra de la base de datos
-        cur=mem.con.cursor()
-        cur.execute("delete from groups where id=%s", (self.id, ))
-        #Borra el grupo de self.mem.groups
-        mem.con.commit()
-        cur.close()
-        mem.groups.arr.remove(self)
-        
-    def save(self, mem):
-        def members2pg():
-            if len(self.members)==0:
-                return "'{}'"
-            resultado=""
-            for m in self.members:
-                resultado=resultado + str(m.id)+", "
-            return "ARRAY["+resultado[:-2]+"]"
-            
-        cur=mem.con.cursor()
-        if self.id==None:
-            #Crea registro en base de datos
-            cur.execute("insert into groups (name,members) values(%s, "+members2pg() +") returning id", (self.name, ))
-            self.id=cur.fetchone()[0]
-            #Añade a self.mem.groups
-            mem.groups.arr.append(self)
-
-        else:
-            #Modifica registro en base de datos
-            cur.execute("update groups set name=%s, members="+members2pg()+" where id=%s",(self.name, self.id ))
-        mem.con.commit()
-        cur.close()
-            
             
         
 class SetCommons:
@@ -225,6 +125,105 @@ class SetCommons:
             if resultado.find(p.id, False)==None:
                 resultado.append(p)
         return resultado
+class SetGroups(SetCommons):
+    def __init__(self, mem):
+        SetCommons.__init__(self)
+        self.mem=mem
+        
+    def quit_user_from_all_groups(self, user):
+        """Se quita un usuario de todos los grupos tanto l´ogicamente como f´isicamente"""
+        
+        todelete=None#Se usa para no borrar en iteracion
+        for g in self.arr:
+            for u in g.members.arr:
+                if u.id==user.id:
+                    todelete=u
+            if todelete!=None:
+                g.members.remove(user)
+                g.save()# Para no grabar en bd salvoi que encuente se pone aqu´i
+                    
+           
+    def qtablewidget(self, table):
+        """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
+        Devuelve sumatorios"""
+        table.setColumnCount(2)
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Name", None, QApplication.UnicodeUTF8)))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Users", None, QApplication.UnicodeUTF8)))    
+        table.clearContents()
+        table.setRowCount(len(self.arr))
+        for i, p in enumerate(self.arr):
+            table.setItem(i, 0, QTableWidgetItem(p.name))
+            table.setItem(i, 1, QTableWidgetItem(p.members.string_of_names()))
+        table.clearSelection()    
+
+    def load(self, sql):
+        cur=self.mem.con.cursor()
+        cur.execute(sql)
+        for row in cur:
+            members=SetUsers(self.mem)
+            if row['id']==1:#Caso de todos
+                for u in self.mem.data.users_active.arr:
+                    members.append(u)
+            else:
+                for id_user in row['members']:
+                    u=self.mem.data.users_all().find(id_user)
+                    if u.active==True:
+                        members.append(u)
+            self.append( Group(self.mem, row['name'], members, row['id']))        
+        cur.close()
+
+
+        
+    def qlistview(self, list, selected):
+        """selected lista de group a seleccionar"""
+        self.order_by_name()
+        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
+        for i,  g in enumerate(self.arr):
+            item = QStandardItem(g.name)
+            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
+            if g in selected:
+                item.setData(Qt.Checked, Qt.CheckStateRole)
+            else:
+                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
+            item.setData(g.id, Qt.UserRole) # Para el role usuario
+            model.setItem(i, 0, item);
+        list.setModel(model)
+        
+        
+class Group:
+    def __init__(self, mem,   name, members,  id=None):
+        """members es un SetUsers"""
+        self.members=members
+        self.name=name
+        self.id=id
+        self.mem=mem
+        
+    def delete(self):
+        #Borra de la base de datos
+        cur=self.mem.con.cursor()
+        cur.execute("delete from groups where id=%s", (self.id, ))
+        cur.close()
+        
+    def save(self):
+        def members2pg():
+            if self.members.length()==0:
+                return "'{}'"
+            resultado=""
+            for m in self.members.arr:
+                resultado=resultado + str(m.id)+", "
+            return "ARRAY["+resultado[:-2]+"]"
+            
+        cur=self.mem.con.cursor()
+        if self.id==None:
+            #Crea registro en base de datos
+            cur.execute("insert into groups (name,members) values(%s, "+members2pg() +") returning id", (self.name, ))
+            self.id=cur.fetchone()[0]
+        else:
+            #Modifica registro en base de datos
+            cur.execute("update groups set name=%s, members="+members2pg()+" where id=%s",(self.name, self.id ))
+        cur.close()
+            
+
         
 class SetLanguages(SetCommons):
     def __init__(self, mem):
@@ -261,18 +260,12 @@ class SetLanguages(SetCommons):
 #        cfgfile.qtranslator.load("didyoureadme_" + cfgfile.language + ".qm")
 #    qApp.installTranslator(cfgfile.qtranslator);
         
-class SetUsers:
+class SetUsers(SetCommons):
     def __init__(self, mem):
-        self.arr=[]
+        SetCommons.__init__(self)
         self.mem=mem
     
 
-    def user(self, id):
-        for u in self.arr:
-            if u.id==id:
-                return u
-        print ("User not found")
-        return None
     def user_from_hash(self, hash):
         for u in self.arr:
             if u.hash==hash:
@@ -280,41 +273,87 @@ class SetUsers:
         print ("User not found")
         return None
         
-    def load(self):
+    def load(self, sql):
         cur=self.mem.con.cursor()
-        cur.execute("select * from users")
+        cur.execute(sql)
         for row in cur:
-            self.arr.append(User(row['datetime'],  row['post'], row['name'], row['mail'], row['active'], row['hash'],  row['id']))
+            self.append(User(self.mem, row['datetime'],  row['post'], row['name'], row['mail'], row['active'], row['hash'],  row['id']))
         cur.close()
             
+            
+    def string_of_names(self):
+        "String of names sorted"
+        self.order_by_name()
+        users=""
+        for u in self.arr:
+            users=users+u.name+"\n"
+        return users[:-1]
+        
 
     
     def qlistview(self, list, inactivos, selected):
         """inactivos si muestra inactivos
         selected lista de user a seleccionar"""
-        self.sort()
+        self.order_by_name()
         model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
         for i,  u in enumerate(self.arr):
             if inactivos==False and u.active==False:
                 continue
             item = QStandardItem(u.name)
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
-            if u in selected:
+            if u in selected.arr:
                 item.setData(Qt.Checked, Qt.CheckStateRole)
             else:
                 item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
             item.setData(u.id, Qt.UserRole) # Para el role usuario
             model.setItem(i, 0, item);
         list.setModel(model)
+           
+    def qtablewidget(self, table):
+        """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
+        Devuelve sumatorios"""
+        table.setColumnCount(6)
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Start date", None, QApplication.UnicodeUTF8)))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Post", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("Core", "Full name", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("Core", "Mail", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("Core", "Read", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("Core", "Sent", None, QApplication.UnicodeUTF8)))    
+        table.clearContents()
+        table.setRowCount(len(self.arr))
+        for i, u in enumerate(self.arr):
+            table.setItem(i, 0, qdatetime(u.datetime, self.mem.cfgfile.localzone))
+            if u.post==None:
+                post=""
+            else:
+                post=u.post
+            table.setItem(i, 1, QTableWidgetItem(post))
+            table.setItem(i, 2, QTableWidgetItem(u.name))
+            table.setItem(i, 3, QTableWidgetItem(u.mail))
+            table.setItem(i, 4, QTableWidgetItem(str(u.read)))
+            table.item(i, 4).setTextAlignment(Qt.AlignHCenter)
+            table.setItem(i, 5, QTableWidgetItem(str(u.sent)))
+            table.item(i, 5).setTextAlignment(Qt.AlignHCenter)
+        table.clearSelection()    
         
-    def sort(self):
-        self.arr=sorted(self.arr, key=lambda u: u.name)
+#        for i, u in enumerate(self.mem.users.arr):
+#            if (inactive==True and u.active==True) or (inactive==False and u.active==False):
+#                continue
+#            self.users.append(u)
+        
 
+    def updateTablesOnlyNums(self, table):
+        for i, u in enumerate(self.arr):
+            table.setItem(i, 4, QTableWidgetItem(str(u.read)))
+            table.item(i, 4).setTextAlignment(Qt.AlignHCenter)
+            table.setItem(i, 5, QTableWidgetItem(str(u.sent)))
+            table.item(i, 5).setTextAlignment(Qt.AlignHCenter)
 class User:
-    def __init__(self, dt, post, name, mail, active=True, hash="hash no calculado",  id=None):
+    def __init__(self, mem,  dt, post, name, mail, active=True, hash="hash no calculado",  id=None):
+        self.mem=mem
         self.id=id
-        self.datetime=dt#incorporation date
         self.name=name
+        self.datetime=dt#incorporation date
         self.mail=mail
         self.hash=hash
         self.post=post
@@ -344,7 +383,7 @@ class User:
         #Borra el grupo de self.mem.users
         mem.con.commit()
         cur.close()
-        mem.users.arr.remove(self)
+        mem.users.remove(self)
         mem.groups.group(1).members.remove(self)#Añade el usuario al grupo uno. el de todos
         
     def getHash(self):
@@ -352,8 +391,8 @@ class User:
             return None
         return hashlib.sha256(("u."+str(self.id)+str(self.datetime)).encode('utf-8')).hexdigest()
     
-    def save(self, mem):
-        cur=mem.con.cursor()        
+    def save(self):
+        cur=self.mem.con.cursor()        
         if self.id==None:
             cur.execute("insert into users (datetime,post,name,mail, hash, active) values(%s,%s,%s,%s,%s, %s) returning id ", (self.datetime, self.post, self.name, self.mail, self.hash, self.active))
             self.id=cur.fetchone()[0]
@@ -361,11 +400,8 @@ class User:
             self.sent=0
             self.read=0
             cur.execute("update users set hash=%s where id=%s", (self.hash, self.id))
-            mem.users.arr.append(self)
-            mem.groups.group(1).members.append(self)#Añade el usuario al grupo uno. el de todos
         else:
             cur.execute("update users set datetime=%s, post=%s, name=%s, mail=%s, active=%s where id=%s", (self.datetime, self.post, self.name, self.mail,  self.active, self.id))
-        mem.con.commit()
         cur.close()
 
     def updateSent(self, cur):
@@ -403,12 +439,12 @@ class TUpdateData(threading.Thread):
                 os.remove(dirReaded+file)
             
         #Actualiza users
-        for u in self.mem.users.arr:
+        for u in self.mem.data.users_active.arr:
             u.updateSent(cur)
             u.updateRead(cur)
             
         #Consulta
-        for i, d in enumerate(self.mem.documents.arr):
+        for i, d in enumerate(self.mem.data.documents_active.arr):
             if d.isExpired()==False:
                 d.updateNums(cur)            
         cur.close()  
@@ -428,8 +464,8 @@ class TSend(threading.Thread):
         #5 minutos delay
         cur.execute("select id_documents, id_users from userdocuments, documents where userdocuments.id_documents=documents.id and sent is null and now() > datetime + interval '1 minute';")
         for row in cur:
-            doc=self.mem.documents.document(row['id_documents'])
-            u=self.mem.users.user(row['id_users'])
+            doc=self.mem.data.documents_active.find(row['id_documents'])
+            u=self.mem.data.users_active.find(row['id_users'])
             mail=Mail(doc, u, self.mem)
             mail.send()
             
@@ -468,7 +504,7 @@ class Mail:
         self.document=document
         self.sender=""
         self.receiver=user.mail
-        self.title=document.title
+        self.name=document.name
         self.sent=None
 
 
@@ -526,7 +562,7 @@ class Mail:
         s= ("From: "+self.mem.cfgfile.smtpfrom+"\n"+
         "To: "+self.user.mail+"\n"+
         "MIME-Version: 1.0\n"+
-        "Subject: "+ self.document.title+"\n"+
+        "Subject: "+ self.document.name+"\n"+
         "Date: " + weekday(noww)+", " + str(noww.strftime("%d"))+" "+ month(noww)+" "+ str(noww.strftime("%Y %X %z")) +"\n"+
         "Content-Type: text/plain; charset=UTF-8\n" +
         "\n"+
@@ -608,9 +644,9 @@ class SetCountries(SetCommons):
         if country!=None:
                 combo.setCurrentIndex(combo.findData(country.id))
 
-class SetDocuments:
+class SetDocuments(SetCommons):
     def __init__(self, mem):
-        self.arr=[]
+        SetCommons.__init__(self)
         self.mem=mem #solo se usa para conexion, los datos se guardan en arr
                 
     def load(self, sql):
@@ -619,21 +655,61 @@ class SetDocuments:
         cur.execute(sql)
         for row in cur:
             d=Document(self.mem, row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'], row['file'],  row['hash'], row['id']  )
-            self.arr.append(d)        
+            self.append(d)        
         for d in self.arr:
             d.updateNums(cur)
         cur.close()
-        
-    def sort(self):
+    def qtablewidget(self, table):
+        """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
+        Devuelve sumatorios"""
+        table.setColumnCount(6)
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Datetime", None, QApplication.UnicodeUTF8)))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Planned", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("Core", "Sent", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("Core", "Read", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("Core", "Expiration", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("Core", "Title", None, QApplication.UnicodeUTF8)))    
+        table.clearContents()
+        table.setRowCount(len(self.arr))
+        for i, d in enumerate(self.arr):
+            table.setItem(i, 0, qdatetime(d.datetime, self.mem.cfgfile.localzone))
+            table.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
+            table.item(i, 1).setTextAlignment(Qt.AlignHCenter)
+            table.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
+            table.item(i, 2).setTextAlignment(Qt.AlignHCenter)
+            table.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
+            table.item(i, 3).setTextAlignment(Qt.AlignHCenter)
+            table.setItem(i, 4, qdatetime(d.expiration, self.mem.cfgfile.localzone))
+            table.setItem(i, 5, QTableWidgetItem(d.name))
+            if d.numreads==d.numplanned and d.numplanned>0:
+                for column in range( 1, 4):
+                    table.item(i, column).setBackgroundColor(QColor(198, 205, 255))
+
+        table.setCurrentCell(len(self.arr)-1, 0)       
+        table.clearSelection()    
+
+    def updateTablesOnlyNums(self, table):
+            for i, d in enumerate(self.arr):
+                table.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
+                table.item(i, 1).setTextAlignment(Qt.AlignHCenter)
+                table.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
+                table.item(i, 2).setTextAlignment(Qt.AlignHCenter)
+                table.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
+                table.item(i, 3).setTextAlignment(Qt.AlignHCenter)
+                if d.numreads==d.numplanned and d.numplanned>0:
+                    for column in range( 1, 4):
+                        table.item(i, column).setBackgroundColor(QColor(198, 205, 255))
+       
+    def order_by_datetime(self):
         """Ordena por datetime"""
         self.arr=sorted(self.arr, key=lambda d: d.datetime)        
             
-    def document(self, id):
-        for d in self.arr:
-            if d.id==id:
-                return d
-        return None
-        print ("Document not found")
+#    def document(self, id):
+#        for d in self.arr:
+#            if d.id==id:
+#                return d
+#        return None
+#        print ("Document not found")
         
     def document_from_hash(self, hash):
         for d in self.arr:
@@ -694,13 +770,51 @@ class Country:
         else:
             return QPixmap(":/star.gif")
             
+        
+class DBData:
+    def __init__(self, mem):
+        self.mem=mem
+
+
+    def load(self):
+        inicio=datetime.datetime.now()
+        self.users_active=SetUsers(self.mem)
+        self.users_active.load("select * from users where active=true")
+        self.users_inactive=SetUsers(self.mem)
+        self.users_inactive.load("select * from users where active=false")    
+        self.groups=SetGroups(self.mem)
+        self.groups.load( "select * from groups order by name")
+        self.documents_active=SetDocuments(self.mem)
+        self.documents_active.load("select * from documents where expiration>now() order by datetime")
+        self.documents_inactive=SetDocuments(self.mem)#Carga solo los de un mes y un año.
+        print("Cargando dbdata",  datetime.datetime.now()-inicio)
+        
+
+        
+    def users_all(self):
+        return self.users_active.union(self.users_inactive, self.mem)
+            
+    def users_set(self, active):
+        """Function to point to list if is active or not"""
+        if active==True:
+            return self.users_active
+        else:
+            return self.users_inactive    
+    def documents_set(self, active):
+        """Function to point to list if is active or not"""
+        if active==True:
+            return self.documents_active
+        else:
+            return self.documents_inactive    
+    
+
 
 class Document:
-    def __init__(self, mem,  dt, title, filename, comment, expiration, oid=None,   hash='Not calculated',  id=None):
+    def __init__(self, mem,  dt, name, filename, comment, expiration, oid=None,   hash='Not calculated',  id=None):
         self.mem=mem
         self.id=id
         self.datetime=dt
-        self.title=title
+        self.name=name
         self.filename=filename
         self.comment=comment
         self.hash=hash
@@ -711,7 +825,7 @@ class Document:
         self.oid=None
         
     def __repr__(self):
-        return "{0} ({1})".format(self.title, self.id)
+        return "{0} ({1})".format(self.name, self.id)
         
     def isExpired(self):
         if self.expiration>now(self.mem.cfgfile.localzone):
@@ -744,7 +858,7 @@ class Document:
         Si hubiera necesidad de modificar ser´ia borrar y crear"""
         cur=mem.con.cursor()        
         if self.id==None:
-            cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id, file", (self.datetime, self.title, self.comment, self.filename, self.hash,  self.expiration))
+            cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id, file", (self.datetime, self.name, self.comment, self.filename, self.hash,  self.expiration))
             self.id=cur.fetchone()[0]
             self.hash=self.getHash()
             shutil.copyfile(self.filename, "/tmp/"+self.hash)#Copia a /tmp (permisos postgres)
@@ -902,6 +1016,7 @@ class Mem:
         self.countries.load_all()
         self.languages=SetLanguages(self)
         self.languages.load_all()
+        self.data=DBData(self)
         
     def __del__(self):
         if self.con:#Needed when reject frmAccess
@@ -937,13 +1052,7 @@ class Mem:
         print (resultado,  "check_admin_mode")
         return resultado
         
-    def cargar_datos(self):       
-        self.users=SetUsers(self)     
-        self.users.load() 
-        self.groups=SetGroups(self)
-        self.groups.load()
-        self.documents=SetDocuments(self) #Son documentos activos
-        self.documents.load("select * from documents where expiration>now() order by datetime")
+
 
     def connect(self):
         strmq="dbname='%s' port='%s' user='%s' host='%s' password='%s'" % (self.cfgfile.database,  self.cfgfile.port, self.cfgfile.user, self.cfgfile.server,  self.cfgfile.pwd)
