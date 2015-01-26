@@ -45,7 +45,7 @@ if mem.cfgfile.error==True:
     m.exec_()      
 
 if "admin" in sys.argv:
-    mem.adminmode=True
+    mem.adminmodeinparameters=True
     
 frmMain = frmMain(mem) 
 

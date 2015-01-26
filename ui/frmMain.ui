@@ -262,7 +262,7 @@
      <x>0</x>
      <y>0</y>
      <width>699</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAyuda">
@@ -545,6 +545,18 @@
    </property>
    <property name="toolTip">
     <string>System Backup</string>
+   </property>
+  </action>
+  <action name="actionDocumentDeleteAdmin">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/admin.png</normaloff>:/admin.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete document by administrator</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete document by administrator</string>
    </property>
   </action>
  </widget>

@@ -83,12 +83,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
         
         ##Admin mode
-        if self.mem.adminmode:
+        if self.mem.adminmodeinparameters:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
             input=QInputDialog.getText(self,  "DidYouReadMe",  self.tr("Please introduce Admin Mode password"), QLineEdit.Password)
+            res=self.mem.check_admin_mode(input[0])
             if input[1]==True:
-                res=self.mem.check_admin_mode(input[0])
                 if res==None:
                     self.setWindowTitle(self.trUtf8("DidYouReadMe 2010-{0} © (Admin mode)").format(version_date.year))
                     self.setWindowIcon(self.mem.qicon_admin())
@@ -99,13 +99,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
                     m.exec_()
                     sys.exit(2)
                 elif res==True:
+                    self.mem.adminmode=True
                     self.setWindowTitle(self.trUtf8("Xulpymoney 2010-{0} © (Admin mode)").format(version_date.year))
                     self.setWindowIcon(self.mem.qicon_admin())
                     self.update()
                     m.setText(self.trUtf8("You are logged as an administrator"))
                     m.exec_()   
-                elif res==False:
-                    self.adminmode=False        
+            if input[1]==False or res==False:     
                     m.setText(self.trUtf8("Bad 'Admin mode' password. You are logged as a normal user"))
                     m.exec_()   
 
@@ -505,13 +505,32 @@ class frmMain(QMainWindow, Ui_frmMain):#
         for i in self.tblDocuments.selectedItems():#itera por cada item no row.
             selected=self.listed_documents[i.row()]
         if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
-            selected.delete(self.mem)#Delete ya lo quita del array self.mem.documents
+            selected.delete()#Delete ya lo quita del array self.mem.documents
+            self.mem.con.commit()
+            #Elimina el documento de self.mem.documents.
+            self.mem.documents.arr.remove(selected)
+
             self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
             m.setText(self.trUtf8("You can't delete an expired document"))
-            m.exec_()   
+            m.exec_()                   
+            
+    @pyqtSlot()   
+    def on_actionDocumentDeleteAdmin_triggered(self):
+        """Deletes everything"""
+        #Borra el registro de base de datosv
+        selected=None
+        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
+            selected=self.listed_documents[i.row()]
+        selected.delete()#Delete ya lo quita del array self.mem.documents
+        self.mem.con.commit()
+        if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
+            self.mem.documents.arr.remove(selected)
+        
+        self.tblDocuments_reload(c2b(self.chkDocumentsExpired.checkState()))
+
         
     @pyqtSlot()   
     def on_actionGroupEdit_triggered(self):
@@ -582,6 +601,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu=QMenu()
         menu.addAction(self.actionDocumentNew)    
         menu.addAction(self.actionDocumentDelete)
+        if self.mem.adminmode==True:
+            menu.addAction(self.actionDocumentDeleteAdmin)
         menu.addSeparator()
         menu.addAction(self.actionDocumentExpire)
         menu.addSeparator()
@@ -592,6 +613,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         if selected ==None:
             self.actionDocumentDelete.setEnabled(False)
+            self.actionDocumentDeleteAdmin.setEnabled(False)
             self.actionDocumentExpire.setEnabled(False)
             self.actionDocumentReport.setEnabled(False)
             self.actionDocumentOpen.setEnabled(False)
@@ -601,6 +623,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 self.actionDocumentDelete.setEnabled(False)
             else:
                 self.actionDocumentDelete.setEnabled(True)
+            self.actionDocumentDeleteAdmin.setEnabled(True)
 
             if selected.isExpired():
                 self.actionDocumentExpire.setText(self.tr("Change expiration"))

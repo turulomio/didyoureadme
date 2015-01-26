@@ -618,7 +618,7 @@ class SetDocuments:
         cur=self.mem.con.cursor()
         cur.execute(sql)
         for row in cur:
-            d=Document(self.mem, row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'],  row['hash'], row['id']  )
+            d=Document(self.mem, row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'], row['file'],  row['hash'], row['id']  )
             self.arr.append(d)        
         for d in self.arr:
             d.updateNums(cur)
@@ -696,7 +696,7 @@ class Country:
             
 
 class Document:
-    def __init__(self, mem,  dt, title, filename, comment, expiration,  hash='Not calculated',  id=None):
+    def __init__(self, mem,  dt, title, filename, comment, expiration, oid=None,   hash='Not calculated',  id=None):
         self.mem=mem
         self.id=id
         self.datetime=dt
@@ -708,6 +708,7 @@ class Document:
         self.numsents=0
         self.numplanned=0
         self.expiration=expiration
+        self.oid=None
         
     def __repr__(self):
         return "{0} ({1})".format(self.title, self.id)
@@ -722,46 +723,19 @@ class Document:
         return hashlib.sha256(("d."+str(self.id)+str(self.datetime)).encode('utf-8')).hexdigest()
 
 
-    def delete(self, mem):
+    def delete(self):
         #Borra el registro de base de datosv
-        cur=mem.con.cursor()
+        cur=self.mem.con.cursor()
+        cur.execute("select lo_unlink(%s)", (self.oid, ))
         cur.execute("delete from documents where id=%s", (self.id, ))        
         cur.close()
         
         #Borra el fichero de readed
-        os.unlink(dirDocs+self.hash)
+        try:
+            os.unlink(dirDocs+self.hash)
+        except:
+            print ("Error deleting {}".format(dirDocs+self.hash))
         
-        #Elimina el documento de self.mem.documents.
-        mem.documents.arr.remove(self)
-        
-        
-        
-#        def delete(self):
-#                cur=self.mem.con.cursor()
-#                sqllo0="select lo_unlink("+str(self.foto)+");"
-#                cur.execute(sqllo0)
-#                sqldel="delete from films where id_films=" + str(self.id) + ";"
-#                cur.execute(sqldel)
-#                cur.close()
-#
-#        def extract_foto(self):
-#                """Extracts and assign self.pathfoto"""
-#                self.pathfoto='/tmp/pdffilms/{0}.jpg'.format(self.foto)
-#                cur=self.mem.con.cursor()
-#                sql="select lo_export({0}, '{1}');".format(self.foto,self.pathfoto)
-#                cur.execute(sql)
-#                cur.close()
-#
-#        def save(self):
-#                if self.id==None:
-#                        if self.year==None:
-#                                name=self.name
-#                        else:
-#                                name="{}. {}".format(self.name,self.year)
-#                        cur.execute("insert into films (savedate, name, foto, id_dvd) values (%s, %s, lo_import(%s), %s) returning id_films;",(self.savedate,name,self.pathfoto, self.id_dvd))
-#                        self.id=cur.fetchone()[0]
-#                        return True
-
         
         
     def save(self, mem):
@@ -770,11 +744,13 @@ class Document:
         Si hubiera necesidad de modificar ser´ia borrar y crear"""
         cur=mem.con.cursor()        
         if self.id==None:
-            cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id", (self.datetime, self.title, self.comment, self.filename, self.hash,  self.expiration))
+            cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id, file", (self.datetime, self.title, self.comment, self.filename, self.hash,  self.expiration))
             self.id=cur.fetchone()[0]
             self.hash=self.getHash()
             shutil.copyfile(self.filename, "/tmp/"+self.hash)#Copia a /tmp (permisos postgres)
-            cur.execute("update documents set hash=%s,file=lo_import(%s) where id=%s", (self.hash, "/tmp/"+self.hash,  self.id))
+            cur.execute("update documents set hash=%s where id=%s", (self.hash,  self.id))
+            cur.execute("update documents set file=lo_import(%s) where id=%s returning file", ("/tmp/"+self.hash,  self.id))
+            self.oid=cur.fetchone()[0]
             os.system("mv {} {}".format("/tmp/" +self.hash, dirDocs+self.hash))
         else:
             cur.execute("update documents set expiration=%s where id=%s", (self.expiration, self.id ))
@@ -915,7 +891,8 @@ class ConfigFile:
 class Mem:
     def __init__(self):     
         self.con=None
-        self.adminmode=False
+        self.adminmodeinparameters=False
+        self.adminmode=False#Autenticated adminmode
         self.cfgfile=ConfigFile(os.path.expanduser("~/.didyoureadme/")+ "didyoureadme.cfg")
         self.cfgfile.save()
         self.pathlogmail=os.path.expanduser("~/.didyoureadme/mail.log")
