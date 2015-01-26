@@ -1,4 +1,5 @@
-SOURCES         = libdidyoureadme.py \
+SOURCES         = libdbupdates.py \
+                  libdidyoureadme.py \
                   didyoureadme.py \
                   ui/frmMain.py \
                   ui/Ui_frmMain.py \

@@ -1,5 +1,6 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import datetime
 from Ui_wdgYearMonth import *
 
 class wdgYearMonth(QWidget, Ui_wdgYearMonth):
@@ -9,7 +10,13 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
         
         
     def initiate(self, firstyear,  lastyear, currentyear, currentmonth):
-        """Debe ser la primera funci´on despu´es del constructor"""
+        """Debe ser la primera función después del constructor"""
+        if firstyear==None:
+            self.setEnabled(False)
+            print (function_name(self), "Firstyear is None")
+            return
+        
+        
         self.firstyear=firstyear
         self.lastyear=lastyear
         for year in range(firstyear, lastyear+1):
@@ -59,4 +66,10 @@ class wdgYearMonth(QWidget, Ui_wdgYearMonth):
         else:
             self.month=self.month-1
         self.set(self.year, self.month)
+        
+    @pyqtSlot()      
+    def on_cmdCurrent_pressed(self):
+        self.set(datetime.date.today().year, datetime.date.today().month)
+        
+        
 

@@ -6,12 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>616</width>
-    <height>33</height>
+    <width>673</width>
+    <height>38</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -25,6 +22,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="cmdPrevious">
+       <property name="toolTip">
+        <string>Previous month</string>
+       </property>
        <property name="text">
         <string>&lt;</string>
        </property>
@@ -32,6 +32,9 @@
      </item>
      <item>
       <widget class="QComboBox" name="cmbMonth">
+       <property name="toolTip">
+        <string>Select a month</string>
+       </property>
        <item>
         <property name="text">
          <string>January</string>
@@ -95,12 +98,36 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cmbYear"/>
+      <widget class="QComboBox" name="cmbYear">
+       <property name="toolTip">
+        <string>Select a year</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="cmdNext">
+       <property name="toolTip">
+        <string>Next month</string>
+       </property>
        <property name="text">
         <string>&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cmdCurrent">
+       <property name="toolTip">
+        <string>Current month</string>
+       </property>
+       <property name="text">
+        <string>Current month</string>
        </property>
       </widget>
      </item>

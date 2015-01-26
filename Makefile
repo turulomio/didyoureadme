@@ -10,16 +10,18 @@ PREFIXSQL=$(PREFIXSHARE)/sql
 
 all: compile install
 compile:
-	pyuic4 ui/frmAbout.ui > ui/Ui_frmAbout.py
-	pyuic4 ui/frmAccess.ui > ui/Ui_frmAccess.py
-	pyuic4 ui/frmHelp.ui > ui/Ui_frmHelp.py
-	pyuic4 ui/frmMain.ui > ui/Ui_frmMain.py
-	pyuic4 ui/frmSettings.ui > ui/Ui_frmSettings.py
-	pyuic4 ui/frmDocumentsIBM.ui > ui/Ui_frmDocumentsIBM.py
-	pyuic4 ui/frmGroupsIBM.ui > ui/Ui_frmGroupsIBM.py
-	pyuic4 ui/frmUsersIBM.ui > ui/Ui_frmUsersIBM.py
-	pyuic4 ui/wdgYearMonth.ui > ui/Ui_wdgYearMonth.py
-	pyrcc4 -py3  images/didyoureadme.qrc > images/didyoureadme_rc.py
+	pyuic4 ui/frmAbout.ui > ui/Ui_frmAbout.py &
+	pyuic4 ui/frmAccess.ui > ui/Ui_frmAccess.py &
+	pyuic4 ui/frmHelp.ui > ui/Ui_frmHelp.py &
+	pyuic4 ui/frmMain.ui > ui/Ui_frmMain.py &
+	pyuic4 ui/frmSettings.ui > ui/Ui_frmSettings.py &
+	pyuic4 ui/frmDocumentsIBM.ui > ui/Ui_frmDocumentsIBM.py &
+	pyuic4 ui/frmGroupsIBM.ui > ui/Ui_frmGroupsIBM.py &
+	pyuic4 ui/frmUsersIBM.ui > ui/Ui_frmUsersIBM.py &
+	pyuic4 ui/wdgYearMonth.ui > ui/Ui_wdgYearMonth.py &
+	pyrcc4 -py3  images/didyoureadme.qrc > images/didyoureadme_rc.py &
+	sleep 1
+	wait
 	pylupdate4 -noobsolete didyoureadme.pro
 	lrelease didyoureadme.pro
 
@@ -33,7 +35,7 @@ install:
 
 	install -m 755 -o root didyoureadme.py $(PREFIXBIN)/didyoureadme
 	install -m 755 -o root didyoureadme-backup $(PREFIXBIN)
-	install -m 644 -o root libdidyoureadme.py $(PREFIXLIB)
+	install -m 644 -o root libdidyoureadme.py libdbupdates.py $(PREFIXLIB)
 	install -m 644 -o root ui/*.py $(PREFIXLIB)
 	install -m 644 -o root images/*.py $(PREFIXLIB)
 	install -m 644 -o root images/didyoureadme.png $(PREFIXPIXMAPS)/didyoureadme.png

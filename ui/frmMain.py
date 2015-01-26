@@ -2,6 +2,7 @@ import   datetime,  urllib.request,  multiprocessing,  sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from libdidyoureadme import *
+import libdbupdates
 
 from Ui_frmMain import *
 from frmAbout import *
@@ -11,6 +12,7 @@ from frmAccess import *
 from frmDocumentsIBM import *
 from frmGroupsIBM import *
 from frmUsersIBM import *
+
 
             
 #class SystemTrayIcon(QSystemTrayIcon):
@@ -72,6 +74,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
             
         
         self.mem.con=self.mem.connect()
+        
+
+        ##Update database
+        libdbupdates.Update(self.mem)
+        
 
         self.mem.cargar_datos()
 

@@ -484,6 +484,36 @@ class Document:
         #Elimina el documento de self.mem.documents.
         mem.documents.arr.remove(self)
         
+        
+        
+#        def delete(self):
+#                cur=self.mem.con.cursor()
+#                sqllo0="select lo_unlink("+str(self.foto)+");"
+#                cur.execute(sqllo0)
+#                sqldel="delete from films where id_films=" + str(self.id) + ";"
+#                cur.execute(sqldel)
+#                cur.close()
+#
+#        def extract_foto(self):
+#                """Extracts and assign self.pathfoto"""
+#                self.pathfoto='/tmp/pdffilms/{0}.jpg'.format(self.foto)
+#                cur=self.mem.con.cursor()
+#                sql="select lo_export({0}, '{1}');".format(self.foto,self.pathfoto)
+#                cur.execute(sql)
+#                cur.close()
+#
+#        def save(self):
+#                if self.id==None:
+#                        if self.year==None:
+#                                name=self.name
+#                        else:
+#                                name="{}. {}".format(self.name,self.year)
+#                        cur.execute("insert into films (savedate, name, foto, id_dvd) values (%s, %s, lo_import(%s), %s) returning id_films;",(self.savedate,name,self.pathfoto, self.id_dvd))
+#                        self.id=cur.fetchone()[0]
+#                        return True
+
+        
+        
     def save(self, mem):
         """No se puede modificar, solo insertar de nuevo
         Si hubiera necesidad de modificar ser´ia borrar y crear"""

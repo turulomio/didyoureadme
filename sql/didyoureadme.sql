@@ -3,6 +3,7 @@
 --
 
 SET statement_timeout = 0;
+SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
@@ -39,11 +40,13 @@ CREATE TABLE documents (
     comment text,
     filename text,
     hash text NOT NULL,
-    closed boolean NOT NULL
+    closed boolean NOT NULL,
+    datetime_end timestamp with time zone DEFAULT (now() + '3 mons'::interval) NOT NULL,
+    file oid
 );
 
 
-ALTER TABLE public.documents OWNER TO postgres;
+ALTER TABLE documents OWNER TO postgres;
 
 --
 -- Name: documents_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -57,7 +60,7 @@ CREATE SEQUENCE documents_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.documents_id_seq OWNER TO postgres;
+ALTER TABLE documents_id_seq OWNER TO postgres;
 
 --
 -- Name: documents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -65,6 +68,19 @@ ALTER TABLE public.documents_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE documents_id_seq OWNED BY documents.id;
 
+
+--
+-- Name: globals; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE globals (
+    id_globals integer NOT NULL,
+    global text,
+    value text
+);
+
+
+ALTER TABLE globals OWNER TO postgres;
 
 --
 -- Name: groups; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
@@ -77,7 +93,7 @@ CREATE TABLE groups (
 );
 
 
-ALTER TABLE public.groups OWNER TO postgres;
+ALTER TABLE groups OWNER TO postgres;
 
 --
 -- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -91,7 +107,7 @@ CREATE SEQUENCE posts_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.posts_id_seq OWNER TO postgres;
+ALTER TABLE posts_id_seq OWNER TO postgres;
 
 --
 -- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -113,7 +129,7 @@ CREATE TABLE userdocuments (
 );
 
 
-ALTER TABLE public.userdocuments OWNER TO postgres;
+ALTER TABLE userdocuments OWNER TO postgres;
 
 --
 -- Name: COLUMN userdocuments.read; Type: COMMENT; Schema: public; Owner: postgres
@@ -137,7 +153,7 @@ CREATE TABLE users (
 );
 
 
-ALTER TABLE public.users OWNER TO postgres;
+ALTER TABLE users OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -151,7 +167,7 @@ CREATE SEQUENCE users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO postgres;
+ALTER TABLE users_id_seq OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -237,6 +253,34 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON SCHEMA public FROM postgres;
 GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+COPY groups (id, name, members) FROM stdin;
+1	Todos	\N
+\.
+SELECT pg_catalog.setval('posts_id_seq', 8, true);
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+SET search_path = public, pg_catalog;
+
+--
+-- Data for Name: globals; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO globals VALUES (1, 'Version', '201501261042');
 
 
 --
