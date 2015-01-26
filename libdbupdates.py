@@ -26,7 +26,7 @@ class Update:
             cur.close()
             self.mem.con.commit()
             self.set_database_version(201501260851)
-        if self.dbversion<201501261042:
+        if self.dbversion<201501261042: #Documentos a base de datos
             cur=self.mem.con.cursor()
             cur2=self.mem.con.cursor()
             cur.execute("select * from documents;")
