@@ -276,9 +276,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tblDocuments.item(i, 2).setTextAlignment(Qt.AlignHCenter)
             self.tblDocuments.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
             self.tblDocuments.item(i, 3).setTextAlignment(Qt.AlignHCenter)
-            self.tblDocuments.setItem(i, 4, QTableWidgetItem(d.title))
+            self.tblDocuments.setItem(i, 4, qdatetime(d.expiration, self.mem.cfgfile.localzone))
+            self.tblDocuments.setItem(i, 5, QTableWidgetItem(d.title))
             if d.numreads==d.numplanned and d.numplanned>0:
-                for column in range( 1, 4):
+                for column in range( 1, 5):
                     self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
 
         self.tblDocuments.setCurrentCell(len(self.listed_documents)-1, 0)                    

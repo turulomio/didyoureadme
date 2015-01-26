@@ -28,6 +28,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             self.txtTitle.setText(self.document.title)
             self.txtComment.setDocument(QTextDocument(self.document.comment))
             self.teExpiration.setDate(self.document.expiration)
+            self.setWindowTitle(self.tr("Change expiration to document"))
             self.cmd.setText(self.tr("Change expiration"))
 
     def getSelectedUsers(self):        
