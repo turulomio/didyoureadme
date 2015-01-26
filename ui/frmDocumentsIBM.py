@@ -90,12 +90,12 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             #Genera el userdocument
             for u in list(self.selectedUsers):
                 if u.active==True:
-                    ud=UserDocument(u, d, self.mem)
+                    ud=UserDocument(u, self.document, self.mem)
                     ud.save()
-            self.mem.documents.arr.append(d)
+            self.mem.documents.arr.append(self.document)
             self.mem.documents.sort()
             cur=self.mem.con.cursor()
-            d.updateNums(cur)
+            self.document.updateNums(cur)
             cur.close()
         else:
             self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone)

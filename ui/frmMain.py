@@ -279,7 +279,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tblDocuments.setItem(i, 4, qdatetime(d.expiration, self.mem.cfgfile.localzone))
             self.tblDocuments.setItem(i, 5, QTableWidgetItem(d.title))
             if d.numreads==d.numplanned and d.numplanned>0:
-                for column in range( 1, 5):
+                for column in range( 1, 4):
                     self.tblDocuments.item(i, column).setBackgroundColor(QColor(198, 205, 255))
 
         self.tblDocuments.setCurrentCell(len(self.listed_documents)-1, 0)                    
