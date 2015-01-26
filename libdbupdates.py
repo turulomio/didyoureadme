@@ -57,6 +57,12 @@ class Update:
             cur.close()
             self.mem.con.commit()
             self.set_database_version(201501261228)
+        if self.dbversion<201501261900: #Removes closed and update expiration to 3 months
+            cur=self.mem.con.cursor()
+            cur.execute("insert into globals (id_globals,global,value) values (%s,%s,%s);", (6,"Admin mode", None ))
+            self.mem.con.commit()
+            self.set_database_version(201501261900)   
+            
 
         """AFTER EXECUTING I MUST RUN SQL UPDATE SCRIPT TO UPDATE FUTURE INSTALLATIONS
     

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import  libdidyoureadme
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtNetwork import *

@@ -81,6 +81,39 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
         self.mem.cargar_datos()
 
+        
+        ##Admin mode
+        if self.mem.adminmode:
+            m=QMessageBox()
+            m.setIcon(QMessageBox.Information)
+            input=QInputDialog.getText(self,  "DidYouReadMe",  self.tr("Please introduce Admin Mode password"), QLineEdit.Password)
+            if input[1]==True:
+                res=self.mem.check_admin_mode(input[0])
+                if res==None:
+                    self.setWindowTitle(self.trUtf8("DidYouReadMe 2010-{0} © (Admin mode)").format(version_date.year))
+                    self.setWindowIcon(self.mem.qicon_admin())
+                    self.update()
+                    self.mem.set_admin_mode(input[0])
+                    self.mem.con.commit()
+                    m.setText(self.trUtf8("You have set the admin mode password. Please login again"))
+                    m.exec_()
+                    sys.exit(2)
+                elif res==True:
+                    self.setWindowTitle(self.trUtf8("Xulpymoney 2010-{0} © (Admin mode)").format(version_date.year))
+                    self.setWindowIcon(self.mem.qicon_admin())
+                    self.update()
+                    m.setText(self.trUtf8("You are logged as an administrator"))
+                    m.exec_()   
+                elif res==False:
+                    self.adminmode=False        
+                    m.setText(self.trUtf8("Bad 'Admin mode' password. You are logged as a normal user"))
+                    m.exec_()   
+
+        
+
+
+
+
         self.server = multiprocessing.Process(target=self.httpserver, args=())
         self.server.start()
 

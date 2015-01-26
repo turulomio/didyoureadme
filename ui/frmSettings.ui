@@ -322,7 +322,6 @@ p, li { white-space: pre-wrap; }
  </widget>
  <resources>
   <include location="../images/didyoureadme.qrc"/>
-  <include location="../images/didyoureadme.qrc"/>
  </resources>
  <connections>
   <connection>

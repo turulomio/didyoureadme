@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>admin.png</file>
     <file>editar.png</file>
     <file>add.png</file>
     <file>delete.png</file>

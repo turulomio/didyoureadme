@@ -2,7 +2,8 @@ import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  py
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-version="20140128"
+version="0.1"
+version_date=datetime.date(2015,1,26)
 
 dirTmp=os.path.expanduser("/tmp/didyoureadme/")
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
@@ -914,7 +915,7 @@ class ConfigFile:
 class Mem:
     def __init__(self):     
         self.con=None
-        
+        self.adminmode=False
         self.cfgfile=ConfigFile(os.path.expanduser("~/.didyoureadme/")+ "didyoureadme.cfg")
         self.cfgfile.save()
         self.pathlogmail=os.path.expanduser("~/.didyoureadme/mail.log")
@@ -928,10 +929,37 @@ class Mem:
     def __del__(self):
         if self.con:#Needed when reject frmAccess
             self.disconnect(self.con)
-        
+                
+    def qicon_admin(self):
+        icon = QIcon()
+        icon.addPixmap(QPixmap(":/admin.png"), QIcon.Normal, QIcon.Off)
+        return icon
+
     def setQTranslator(self, qtranslator):
         self.qtranslator=qtranslator
-
+            
+    def set_admin_mode(self, pasw):
+        cur=self.con.cursor()
+        cur.execute("update globals set value=md5(%s) where id_globals=6;", (pasw, ))
+        cur.close()
+        
+    def check_admin_mode(self, pasw):
+        """Returns: 
+                - None: No admin password yet
+                - True: parameter pasw is ok
+                - False: parameter pasw is wrong"""
+        cur=self.con.cursor()
+        cur.execute("select value from globals where id_globals=6")
+        val=cur.fetchone()[0]
+        if val==None or val=="":
+            resultado=None
+        else:
+            cur.execute("select value=md5(%s) from globals where id_globals=6;", (pasw, ))
+            resultado=cur.fetchone()[0]
+        cur.close()
+        print (resultado,  "check_admin_mode")
+        return resultado
+        
     def cargar_datos(self):       
         self.users=SetUsers(self)     
         self.users.load() 
