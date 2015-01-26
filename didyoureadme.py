@@ -12,7 +12,7 @@ elif so=="src.linux" or so=="bin.linux":
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from frmMain import *
-from libdidyoureadme import dirDocs, dirReaded, cargarQTranslator
+from libdidyoureadme import dirDocs, dirReaded
 
         
 try:
@@ -28,23 +28,27 @@ except:
 #def on_trayIcon_activated( reason):
 #    print ("hola")
 
-cfgfile=ConfigFile(os.path.expanduser("~/.didyoureadme/")+ "didyoureadme.cfg")
-cfgfile.save()
+
+mem=Mem()
 
 app = QApplication(sys.argv)
-app.setApplicationName("didyoureadme {0}".format(str(datetime.datetime.now())))
+app.setApplicationName("didyoureadme {0}".format(datetime.datetime.now()))
 app.setQuitOnLastWindowClosed(True)
 
-cfgfile.qtranslator=QTranslator()
-cargarQTranslator(cfgfile)
+mem.setQTranslator(QTranslator(app))
+mem.languages.cambiar(mem.cfgfile.language)
 
-if cfgfile.error==True:
+if mem.cfgfile.error==True:
     m=QMessageBox()
     m.setIcon(QMessageBox.Information)
     m.setText(QApplication.translate("DidYouReadMe","An error loading settings happened. You must check your settings are ok"))
     m.exec_()      
 
-frmMain = frmMain(cfgfile) 
+if "admin" in sys.argv:
+    mem.adminmode=True
+    
+frmMain = frmMain(mem) 
+
 w=QWidget()
 #trayIcon = QSystemTrayIcon(QIcon(":/didyoureadme.png"), w)
 #        self.trayIcon.menu.addAction(self.actionExit)

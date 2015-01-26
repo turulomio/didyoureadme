@@ -129,24 +129,6 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <item>
-              <property name="text">
-               <string>English</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../images/didyoureadme.qrc">
-                <normaloff>:/uk.png</normaloff>:/uk.png</iconset>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Español</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../images/didyoureadme.qrc">
-                <normaloff>:/spain.png</normaloff>:/spain.png</iconset>
-              </property>
-             </item>
             </widget>
            </item>
            <item row="1" column="0">

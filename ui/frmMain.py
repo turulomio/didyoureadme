@@ -28,7 +28,7 @@ from frmUsersIBM import *
 #        self.menu.show()
 #        
 class frmMain(QMainWindow, Ui_frmMain):#    
-    def __init__(self, cfgfile, parent = 0,  flags = False):
+    def __init__(self, mem, parent = 0,  flags = False):
         QMainWindow.__init__(self)
         self.setupUi(self)                
         self.wym.hide()
@@ -46,7 +46,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         
         self.confirmclose=True
-        self.cfgfile=cfgfile
+        self.mem=mem
         self.accesspass=False
         
         self.users=[]
@@ -62,7 +62,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         self.showMaximized()
 
-        self.mem=Mem(cfgfile)
         access=frmAccess(self.mem)
         access.setWindowTitle(self.trUtf8("Login to DidYouReadMe"))
         salida=access.exec_()
@@ -116,7 +115,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         QObject.connect(self.timerSendMessages, SIGNAL("timeout()"), self.send) 
         self.timerSendMessages.start(50000)
         
-        if self.cfgfile.autoupdate=="True":
+        if self.mem.cfgfile.autoupdate=="True":
             self.timerUpdateTablesOnlyNums=QTimer()
             QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.updateTablesOnlyNums) 
             self.timerUpdateTablesOnlyNums.start(10000)
@@ -176,7 +175,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     @pyqtSlot()      
     def on_actionBackup_triggered(self):
-        QProcess.startDetached("didyoureadme-backup", [self.cfgfile.server, self.cfgfile.port, self.cfgfile.user, self.cfgfile.database] )
+        QProcess.startDetached("didyoureadme-backup", [self.mem.cfgfile.server, self.mem.cfgfile.port, self.mem.cfgfile.user, self.mem.cfgfile.database] )
         m=QMessageBox()
         m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
         m.exec_()
@@ -309,7 +308,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
     @pyqtSlot()      
     def on_actionSettings_triggered(self):
-        f=frmSettings(self.cfgfile,   self)
+        f=frmSettings(self.mem,   self)
         f.exec_()
         self.retranslateUi(self)
         
@@ -362,8 +361,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             m.setText(self.trUtf8("There is a new DidYouReadMe version. You can download it from <a href='http://didyoureadme.sourceforge.net'>http://didyoureadme.sourceforge.net</a> or directly from <a href='https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-")+remoteversion+"/'>Sourceforge</a>")
             m.exec_()                 
 
-        self.cfgfile.lastupdate=datetime.date.today().toordinal()
-        self.cfgfile.save()
+        self.mem.cfgfile.lastupdate=datetime.date.today().toordinal()
+        self.mem.cfgfile.save()
 
                 
     @pyqtSlot(QEvent)   

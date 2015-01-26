@@ -115,7 +115,151 @@ class Group:
             
             
         
+class SetCommons:
+    """Base clase to create Sets, it needs id and name attributes, as index. It has a list arr and a dics dic_arr to access objects of the set"""
+    def __init__(self):
+        self.dic_arr={}
+        self.arr=[]
+        self.id=None
+        self.name=None
+        self.selected=None#Used to select a item in the set. Usefull in tables. Its a item
+    
+    def arr_position(self, id):
+        """Returns arr position of the id, useful to select items with unittests"""
+        for i, a in enumerate(self.arr):
+            if a.id==id:
+                return i
+        return None
+            
 
+    def append(self,  obj):
+        self.arr.append(obj)
+        self.dic_arr[str(obj.id)]=obj
+        
+    def remove(self, obj):
+        self.arr.remove(obj)
+        del self.dic_arr[str(obj.id)]
+        
+    def length(self):
+        return len(self.arr)
+        
+    def find(self, id,  log=False):
+        """Finds by id"""
+        try:
+            return self.dic_arr[str(id)]    
+        except:
+            if log:
+                print ("SetCommons ({}) fails finding {}".format(self.__class__.__name__, id))
+            return None
+            
+    def find_by_arr(self, id,  log=False):
+        """log permite localizar errores en find. Ojo hay veces que hay find fallidos buscados como en UNION
+                inicio=datetime.datetime.now()
+        self.mem.data.products_all().find(80230)
+        print (datetime.datetime.now()-inicio)
+        self.mem.agrupations.find_by_arr(80230)
+        print (datetime.datetime.now()-inicio)
+        Always fister find_by_dict
+        0:00:00.000473
+        0:00:00.000530
+
+        """
+        for a in self.arr:
+            if a.id==id:
+                return a
+        if log:
+            print ("SetCommons ({}) fails finding  by arr {}".format(self.__class__.__name__, id))
+        return None
+                
+    def order_by_id(self):
+        """Orders the Set using self.arr"""
+        try:
+            self.arr=sorted(self.arr, key=lambda c: c.id,  reverse=False)     
+            return True
+        except:
+            return False
+        
+    def order_by_name(self):
+        """Orders the Set using self.arr"""
+        try:
+            self.arr=sorted(self.arr, key=lambda c: c.name,  reverse=False)       
+            return True
+        except:
+            return False
+
+    def qcombobox(self, combo,  selected=None):
+        """Load set items in a comobo using id and name
+        Selected is and object
+        It sorts by name the arr""" 
+        self.order_by_name()
+        combo.clear()
+        for a in self.arr:
+            combo.addItem(a.name, a.id)
+
+        if selected!=None:
+            combo.setCurrentIndex(combo.findData(selected.id))
+                
+    def clean(self):
+        """Deletes all items"""
+        self.arr=[]
+        self.dic_arr={}
+#        for a in self.arr:
+#            self.remove(a)
+                
+    def clone(self,  *initparams):
+        """Returns other Set object, with items referenced, ojo con las formas de las instancias
+        initparams son los parametros de iniciaci´on de la clase"""
+        result=self.__class__(*initparams)#Para que coja la clase del objeto que lo invoca
+        for a in self.arr:
+            result.append(a)
+        return result
+        
+    def union(self,  set,  *initparams):
+        """Returns a new set, with the union comparing id
+        initparams son los parametros de iniciaci´on de la clse"""        
+        resultado=self.__class__(*initparams)#Para que coja la clase del objeto que lo invoca SetProduct(self.mem), luego ser´a self.mem
+        for p in self.arr:
+            resultado.append(p)
+        for p in set.arr:
+            if resultado.find(p.id, False)==None:
+                resultado.append(p)
+        return resultado
+        
+class SetLanguages(SetCommons):
+    def __init__(self, mem):
+        SetCommons.__init__(self)
+        self.mem=mem
+        
+    def load_all(self):
+        self.append(Language(self.mem, "en","English" ))
+        self.append(Language(self.mem, "es","Español" ))
+        self.append(Language(self.mem, "fr","Français" ))
+        self.append(Language(self.mem, "ro","Rom\xe2n" ))
+        self.append(Language(self.mem, "ru",'\u0420\u0443\u0441\u0441\u043a\u0438\u0439' ))
+
+    def qcombobox(self, combo, selected=None):
+        """Selected is the id"""
+        self.order_by_name()
+        for l in self.arr:
+            combo.addItem(self.mem.countries.find(l.id).qicon(), l.name, l.id)
+        if selected!=None:
+                combo.setCurrentIndex(combo.findData(selected.id))
+
+    def cambiar(self, id):  
+        """language es un string"""
+        self.mem.qtranslator.load("/usr/lib/xulpymoney/didyoureadme_" + id + ".qm")
+        qApp.installTranslator(self.mem.qtranslator);
+#        def cargarQTranslator(cfgfile):  
+#    """language es un string"""
+#    so=os.environ['didyoureadmeso']
+#    if so=="src.linux":
+#        cfgfile.qtranslator.load("/usr/share/didyoureadme/didyoureadme_" + cfgfile.language + ".qm")
+#    elif so=="src.windows":
+#        cfgfile.qtranslator.load("../share/didyoureadme/didyoureadme_" + cfgfile.language + ".qm")
+#    elif so=="bin.windows" or so=="bin.linux":
+#        cfgfile.qtranslator.load("didyoureadme_" + cfgfile.language + ".qm")
+#    qApp.installTranslator(cfgfile.qtranslator);
+        
 class SetUsers:
     def __init__(self, mem):
         self.arr=[]
@@ -309,7 +453,12 @@ class TSend(threading.Thread):
         cur2.close()
         self.mem.disconnect(con)
         
-
+            
+class Language:
+    def __init__(self, mem, id, name):
+        self.id=id
+        self.name=name
+    
 
 class Mail:
     def __init__(self, document, user,  mem):
@@ -417,6 +566,47 @@ class Mail:
 
 
 
+class SetCountries(SetCommons):
+    def __init__(self, mem):
+        SetCommons.__init__(self)
+        self.mem=mem   
+        
+    def load_all(self):
+        self.append(Country().init__create("es",QApplication.translate("Core","Spain")))
+        self.append(Country().init__create("be",QApplication.translate("Core","Belgium")))
+        self.append(Country().init__create("cn",QApplication.translate("Core","China")))
+        self.append(Country().init__create("de",QApplication.translate("Core","Germany")))
+        self.append(Country().init__create("en",QApplication.translate("Core","United Kingdom")))
+        self.append(Country().init__create("eu",QApplication.translate("Core","Europe")))
+        self.append(Country().init__create("fi",QApplication.translate("Core","Finland")))
+        self.append(Country().init__create("fr",QApplication.translate("Core","France")))
+        self.append(Country().init__create("ie",QApplication.translate("Core","Ireland")))
+        self.append(Country().init__create("it",QApplication.translate("Core","Italy")))
+        self.append(Country().init__create("jp",QApplication.translate("Core","Japan")))
+        self.append(Country().init__create("nl",QApplication.translate("Core","Netherlands")))
+        self.append(Country().init__create("pt",QApplication.translate("Core","Portugal")))
+        self.append(Country().init__create("us",QApplication.translate("Core","United States of America")))
+        self.append(Country().init__create("ro",QApplication.translate("Core","Romanian")))
+        self.append(Country().init__create("ru",QApplication.translate("Core","Rusia")))
+        self.order_by_name()
+
+    def qcombobox(self, combo,  country=None):
+        """Función que carga en un combo pasado como parámetro y con un SetAccounts pasado como parametro
+        Se ordena por nombre y se se pasa el tercer parametro que es un objeto Account lo selecciona""" 
+        for cu in self.arr:
+            combo.addItem(cu.qicon(), cu.name, cu.id)
+
+        if country!=None:
+                combo.setCurrentIndex(combo.findData(country.id))
+
+    def qcombobox_translation(self, combo,  country=None):
+        """Función que carga en un combo pasado como parámetro con los pa´ises que tienen traducci´on""" 
+        for cu in [self.find("es"),self.find("fr"),self.find("ro"),self.find("ru"),self.find("en") ]:
+            combo.addItem(cu.qicon(), cu.name, cu.id)
+
+        if country!=None:
+                combo.setCurrentIndex(combo.findData(country.id))
+
 class SetDocuments:
     def __init__(self, mem):
         self.arr=[]
@@ -450,6 +640,59 @@ class SetDocuments:
                 return d
         print ("Document not found from hash")
         return None
+
+
+class Country:
+    def __init__(self):
+        self.id=None
+        self.name=None
+        
+    def init__create(self, id, name):
+        self.id=id
+        self.name=name
+        return self
+            
+    def qicon(self):
+        icon=QIcon()
+        icon.addPixmap(self.qpixmap(), QIcon.Normal, QIcon.Off)    
+        return icon 
+        
+    def qpixmap(self):
+        if self.id=="be":
+            return QPixmap(":/belgium.gif")
+        elif self.id=="cn":
+            return QPixmap(":/china.gif")
+        elif self.id=="fr":
+            return QPixmap(":/france.png")
+        elif self.id=="ie":
+            return QPixmap(":/ireland.gif")
+        elif self.id=="it":
+            return QPixmap(":/italy.gif")
+        elif self.id=="es":
+            return QPixmap(":/spain.png")
+        elif self.id=="eu":
+            return QPixmap(":/eu.gif")
+        elif self.id=="de":
+            return QPixmap(":/germany.gif")
+        elif self.id=="fi":
+            return QPixmap(":/fi.jpg")
+        elif self.id=="nl":
+            return QPixmap(":/nethland.gif")
+        elif self.id=="en":
+            return QPixmap(":/uk.png")
+        elif self.id=="jp":
+            return QPixmap(":/japan.gif")
+        elif self.id=="pt":
+            return QPixmap(":/portugal.gif")
+        elif self.id=="us":
+            return QPixmap(":/usa.gif")
+        elif self.id=="ro":
+            return QPixmap(":/rumania.png")
+        elif self.id=="ru":
+            return QPixmap(":/rusia.png")
+        else:
+            return QPixmap(":/star.gif")
+            
 
 class Document:
     def __init__(self, mem,  dt, title, filename, comment, expiration,  hash='Not calculated',  id=None):
@@ -613,8 +856,8 @@ class ConfigFile:
         self.load()
         
     def load(self):
-        self.config.read(self.file)
         try:
+            self.config.read(self.file)
             self.language=self.config.get("frmSettings", "language")
             self.localzone=self.config.get("frmSettings", "localzone")
             self.lastupdate=self.config.getint("frmMain", "lastupdate")
@@ -669,16 +912,26 @@ class ConfigFile:
             self.config.write(configfile)
             
 class Mem:
-    def __init__(self, cfgfile):     
-        self.cfgfile=cfgfile
+    def __init__(self):     
         self.con=None
+        
+        self.cfgfile=ConfigFile(os.path.expanduser("~/.didyoureadme/")+ "didyoureadme.cfg")
+        self.cfgfile.save()
         self.pathlogmail=os.path.expanduser("~/.didyoureadme/mail.log")
         self.pathlogupdate=os.path.expanduser("~/.didyoureadme/updatedata.log")
+        self.qtranslator=None
+        self.countries=SetCountries(self)
+        self.countries.load_all()
+        self.languages=SetLanguages(self)
+        self.languages.load_all()
         
     def __del__(self):
         if self.con:#Needed when reject frmAccess
             self.disconnect(self.con)
         
+    def setQTranslator(self, qtranslator):
+        self.qtranslator=qtranslator
+
     def cargar_datos(self):       
         self.users=SetUsers(self)     
         self.users.load() 
@@ -701,16 +954,7 @@ class Mem:
     def disconnect(self,  mq):
         mq.close()
 
-def cargarQTranslator(cfgfile):  
-    """language es un string"""
-    so=os.environ['didyoureadmeso']
-    if so=="src.linux":
-        cfgfile.qtranslator.load("/usr/share/didyoureadme/didyoureadme_" + cfgfile.language + ".qm")
-    elif so=="src.windows":
-        cfgfile.qtranslator.load("../share/didyoureadme/didyoureadme_" + cfgfile.language + ".qm")
-    elif so=="bin.windows" or so=="bin.linux":
-        cfgfile.qtranslator.load("didyoureadme_" + cfgfile.language + ".qm")
-    qApp.installTranslator(cfgfile.qtranslator);
+
 
 def qdatetime(dt, localzone):
     """dt es un datetime con timezone
