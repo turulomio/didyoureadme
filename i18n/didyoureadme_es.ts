@@ -501,7 +501,7 @@
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>Filename</source>
         <translation>Nombre del fichero</translation>
     </message>
@@ -646,7 +646,7 @@
         <translation>Borrar usuario</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="477"/>
+        <location filename="ui/frmMain.py" line="465"/>
         <source>You can&apos;t delete it, because user is in a group or DidYouReadMe sent him some documents.
 You can deactivate him.</source>
         <translation>No puede borrarlo, porque el usuario está en un grupo o DidYouReadMe le ha enviado algún documento. Puede desactivarlo.</translation>
@@ -655,13 +655,6 @@ You can deactivate him.</source>
         <location filename="ui/frmMain.py" line="253"/>
         <source>DidYouReadMe is going to be closed to save settings.</source>
         <translation>DidYouReadMe se va a cerrar para actualizar la configuración.</translation>
-    </message>
-    <message>
-        <location filename="ui/frmMain.py" line="603"/>
-        <source>This message have been read for everybody.
-Do you want to close and hide it?</source>
-        <translation>Este mensaje ha sido leído por todos sus receptores.
-¿Quiere cerrarlo?</translation>
     </message>
     <message>
         <location filename="ui/Ui_frmMain.py" line="319"/>
@@ -684,22 +677,22 @@ Do you want to close and hide it?</source>
         <translation>Planeados</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="617"/>
+        <location filename="ui/frmMain.py" line="592"/>
         <source>Everybody read the document.</source>
         <translation>Todos leyeron el documento.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="577"/>
+        <location filename="ui/frmMain.py" line="561"/>
         <source>User doesn&apos;t belong to any group.</source>
         <translation>El usuario no pertenece a ningún grupo.</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="579"/>
+        <location filename="ui/frmMain.py" line="563"/>
         <source>User belongs to the following groups:</source>
         <translation>El usuario pertenece a los siguientes grupos:</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="612"/>
+        <location filename="ui/frmMain.py" line="587"/>
         <source>Users haven&apos;t read the selected document:</source>
         <translation>Usuarios que no han leído este documento:</translation>
     </message>
@@ -709,47 +702,47 @@ Do you want to close and hide it?</source>
         <translation>Generar informe</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>DidYouReadMe Report</source>
         <translation>Informe de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>User</source>
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>First read</source>
         <translation>Primera lectura</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>Number of reads</source>
         <translation>Número de lecturas</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>Document data</source>
         <translation>Datos del documento</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>User reads</source>
         <translation>Lecturas de los destinatarios</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>Generation time</source>
         <translation>Hora de creación</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>Created</source>
         <translation>Creado</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>Comment</source>
         <translation>Comentario</translation>
     </message>
@@ -789,12 +782,12 @@ Do you want to close and hide it?</source>
         <translation>Si cierras la aplicación, el servidor web se cerrará también. Los usuarios no podrán descargarse los documentos. ¿Quieres cerrarla?</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>Internal id</source>
         <translation>Identificador interno</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="418"/>
+        <location filename="ui/frmMain.py" line="406"/>
         <source>You can&apos;t delete an expired document</source>
         <translation>No puedes borrar un documento expirado</translation>
     </message>
@@ -809,7 +802,7 @@ Do you want to close and hide it?</source>
         <translation>Expirar documento</translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="507"/>
+        <location filename="ui/frmMain.py" line="495"/>
         <source>Change expiration</source>
         <translation>Cambiar expiración</translation>
     </message>
@@ -859,7 +852,7 @@ Do you want to close and hide it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="ui/frmMain.py" line="356"/>
+        <location filename="ui/frmMain.py" line="351"/>
         <source>name</source>
         <translation>nombre</translation>
     </message>

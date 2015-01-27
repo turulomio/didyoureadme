@@ -321,12 +321,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
     @pyqtSlot()   
     def on_actionDocumentOpen_triggered(self):        
         QApplication.setOverrideCursor(Qt.WaitCursor);
-        selected=None
-        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.listed_documents[i.row()]
             
-        file=dirTmp+os.path.basename(selected.filename)
-        shutil.copyfile(dirDocs+selected.hash, file)
+        file=dirTmp+os.path.basename(self.documents.selected.filename)
+        shutil.copyfile(dirDocs+self.documents.selected.hash, file)
         
         self.openWithDefaultApp(file)
             
@@ -345,21 +342,19 @@ class frmMain(QMainWindow, Ui_frmMain):#
     @pyqtSlot()   
     def on_actionDocumentReport_triggered(self):
         QApplication.setOverrideCursor(Qt.WaitCursor);
-        selected=None
-        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.listed_documents[i.row()]
+        
         doc=QTextDocument()
-        comment=selected.comment.replace("\n\n\n", "<p>")
+        comment=self.documents.selected.comment.replace("\n\n\n", "<p>")
         comment=comment.replace("\n\n", "<p>")
         comment=comment.replace("\n", "<p>")
         
         s=("<center><h1>"+self.trUtf8("DidYouReadMe Report")+"</h1>"+
            self.trUtf8("Generation time")+": {0}".format(str(now(self.mem.cfgfile.localzone))[:19]) +"</center>"+
            "<h2>"+self.trUtf8("Document data")+"</h2>"+
-           self.trUtf8("Created")+": {0}".format(str(selected.datetime)[:19])+ "<p>"+
-           self.trUtf8("name")+": {0}".format(selected.name) + "<p>"+
-           self.trUtf8("Internal id")+": {0}".format(selected.id) + "<p>"+
-           self.trUtf8("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, selected.hash, urllib.parse.quote(os.path.basename(selected.filename.lower())), os.path.basename(selected.filename )) +
+           self.trUtf8("Created")+": {0}".format(str(self.documents.selected.datetime)[:19])+ "<p>"+
+           self.trUtf8("name")+": {0}".format(self.documents.selected.name) + "<p>"+
+           self.trUtf8("Internal id")+": {0}".format(self.documents.selected.id) + "<p>"+
+           self.trUtf8("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.documents.selected.hash, urllib.parse.quote(os.path.basename(self.documents.selected.filename.lower())), os.path.basename(self.documents.selected.filename )) +
             self.trUtf8("Comment")+": {0}".format(comment) +"<p>"+
            "<h2>"+self.trUtf8("User reads")+"</h2>"+
            "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.trUtf8("User"), self.trUtf8("Sent"), self.trUtf8("First read"), self.trUtf8("Number of reads"))
@@ -367,7 +362,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
            
                     
         cur=self.mem.con.cursor()     
-        cur.execute("select * from users, userdocuments where id_documents=%s and userdocuments.id_users=users.id order by name", (selected.id, ))    
+        cur.execute("select * from users, userdocuments where id_documents=%s and userdocuments.id_users=users.id order by name", (self.documents.selected.id, ))    
         for row in cur:
             s=s+"<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>".format(row['name'], str(row['sent'])[:19], str(row['read'])[:19], row['numreads'])
         s=s+"</table><p>" 
@@ -375,7 +370,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         doc.setHtml(s)
         printer=QPrinter()
-        file=dirTmp+"{0} DidYouReadMe document.pdf".format(str(selected.datetime)[:19])
+        file=dirTmp+"{0} DidYouReadMe document.pdf".format(str(self.documents.selected.datetime)[:19])
         printer.setOutputFileName(file)
         printer.setOutputFormat(QPrinter.PdfFormat);
         doc.print(printer)
@@ -386,31 +381,24 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     @pyqtSlot()   
     def on_actionDocumentExpire_triggered(self):
-        selected=None
-        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.mem.data.documents_set(not self.chkDocumentsExpired.checkState()).arr[i.row()]
-        if selected.isExpired():
-            f=frmDocumentsIBM(self.mem, selected)
+        if self.documents.selected.isExpired():
+            f=frmDocumentsIBM(self.mem, self.documents.selected)
             f.exec_()
         else:
-            selected.expiration=now(self.mem.cfgfile.localzone)
-            selected.save()#Update changes expiration
+            self.documents.selected.expiration=now(self.mem.cfgfile.localzone)
+            self.documents.selected.save()#Update changes expiration
             self.mem.con.commit()
-            self.mem.data.documents_active.remove(selected)    
+            self.mem.data.documents_active.remove(self.documents.selected)    
         self.on_actionTablesUpdate_triggered()
                 
     @pyqtSlot()   
     def on_actionDocumentDelete_triggered(self):
         """Sólo se puede borrar en 4-5 minutos seg´un base de datos o gui"""
-        #Borra el registro de base de datosv
-        selected=None
-        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.listed_documents[i.row()]
         if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
-            selected.delete()#Delete ya lo quita del array self.mem.documents
+            self.documents.selected.delete()#Delete ya lo quita del array self.mem.documents
             self.mem.con.commit()
             #Elimina el documento de self.mem.documents.
-            self.mem.documents.remove(selected)
+            self.mem.documents.remove(self.documents.selected)
             self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
         else:
             m=QMessageBox()
@@ -561,16 +549,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.exec_(self.tblUsers.mapToGlobal(pos))
             
     def on_tblUsers_cellDoubleClicked(self, row, column):
-        selected=None
-        for i in self.tblUsers.selectedItems():#itera por cada item no row.
-            selected=self.users[i.row()]
-            
-        if selected==None:
+        if self.users.selected==None:
             return
         
         resultado=[]
         for g in self.mem.groups.arr:
-            if selected in g.members:
+            if self.users.selected in g.members:
                 resultado.append(g)
         
         if len (resultado)==0:
@@ -597,17 +581,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             return
             
         cur=self.mem.con.cursor()     
-        cur.execute("select id_users from userdocuments where id_documents=%s and sent is not null and read is null;", (selected.id, ))
-    
-        if cur.rowcount==0 and selected.closed==False:
-            reply = QMessageBox.question(self, 'Mensaje', self.trUtf8('This message have been read for everybody.\nDo you want to close and hide it?'),     QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-            if reply == QMessageBox.Yes:
-                selected.closed=True
-                selected.save(self.mem)
-                self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
-                cur.close()
-            return
-                
+        cur.execute("select id_users from userdocuments where id_documents=%s and sent is not null and read is null;", (self.documents.selected.id, ))
+                   
         if cur.rowcount>0:
             s=self.trUtf8("Users haven't read the selected document:")+"\n"
             for row in cur:
