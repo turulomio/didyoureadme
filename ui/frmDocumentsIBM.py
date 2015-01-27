@@ -13,9 +13,9 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         self.mem=mem
         self.document=document
         if self.document==None:#New
-            self.mem.data.users_active.qlistview(self.lstUsers, False, [])
-            self.mem.data.groups.qlistview(self.lstGroups, [])
-            self.selectedUsers=set()
+            self.mem.data.users_active.qlistview(self.lstUsers, SetUsers(self.mem))
+            self.mem.data.groups.qlistview(self.lstGroups, SetGroups(self.mem))
+            self.selectedUsers=SetUsers(self.mem)
             self.teExpiration.setDate(datetime.date.today()+datetime.timedelta(days=90))
         else:
             self.lstUsers.setEnabled(False)
@@ -32,18 +32,12 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             self.cmd.setText(self.tr("Change expiration"))
 
     def getSelectedUsers(self):        
-        self.selectedUsers=set()
-        for i in range(self.lstGroups.model().rowCount()):
-            if self.lstGroups.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
-                grupo=self.lstGroups.model().index(i, 0).data(Qt.UserRole)
-                for u in self.mem.data.groups.find(grupo).members.arr:
-                    self.selectedUsers.add(u)
-        for i in range(self.lstUsers.model().rowCount()):
-            if self.lstUsers.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
-                usuario=self.lstUsers.model().index(i, 0).data(Qt.UserRole)
-                self.selectedUsers.add(self.mem.data.users_active.find(usuario))               
-        
-        self.cmd.setText(self.trUtf8("Send document to {0} users".format(len(list(self.selectedUsers)))))
+        del self.selectedUsers
+        self.selectedUsers=SetUsers(self.mem)
+        for g in self.mem.data.groups.qlistview_getselected(self.lstGroups, self.mem).arr:
+            self.selectedUsers=self.selectedUsers.union(g.members, self.mem)        
+        self.selectedUsers=self.selectedUsers.union(self.mem.data.users_active.qlistview_getselected(self.lstUsers, self.mem), self.mem)
+        self.cmd.setText(self.trUtf8("Send document to {0} users".format(self.selectedUsers.length())))
 
     def on_lstUsers_clicked(self, modelindex):
         self.getSelectedUsers()
@@ -75,7 +69,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 m.exec_()          
                 return
     
-            if len(list(self.selectedUsers))==0:
+            if self.selectedUsers.length()==0:
                 m=QMessageBox()
                 m.setIcon(QMessageBox.Information)
                 m.setText(self.trUtf8("You have to select at least one recipient"))
@@ -83,26 +77,24 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 return            
             #Genera el documento
             self.document=Document(self.mem, now(self.mem.cfgfile.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.toPlainText(),  dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone))
-            self.document.save(self.mem)
+            self.document.save()
             
             #Genera el userdocument
-            for u in list(self.selectedUsers):
+            for u in self.selectedUsers.arr:
                 if u.active==True:
                     ud=UserDocument(u, self.document, self.mem)
                     ud.save()
             self.mem.data.documents_active.append(self.document)
             self.mem.data.documents_active.order_by_name()
-            cur=self.mem.con.cursor()
-            self.document.updateNums(cur)
-            cur.close()
+            self.document.updateNums()
         else:
             self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone)
-            self.document.save(self.mem)
+            self.document.save()
             if self.document.expiration>now(self.mem.cfgfile.localzone):
+                self.mem.data.documents_inactive.remove(self.document)
                 self.mem.data.documents_active.append(self.document)        
                 self.mem.data.documents_active.order_by_name()
-            
-            
+        self.mem.con.commit()
         self.done(0)
 
     def on_cmdFile_released(self):

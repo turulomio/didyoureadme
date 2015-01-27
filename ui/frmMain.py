@@ -144,7 +144,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         if self.mem.cfgfile.autoupdate=="True":
             self.timerUpdateTablesOnlyNums=QTimer()
-            QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.updateTablesOnlyNums) 
+            QObject.connect(self.timerUpdateTablesOnlyNums, SIGNAL("timeout()"), self.on_actionTablesUpdate_triggered) 
             self.timerUpdateTablesOnlyNums.start(10000)
         
     def __del__(self):
@@ -207,25 +207,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
         m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
         m.exec_()
         
-    def updateTablesOnlyNums(self):
-        self.mem.data.users_set(self.chkUsersInactive.checkState()).updateTablesOnlyNums(self.tblUsers)
-            
-        #Solo actualiza activos
-        if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
-            self.mem.data.documents_set(self.chkDocumentsExpired.checkState()).updateTablesOnlyNums(self.tblDocuments)
-        self.updateStatusBar()
-        
-        
         
     def on_actionTablesUpdate_triggered(self):
-        self.updateTables()
-        
-    def updateTables(self):
-        self.mem.users_set(c2b(self.chkUsersInactive.checkState())).qtablewidget(self.tblUsers)
-        self.mem.users_set(c2b(self.chkUsersInactive.checkState())).qtablewidget(self.tblUsers)
-        self.tblGroups_reload()
-        self.mem.data.groups_set(True).qtablewidget(self.tblGroups)
-        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
+        self.users.qtablewidget(self.tblUsers)
+        self.mem.data.groups.qtablewidget(self.tblGroups)
+        self.documents.qtablewidget(self.tblDocuments)
         self.updateStatusBar()
 
     @pyqtSlot()      
@@ -330,8 +316,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_actionDocumentNew_triggered(self):
         f=frmDocumentsIBM(self.mem)
         f.exec_()
-        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
-        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
+        self.on_actionTablesUpdate_triggered()
     
     @pyqtSlot()   
     def on_actionDocumentOpen_triggered(self):        
@@ -409,9 +394,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
             f.exec_()
         else:
             selected.expiration=now(self.mem.cfgfile.localzone)
-            selected.save(self.mem)#Update changes expiration
+            selected.save()#Update changes expiration
+            self.mem.con.commit()
             self.mem.data.documents_active.remove(selected)    
-        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        self.on_actionTablesUpdate_triggered()
                 
     @pyqtSlot()   
     def on_actionDocumentDelete_triggered(self):
@@ -459,6 +445,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.mem.data.groups.selected.delete()
         self.mem.con.commit()
         self.mem.data.groups.remove(self.mem.data.groups.selected)
+        self.mem.data.groups.qtablewidget(self.tblGroups)
 
     @pyqtSlot()   
     def on_actionUserEdit_triggered(self):
@@ -472,25 +459,24 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_actionUserNew_triggered(self):
         f=frmUsersIBM(self.mem, None)
         f.exec_()
-        self.mem.users_set(c2b(self.chkUsersInactive.checkState())).qtablewidget(self.tblUsers)
-        self.tblGroups_reload()#Se actualiza grupo 1
+        self.users.qtablewidget(self.tblUsers)
+        self.mem.data.groups.qtablewidget(self.tblGroups)
 
     @pyqtSlot()   
-    def on_actionUserDelete_triggered(self):
-        for i in self.tblUsers.selectedItems():#itera por cada item no row.
-            selected=self.users[i.row()]
-            
-        if selected.isDeletable(self.mem)==True:
-            selected.delete(self.mem)
-            self.mem.groups.quit_user_from_all_groups(selected)
+    def on_actionUserDelete_triggered(self):            
+        if self.users.selected.isDeletable()==True:
+            self.users.selected.delete()
+            self.mem.con.commit()
+            self.mem.data.groups.quit_user_from_all_groups(self.users.selected)
+            self.users.remove(self.users.selected)
+            self.users.qtablewidget(self.tblUsers)
+            self.mem.data.groups.qtablewidget(self.tblGroups)
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
             m.setText(self.trUtf8("You can't delete it, because user is in a group or DidYouReadMe sent him some documents.\nYou can deactivate him."))
             m.exec_()          
             return
-        self.mem.users_set(c2b(self.chkUsersInactive.checkState())).qtablewidget(self.tblUsers)
-        self.tblGroups_reload()#Se actualiza grupo 1
 
     def on_tblDocuments_customContextMenuRequested(self,  pos):
         menu=QMenu()

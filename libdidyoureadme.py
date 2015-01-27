@@ -125,9 +125,41 @@ class SetCommons:
             if resultado.find(p.id, False)==None:
                 resultado.append(p)
         return resultado
-class SetGroups(SetCommons):
-    def __init__(self, mem):
+        
+class SetCommonsQListView(SetCommons):
+    def __init__(self):
         SetCommons.__init__(self)
+        
+    def qlistview(self, list, selected):
+        """Shows a list with the items of arr,
+        selected lista de group a seleccionar"""
+        self.order_by_name()
+        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
+        for i,  g in enumerate(self.arr):
+            item = QStandardItem(g.name)
+            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
+            if g in selected.arr:
+                item.setData(Qt.Checked, Qt.CheckStateRole)
+            else:
+                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
+            item.setData(g.id, Qt.UserRole) # Para el role usuario
+            model.setItem(i, 0, item);
+        list.setModel(model)
+        
+    def qlistview_getselected(self, list, *initparams):
+        """Returns a new set, with the selected in the list
+        initparams son los parametros de iniciaci´on de la clse"""        
+        resultado=self.__class__(*initparams)#Para que coja la clase del objeto que lo invoca SetProduct(self.mem), luego ser´a self.mem   
+        for i in range(list.model().rowCount()):
+            if list.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
+                id=list.model().index(i, 0).data(Qt.UserRole)
+                resultado.append(self.find(id))   
+        return resultado
+        
+
+class SetGroups(SetCommonsQListView):
+    def __init__(self, mem):
+        SetCommonsQListView.__init__(self)
         self.mem=mem
         
     def quit_user_from_all_groups(self, user):
@@ -174,20 +206,20 @@ class SetGroups(SetCommons):
 
 
         
-    def qlistview(self, list, selected):
-        """selected lista de group a seleccionar"""
-        self.order_by_name()
-        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
-        for i,  g in enumerate(self.arr):
-            item = QStandardItem(g.name)
-            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
-            if g in selected:
-                item.setData(Qt.Checked, Qt.CheckStateRole)
-            else:
-                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
-            item.setData(g.id, Qt.UserRole) # Para el role usuario
-            model.setItem(i, 0, item);
-        list.setModel(model)
+#    def qlistview(self, list, selected):
+#        """selected lista de group a seleccionar"""
+#        self.order_by_name()
+#        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
+#        for i,  g in enumerate(self.arr):
+#            item = QStandardItem(g.name)
+#            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
+#            if g in selected:
+#                item.setData(Qt.Checked, Qt.CheckStateRole)
+#            else:
+#                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
+#            item.setData(g.id, Qt.UserRole) # Para el role usuario
+#            model.setItem(i, 0, item);
+#        list.setModel(model)
         
         
 class Group:
@@ -260,9 +292,9 @@ class SetLanguages(SetCommons):
 #        cfgfile.qtranslator.load("didyoureadme_" + cfgfile.language + ".qm")
 #    qApp.installTranslator(cfgfile.qtranslator);
         
-class SetUsers(SetCommons):
+class SetUsers(SetCommonsQListView):
     def __init__(self, mem):
-        SetCommons.__init__(self)
+        SetCommonsQListView.__init__(self)
         self.mem=mem
     
 
@@ -291,23 +323,23 @@ class SetUsers(SetCommons):
         
 
     
-    def qlistview(self, list, inactivos, selected):
-        """inactivos si muestra inactivos
-        selected lista de user a seleccionar"""
-        self.order_by_name()
-        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
-        for i,  u in enumerate(self.arr):
-            if inactivos==False and u.active==False:
-                continue
-            item = QStandardItem(u.name)
-            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
-            if u in selected.arr:
-                item.setData(Qt.Checked, Qt.CheckStateRole)
-            else:
-                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
-            item.setData(u.id, Qt.UserRole) # Para el role usuario
-            model.setItem(i, 0, item);
-        list.setModel(model)
+#    def qlistview(self, list, inactivos, selected):
+#        """inactivos si muestra inactivos
+#        selected lista de user a seleccionar"""
+#        self.order_by_name()
+#        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
+#        for i,  u in enumerate(self.arr):
+#            if inactivos==False and u.active==False:
+#                continue
+#            item = QStandardItem(u.name)
+#            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
+#            if u in selected.arr:
+#                item.setData(Qt.Checked, Qt.CheckStateRole)
+#            else:
+#                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
+#            item.setData(u.id, Qt.UserRole) # Para el role usuario
+#            model.setItem(i, 0, item);
+#        list.setModel(model)
            
     def qtablewidget(self, table):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
@@ -365,26 +397,23 @@ class User:
         return "{0} ({1})".format(self.name, self.id)
                 
                 
-    def isDeletable(self, mem):
-        for g in mem.groups.arr:
-            if self  in g.members and g.id!=1:
+    def isDeletable(self):
+        for g in self.mem.data.groups.arr:
+            if g.members.find(self.id)!=None and g.id!=1:
                 return False
         
-        cur=mem.con.cursor()
+        cur=self.mem.con.cursor()
         cur.execute("select count(*) from userdocuments where id_users=%s", (self.id, ))
-        if cur.fetchone()[0]>0:
+        num=cur.fetchone()[0]
+        cur.close()
+        if num>0:
             return False
         return True
         
-    def delete(self, mem):
-        #Borra de la base de datos
-        cur=mem.con.cursor()
+    def delete(self):
+        cur=self.mem.con.cursor()
         cur.execute("delete from users where id=%s", (self.id, ))
-        #Borra el grupo de self.mem.users
-        mem.con.commit()
         cur.close()
-        mem.users.remove(self)
-        mem.groups.group(1).members.remove(self)#Añade el usuario al grupo uno. el de todos
         
     def getHash(self):
         if self.id==None:
@@ -446,7 +475,7 @@ class TUpdateData(threading.Thread):
         #Consulta
         for i, d in enumerate(self.mem.data.documents_active.arr):
             if d.isExpired()==False:
-                d.updateNums(cur)            
+                d.updateNums()            
         cur.close()  
         self.mem.disconnect(con)
 
@@ -460,7 +489,6 @@ class TSend(threading.Thread):
     def run(self):    
         con=self.mem.connect()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXI´ON DE PARAMETRO
         cur=con.cursor()
-        cur2=con.cursor()
         #5 minutos delay
         cur.execute("select id_documents, id_users from userdocuments, documents where userdocuments.id_documents=documents.id and sent is null and now() > datetime + interval '1 minute';")
         for row in cur:
@@ -484,10 +512,9 @@ class TSend(threading.Thread):
                     f.close()          
                 except:
                     print ("TSend error al escribir log")
-            mail.document.updateNums(cur2)
+            mail.document.updateNums()
             time.sleep(5)                  
         cur.close()
-        cur2.close()
         self.mem.disconnect(con)
         
             
@@ -657,8 +684,9 @@ class SetDocuments(SetCommons):
             d=Document(self.mem, row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'], row['file'],  row['hash'], row['id']  )
             self.append(d)        
         for d in self.arr:
-            d.updateNums(cur)
+            d.updateNums()
         cur.close()
+
     def qtablewidget(self, table):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
@@ -688,18 +716,7 @@ class SetDocuments(SetCommons):
         table.setCurrentCell(len(self.arr)-1, 0)       
         table.clearSelection()    
 
-    def updateTablesOnlyNums(self, table):
-            for i, d in enumerate(self.arr):
-                table.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
-                table.item(i, 1).setTextAlignment(Qt.AlignHCenter)
-                table.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
-                table.item(i, 2).setTextAlignment(Qt.AlignHCenter)
-                table.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
-                table.item(i, 3).setTextAlignment(Qt.AlignHCenter)
-                if d.numreads==d.numplanned and d.numplanned>0:
-                    for column in range( 1, 4):
-                        table.item(i, column).setBackgroundColor(QColor(198, 205, 255))
-       
+
     def order_by_datetime(self):
         """Ordena por datetime"""
         self.arr=sorted(self.arr, key=lambda d: d.datetime)        
@@ -852,11 +869,11 @@ class Document:
         
         
         
-    def save(self, mem):
+    def save(self):
         """No se puede modificar, solo insertar de nuevo
         Modificar es cambiar closed
         Si hubiera necesidad de modificar ser´ia borrar y crear"""
-        cur=mem.con.cursor()        
+        cur=self.mem.con.cursor()        
         if self.id==None:
             cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id, file", (self.datetime, self.name, self.comment, self.filename, self.hash,  self.expiration))
             self.id=cur.fetchone()[0]
@@ -868,17 +885,18 @@ class Document:
             os.system("mv {} {}".format("/tmp/" +self.hash, dirDocs+self.hash))
         else:
             cur.execute("update documents set expiration=%s where id=%s", (self.expiration, self.id ))
-        mem.con.commit()
         cur.close()
         
 
-    def updateNums(self, cur):
+    def updateNums(self):
+        cur=self.mem.con.cursor()
         cur.execute("select count(*) from userdocuments where id_documents=%s and sent is not null;", (self.id, ))
         self.numsents=cur.fetchone()[0]
         cur.execute("select count(*) from userdocuments where id_documents=%s and numreads>0;", (self.id, ))
         self.numreads=cur.fetchone()[0]
         cur.execute("select count(*) from userdocuments where id_documents=%s;", (self.id, ))
         self.numplanned=cur.fetchone()[0]
+        cur.close()
 class UserDocument:
     def __init__(self, user, document, mem):
         self.user=user

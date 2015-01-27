@@ -33,9 +33,9 @@ class frmUsersIBM(QDialog, Ui_frmUsersIBM):
         self.user.mail=self.txtMail.text()
         self.user.active=c2b(self.chkActive.checkState())
         self.user.save()
-        if type==1:#new
+        if self.type==1:#new
             self.mem.data.users_active.append(self.user)
-            self.mem.groups.group(1).members.append(self.user)#Añade el usuario al grupo uno. el de todos
+            self.mem.data.groups.find(1).members.append(self.user)#Añade el usuario al grupo uno. el de todos
         else:#edit
             if self.was_active==True:
                 if self.user.active==False:#Cambia
@@ -46,7 +46,7 @@ class frmUsersIBM(QDialog, Ui_frmUsersIBM):
                 if self.user.active==True:#Cambia
                     self.mem.data.users_active.append(self.user)
                     self.mem.data.users_inactive.remove(self.user)
-                    self.mem.groups.group(1).members.append(self.user)#Añade el usuario al grupo uno. el de todos     
+                    self.mem.data.groups.find(1).members.append(self.user)#Añade el usuario al grupo uno. el de todos     
         self.mem.con.commit()
         self.accept()
         
