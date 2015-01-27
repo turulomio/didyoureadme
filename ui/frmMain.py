@@ -230,8 +230,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     @pyqtSlot()      
     def on_wym_changed(self):
-        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
-
+        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
 
     def updateData(self):
         """Parsea el directorio readed y actualizada dotos"""
@@ -436,17 +435,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
     @pyqtSlot()   
     def on_actionDocumentDeleteAdmin_triggered(self):
         """Deletes everything"""
-        #Borra el registro de base de datosv
-        selected=None
-        for i in self.tblDocuments.selectedItems():#itera por cada item no row.
-            selected=self.listed_documents[i.row()]
-        selected.delete()#Delete ya lo quita del array self.mem.documents
+        self.documents.selected.delete()#Delete ya lo quita del array self.mem.documents
         self.mem.con.commit()
-        if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
-            self.mem.documents.remove(selected)
-        
-        self.mem.data.documents_set(c2b(self.chkDocumentsExpired.checkState())).qtablewidget(self.tblDocuments)
-
+        self.documents.remove(self.documents.selected)
+        self.documents.qtablewidget(self.tblDocuments)
         
     @pyqtSlot()   
     def on_actionGroupEdit_triggered(self):
@@ -537,7 +529,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.exec_(self.tblDocuments.mapToGlobal(pos))
 
     def on_tblDocuments_itemSelectionChanged(self):
-        print (self.documents.__class__)
         self.documents.selected=None
         for i in self.tblDocuments.selectedItems():
             if i.column()==0:#only once per row
