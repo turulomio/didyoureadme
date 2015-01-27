@@ -85,7 +85,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                     ud=UserDocument(u, self.document, self.mem)
                     ud.save()
             self.mem.data.documents_active.append(self.document)
-            self.mem.data.documents_active.order_by_name()
+            self.mem.data.documents_active.order_by_datetime()
             self.document.updateNums()
         else:
             self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone)
@@ -93,7 +93,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             if self.document.expiration>now(self.mem.cfgfile.localzone):
                 self.mem.data.documents_inactive.remove(self.document)
                 self.mem.data.documents_active.append(self.document)        
-                self.mem.data.documents_active.order_by_name()
+                self.mem.data.documents_active.order_by_datetime()
         self.mem.con.commit()
         self.done(0)
 

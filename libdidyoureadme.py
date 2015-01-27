@@ -173,6 +173,7 @@ class SetGroups(SetCommonsQListView):
             if todelete!=None:
                 g.members.remove(user)
                 g.save()# Para no grabar en bd salvoi que encuente se pone aqu´i
+                todelete=None
                     
            
     def qtablewidget(self, table):
@@ -720,14 +721,7 @@ class SetDocuments(SetCommons):
     def order_by_datetime(self):
         """Ordena por datetime"""
         self.arr=sorted(self.arr, key=lambda d: d.datetime)        
-            
-#    def document(self, id):
-#        for d in self.arr:
-#            if d.id==id:
-#                return d
-#        return None
-#        print ("Document not found")
-        
+
     def document_from_hash(self, hash):
         for d in self.arr:
             if d.hash==hash:
@@ -796,9 +790,9 @@ class DBData:
     def load(self):
         inicio=datetime.datetime.now()
         self.users_active=SetUsers(self.mem)
-        self.users_active.load("select * from users where active=true")
+        self.users_active.load("select * from users where active=true order by name")
         self.users_inactive=SetUsers(self.mem)
-        self.users_inactive.load("select * from users where active=false")    
+        self.users_inactive.load("select * from users where active=false order by name")    
         self.groups=SetGroups(self.mem)
         self.groups.load( "select * from groups order by name")
         self.documents_active=SetDocuments(self.mem)

@@ -207,7 +207,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
         m.exec_()
         
-        
     def on_actionTablesUpdate_triggered(self):
         self.users.qtablewidget(self.tblUsers)
         self.mem.data.groups.qtablewidget(self.tblGroups)
@@ -226,9 +225,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
             QCoreApplication.processEvents()
             self.tupdatedata=TUpdateData(self.mem)
             self.tupdatedata.start()      
-        
-            
-
 
     @pyqtSlot()      
     def on_actionAbout_triggered(self):
@@ -454,8 +450,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_actionUserDelete_triggered(self):            
         if self.users.selected.isDeletable()==True:
             self.users.selected.delete()
-            self.mem.con.commit()
             self.mem.data.groups.quit_user_from_all_groups(self.users.selected)
+            self.mem.con.commit()
             self.users.remove(self.users.selected)
             self.users.qtablewidget(self.tblUsers)
             self.mem.data.groups.qtablewidget(self.tblGroups)
