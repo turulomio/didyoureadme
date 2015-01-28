@@ -1,4 +1,4 @@
-import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  pytz,  smtplib,  urllib.parse, threading,  time,  shutil
+import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  pytz,  smtplib,  urllib.parse, threading,  time
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
@@ -688,7 +688,7 @@ class SetDocuments(SetCommons):
         cur=self.mem.con.cursor()
         cur.execute(sql)
         for row in cur:
-            d=Document(self.mem).init__create( row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'], row['file'],  row['hash'], row['id']  )
+            d=Document(self.mem).init__create( row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'],  row['hash'], row['id']  )
             self.append(d)        
         for d in self.arr:
             d.updateNums()
@@ -802,7 +802,7 @@ class DBData:
         self.groups=SetGroups(self.mem)
         self.groups.load( "select * from groups order by name")
         self.documents_active=SetDocuments(self.mem)
-        self.documents_active.load("select * from documents where expiration>now() order by datetime")
+        self.documents_active.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration>now() order by datetime")
         self.documents_inactive=SetDocuments(self.mem)#Carga solo los de un mes y un año.
         print("Cargando dbdata",  datetime.datetime.now()-inicio)
         
@@ -830,7 +830,7 @@ class Document:
     def __init__(self, mem):
         self.mem=mem
         
-    def init__create(self,  dt, name, filename, comment, expiration, oid=None,   hash='Not calculated',  id=None):
+    def init__create(self,  dt, name, filename, comment, expiration,   hash='Not calculated',  id=None):
         self.id=id
         self.datetime=dt
         self.name=name
@@ -841,15 +841,14 @@ class Document:
         self.numsents=0
         self.numplanned=0
         self.expiration=expiration
-        self.oid=None
         return self
         
     def init__from_hash(self, hash):
         cur=self.mem.con.cursor()
-        cur.execute("select * from documents where hash=%s", (hash, ))
+        cur.execute("select  id, datetime, title, comment, filename, hash, expiration  from documents where hash=%s", (hash, ))
         if cur.rowcount==1:
             row=cur.fetchone()
-            self.init__create(row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'], row['file'],  row['hash'], row['id']  )
+            self.init__create(row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'],  row['hash'], row['id']  )
             cur.close()
             return self
         elif cur.rowcount>1:
@@ -877,7 +876,7 @@ class Document:
     def delete(self):
         #Borra el registro de base de datosv
         cur=self.mem.con.cursor()
-        cur.execute("select lo_unlink(%s)", (self.oid, ))
+#        cur.execute("select lo_unlink(%s)", (self.oid, ))
         cur.execute("delete from documents where id=%s", (self.id, ))        
         cur.close()
         
@@ -895,18 +894,37 @@ class Document:
         Si hubiera necesidad de modificar ser´ia borrar y crear"""
         cur=self.mem.con.cursor()        
         if self.id==None:
-            cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id, file", (self.datetime, self.name, self.comment, self.filename, self.hash,  self.expiration))
+            cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id", (self.datetime, self.name, self.comment, self.filename, self.hash,  self.expiration))
             self.id=cur.fetchone()[0]
             self.hash=self.getHash()
-            shutil.copyfile(self.filename, "/tmp/"+self.hash)#Copia a /tmp (permisos postgres)
+#            shutil.copyfile(self.filename, "/tmp/"+self.hash)#Copia a /tmp (permisos postgres)#REMOVE WHEN ELIMINATIN OID
             cur.execute("update documents set hash=%s where id=%s", (self.hash,  self.id))
-            cur.execute("update documents set file=lo_import(%s) where id=%s returning file", ("/tmp/"+self.hash,  self.id))
-            self.oid=cur.fetchone()[0]
-            os.system("mv {} {}".format("/tmp/" +self.hash, dirDocs+self.hash))
+#            cur.execute("update documents set file=lo_import(%s) where id=%s returning file", ("/tmp/"+self.hash,  self.id))
+#            self.oid=cur.fetchone()[0]
+            self.file_to_bytea(self.filename)
+            self.bytea_to_file(dirDocs+self.hash)
+#            os.system("mv {} {}".format("/tmp/" +self.hash, dirDocs+self.hash))
         else:
             cur.execute("update documents set expiration=%s where id=%s", (self.expiration, self.id ))
         cur.close()
         
+    def bytea_to_file(self, filename):
+#        print("bytea_to_file", filename)
+        cur=self.mem.con.cursor()
+        cur.execute("SELECT fileb FROM documents where id=%s and fileb is not null;", (self.id, ))#Si es null peta el open, mejor que devuelva fals3ee3 que pasar a variable
+        if cur.rowcount==1:
+            open(filename, "wb").write(cur.fetchone()[0])
+            cur.close()
+            return True
+        cur.close()
+        return False
+        
+    def file_to_bytea(self, filename):
+#        print("file_to_bytea", filename)
+        bytea=open(filename,  "rb").read()        
+        cur=self.mem.con.cursor()
+        cur.execute("update documents set fileb=%s where id=%s", (bytea, self.id))
+        cur.close()
 
     def updateNums(self):
         cur=self.mem.con.cursor()
@@ -917,6 +935,7 @@ class Document:
         cur.execute("select count(*) from userdocuments where id_documents=%s;", (self.id, ))
         self.numplanned=cur.fetchone()[0]
         cur.close()
+        
 class UserDocument:
     def __init__(self, user, document, mem):
         self.user=user

@@ -34,7 +34,6 @@ install:
 	install -o root -d $(PREFIXSQL)
 
 	install -m 755 -o root didyoureadme.py $(PREFIXBIN)/didyoureadme
-	install -m 755 -o root didyoureadme-backup $(PREFIXBIN)
 	install -m 644 -o root libdidyoureadme.py libdbupdates.py $(PREFIXLIB)
 	install -m 644 -o root ui/*.py $(PREFIXLIB)
 	install -m 644 -o root images/*.py $(PREFIXLIB)
@@ -47,7 +46,6 @@ install:
 
 uninstall:
 	rm $(PREFIXBIN)/didyoureadme
-	rm $(PREFIXBIN)/didyoureadme-backup
 	rm -Rf $(PREFIXLIB)
 	rm -Rf $(PREFIXSHARE)
 	rm -fr $(PREFIXPIXMAPS)/didyoureadme.png

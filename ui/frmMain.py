@@ -1,4 +1,5 @@
 import   datetime,  urllib.request,  multiprocessing,  sys
+import shutil
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from libdidyoureadme import *
@@ -200,13 +201,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_trayIcon_activated(self, reason):
         print ("hola")
 
-    @pyqtSlot()      
-    def on_actionBackup_activated(self):
-        QProcess.startDetached("didyoureadme-backup", [self.mem.cfgfile.server, self.mem.cfgfile.port, self.mem.cfgfile.user, self.mem.cfgfile.database] )
-        m=QMessageBox()
-        m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
-        m.exec_()
-        
+#    @pyqtSlot()      
+#    def on_actionBackup_activated(self):
+#        QProcess.startDetached("didyoureadme-backup", [self.mem.cfgfile.server, self.mem.cfgfile.port, self.mem.cfgfile.user, self.mem.cfgfile.database] )
+#        m=QMessageBox()
+#        m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
+#        m.exec_()
+#        
     @pyqtSlot()      
     def on_actionTablesUpdate_activated(self):
         inicio=datetime.datetime.now()
@@ -611,7 +612,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.wym.hide()
         else:
             self.mem.data.documents_inactive=SetDocuments(self.mem)
-            self.mem.data.documents_inactive.load("select * from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
+            self.mem.data.documents_inactive.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
             self.documents=self.mem.data.documents_inactive
             self.documents.qtablewidget(self.tblDocuments)
             self.wym.show()
