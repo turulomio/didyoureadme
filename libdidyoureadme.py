@@ -434,14 +434,18 @@ class User:
             cur.execute("update users set datetime=%s, post=%s, name=%s, mail=%s, active=%s where id=%s", (self.datetime, self.post, self.name, self.mail,  self.active, self.id))
         cur.close()
 
-    def updateSent(self, cur):
+    def updateSent(self):
+        cur=self.mem.con.cursor()
         cur.execute("select count(*) from userdocuments where id_users=%s", (self.id, ))
         self.sent= cur.fetchone()[0]
+        cur.close()
 
 
-    def updateRead(self, cur):
+    def updateRead(self):
+        cur=self.mem.con.cursor()
         cur.execute("select count(*) from userdocuments where id_users=%s and read is not null", (self.id, ))
         self.read=cur.fetchone()[0]
+        cur.close()
 
 
 class TUpdateData(threading.Thread):
@@ -457,7 +461,8 @@ class TUpdateData(threading.Thread):
         for file in os.listdir(dirReaded):
             try:
                 (userhash, documenthash)=file.split("l")
-                ud=UserDocument(self.mem.users.user_from_hash(userhash), self.mem.documents.document_from_hash(documenthash), self.mem)
+                d=Document(self.mem).init__from_hash(documenthash)
+                ud=UserDocument(self.mem.data.users_all().user_from_hash(userhash), d, self.mem)
                 ud.readed( self.mem.cfgfile.localzone)
                 con.commit()
             except:
@@ -470,8 +475,8 @@ class TUpdateData(threading.Thread):
             
         #Actualiza users
         for u in self.mem.data.users_active.arr:
-            u.updateSent(cur)
-            u.updateRead(cur)
+            u.updateSent()
+            u.updateRead()
             
         #Consulta
         for i, d in enumerate(self.mem.data.documents_active.arr):
@@ -682,7 +687,7 @@ class SetDocuments(SetCommons):
         cur=self.mem.con.cursor()
         cur.execute(sql)
         for row in cur:
-            d=Document(self.mem, row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'], row['file'],  row['hash'], row['id']  )
+            d=Document(self.mem).init__create( row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'], row['file'],  row['hash'], row['id']  )
             self.append(d)        
         for d in self.arr:
             d.updateNums()
@@ -722,12 +727,12 @@ class SetDocuments(SetCommons):
         """Ordena por datetime"""
         self.arr=sorted(self.arr, key=lambda d: d.datetime)        
 
-    def document_from_hash(self, hash):
-        for d in self.arr:
-            if d.hash==hash:
-                return d
-        print ("Document not found from hash")
-        return None
+#    def document_from_hash(self, hash):
+#        for d in self.arr:
+#            if d.hash==hash:
+#                return d
+#        print ("Document not found from hash")
+#        return None
 
 
 class Country:
@@ -821,8 +826,10 @@ class DBData:
 
 
 class Document:
-    def __init__(self, mem,  dt, name, filename, comment, expiration, oid=None,   hash='Not calculated',  id=None):
+    def __init__(self, mem):
         self.mem=mem
+        
+    def init__create(self,  dt, name, filename, comment, expiration, oid=None,   hash='Not calculated',  id=None):
         self.id=id
         self.datetime=dt
         self.name=name
@@ -834,6 +841,24 @@ class Document:
         self.numplanned=0
         self.expiration=expiration
         self.oid=None
+        return self
+        
+    def init__from_hash(self, hash):
+        cur=self.mem.con.cursor()
+        cur.execute("select * from documents where hash=%s", (hash, ))
+        if cur.rowcount==1:
+            row=cur.fetchone()
+            self.init__create(row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'], row['file'],  row['hash'], row['id']  )
+            cur.close()
+            return self
+        elif cur.rowcount>1:
+            print ("There are several documents with the same hash")
+            cur.close()
+            return None
+        else:
+            cur.close()
+            print ("I couldn't create document from hash {}".format(hash ))
+            return None
         
     def __repr__(self):
         return "{0} ({1})".format(self.name, self.id)

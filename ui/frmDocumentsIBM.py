@@ -76,7 +76,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 m.exec_()          
                 return            
             #Genera el documento
-            self.document=Document(self.mem, now(self.mem.cfgfile.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.toPlainText(),  dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone))
+            self.document=Document(self.mem).init__create( now(self.mem.cfgfile.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.toPlainText(),  dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone))
             self.document.save()
             
             #Genera el userdocument
