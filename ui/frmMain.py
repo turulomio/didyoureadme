@@ -89,7 +89,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             res=self.mem.check_admin_mode(input[0])
             if input[1]==True:
                 if res==None:
-                    self.setWindowTitle(self.trUtf8("DidYouReadMe 2010-{0} © (Admin mode)").format(version_date.year))
+                    self.setWindowTitle(self.trUtf8("DidYouReadMe 2013-{0} © (Admin mode)").format(version_date.year))
                     self.setWindowIcon(self.mem.qicon_admin())
                     self.update()
                     self.mem.set_admin_mode(input[0])
@@ -99,7 +99,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
                     sys.exit(2)
                 elif res==True:
                     self.mem.adminmode=True
-                    self.setWindowTitle(self.trUtf8("Xulpymoney 2010-{0} © (Admin mode)").format(version_date.year))
+                    self.setWindowTitle(self.trUtf8("DidYouReadMe 2013-{0} © (Admin mode)").format(version_date.year))
                     self.setWindowIcon(self.mem.qicon_admin())
                     self.update()
                     m.setText(self.trUtf8("You are logged as an administrator"))

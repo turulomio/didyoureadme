@@ -13,7 +13,7 @@ mkdir -p $DIRBINLINUX
 echo "Este script crea el fichero $FILE para ser subido a sourceforge"
 echo "En Linux hay que tener instalado cx_freeze"
 
-rm $CWD/dist/*
+rm $CWD/dist/didyoureadme-*
 
 #GENERA SRC LINUX
 make compile
@@ -32,6 +32,7 @@ cp      Makefile \
         didyoureadme.py \
         didyoureadme.pro \
         libdidyoureadme.py \
+        libdbupdates.py \
         didyoureadme.desktop \
         didyoureadme-backup \
         $DIRSRCLINUX
@@ -39,8 +40,7 @@ cp      Makefile \
 cp      i18n/*.ts \
         $DIRSRCLINUX/i18n
 
-cp 	sql/didyoureadme.data \
-        sql/didyoureadme.sql \
+cp 	sql/didyoureadme.sql \
         $DIRSRCLINUX/sql
 
 cp 	ui/frm* \

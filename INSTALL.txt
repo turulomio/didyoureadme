@@ -27,6 +27,5 @@ To uninstall use the next command to make a clean uninstall
 Create a postgresql database:
   # createdb -U postgres didyoureadme
   # psql -U postgres didyoureadme < sql/didyoureadme.sql
-  # psql -U postgres didyoureadme < sql/didyoureadme.data
 
 Run didyoureadme and configure settings

@@ -18,7 +18,7 @@ class frmAbout(QDialog, Ui_frmAbout):
         if name:
             self.setObjectName(name)
         self.setupUi(self)
-        self.lblVersion.setText(self.trUtf8("Version {0}").format(libdidyoureadme.version))
+        self.lblVersion.setText(self.trUtf8("version {0}").format(libdidyoureadme.version_date))
         self.textBrowser.setHtml(
             self.trUtf8("Web page is at <a href=\"http://didyoureadme.sourceforge.net\">http://didyoureadme.sourceforge.net</a><p> <p>")+
             self.trUtf8("This app has been developed by Mariano Muñoz.<p>")+

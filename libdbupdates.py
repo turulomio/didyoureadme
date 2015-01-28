@@ -2,10 +2,10 @@ from libdidyoureadme import *
 class Update:
     """DB update system
     Cuando vaya a crear una nueva modificaci´on pondre otro if con menor que current date para uqe se ejecute solo una vez al final, tendra que 
-    poner al final self.me.set_database_version(current date)
+    poner al final self.me.set_database_version_date(current date)
     
-    To check if this class works fine, you must use a subversion 
-        Subversion      DBVersion
+    To check if this class works fine, you must use a subversion_date 
+        Subversion_date      DBversion_date
         1702                None
     
     El sistema update sql ya tiene globals y  mete la versi´on de la base de datos del desarrollador, no obstante,
@@ -17,16 +17,16 @@ class Update:
     def __init__(self, mem):
         self.mem=mem
         
-        self.dbversion=self.get_database_version()     
-        if self.dbversion==None:
+        self.dbversion_date=self.get_database_version_date()     
+        if self.dbversion_date==None:
             cur=self.mem.con.cursor()
             cur.execute("CREATE TABLE globals (id_globals integer NOT NULL,  global text,  value text);")
             cur.execute("ALTER TABLE documents add COLUMN datetime_end timestamp with time zone default now() + interval '3 months' not null;")
             cur.execute("ALTER TABLE documents add COLUMN file oid;")
             cur.close()
             self.mem.con.commit()
-            self.set_database_version(201501260851)
-        if self.dbversion<201501261046: #Documentos a base de datos
+            self.set_database_version_date(201501260851)
+        if self.dbversion_date<201501261046: #Documentos a base de datos
         
             print ("**** Migrating old didyoureadme files")
             cur=self.mem.con.cursor()
@@ -44,8 +44,8 @@ class Update:
             cur2.close()
             cur.close()
             self.mem.con.commit()
-            self.set_database_version(201501261046)
-        if self.dbversion<201501261228: #Removes closed and update expiration to 3 months
+            self.set_database_version_date(201501261046)
+        if self.dbversion_date<201501261228: #Removes closed and update expiration to 3 months
             cur=self.mem.con.cursor()
             cur.execute("alter table documents rename datetime_end to expiration;")
             cur.execute("alter table documents drop column closed;")      
@@ -56,12 +56,12 @@ class Update:
             cur2.close()
             cur.close()
             self.mem.con.commit()
-            self.set_database_version(201501261228)
-        if self.dbversion<201501261900: #Removes closed and update expiration to 3 months
+            self.set_database_version_date(201501261228)
+        if self.dbversion_date<201501261900: #Removes closed and update expiration to 3 months
             cur=self.mem.con.cursor()
             cur.execute("insert into globals (id_globals,global,value) values (%s,%s,%s);", (6,"Admin mode", None ))
             self.mem.con.commit()
-            self.set_database_version(201501261900)   
+            self.set_database_version_date(201501261900)   
             
 
         """AFTER EXECUTING I MUST RUN SQL UPDATE SCRIPT TO UPDATE FUTURE INSTALLATIONS
@@ -87,7 +87,7 @@ class Update:
         
    
    
-    def get_database_version(self):
+    def get_database_version_date(self):
         """REturns None or an Int"""
         
         cur=self.mem.con.cursor()
@@ -105,17 +105,17 @@ class Update:
             return None
         resultado=cur.fetchone()['value']
         cur.close()
-        self.dbversion=int(resultado)
-        return self.dbversion
+        self.dbversion_date=int(resultado)
+        return self.dbversion_date
         
-    def set_database_version(self, valor):
+    def set_database_version_date(self, valor):
         """Tiene el commit"""
-        print ("**** Updating database from {} to {}".format(self.dbversion, valor))
+        print ("**** Updating database from {} to {}".format(self.dbversion_date, valor))
         cur=self.mem.con.cursor()
-        if self.dbversion==None:
-            cur.execute("insert into globals (id_globals,global,value) values (%s,%s,%s);", (1,"Version", valor ))
+        if self.dbversion_date==None:
+            cur.execute("insert into globals (id_globals,global,value) values (%s,%s,%s);", (1,"version_date", valor ))
         else:
-            cur.execute("update globals set global=%s, value=%s where id_globals=1;", ("Version", valor ))
+            cur.execute("update globals set global=%s, value=%s where id_globals=1;", ("version_date", valor ))
         cur.close()        
-        self.dbversion=valor
+        self.dbversion_date=valor
         self.mem.con.commit()

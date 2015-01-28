@@ -1,9 +1,0 @@
-20121220 Bottle da erro 104, reiniciado remote machine , creo es proiteccion de descarga windows
-20121220 Meter localzone en settings
-20121308 Hacer un informe de que documentos no ha leído
-20130116 Contador de conexiones http
-20130118 Si en correo se mete mmmarí@gmail.com con acento falla, validar el campo a caracteres permitidos
-20130421 Hacer icono en barra de tareas y minimizar.
-20130708 Los enlaces no se abren con tipos mime siempre ventanas de firefox. 
-20130709 Cuando pase a closed, ya no se mostrará, pero buscará en close para que salga en estadísticas
-20140128 Aviso de nueva versión no funciona
