@@ -34,7 +34,6 @@ cp      Makefile \
         libdidyoureadme.py \
         libdbupdates.py \
         didyoureadme.desktop \
-        didyoureadme-backup \
         $DIRSRCLINUX
 
 cp      i18n/*.ts \

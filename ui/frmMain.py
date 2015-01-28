@@ -71,15 +71,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
             return
             
         self.accesspass=True#Se usa en el destructor
-            
         
         self.mem.con=self.mem.connect()
-        
-
+    
         ##Update database
         libdbupdates.Update(self.mem)
-        
-        
+                
         self.mem.data.load()
 
         ##Admin mode
@@ -112,8 +109,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.server = multiprocessing.Process(target=self.httpserver, args=())
         self.server.start()
 
-
-        
         self.tblGroups.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
         self.tblGroups.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
         self.tblUsers.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
