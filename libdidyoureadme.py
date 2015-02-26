@@ -110,7 +110,7 @@ class SetCommons:
                 
     def clone(self,  *initparams):
         """Returns other Set object, with items referenced, ojo con las formas de las instancias
-        initparams son los parametros de iniciaci´on de la clase"""
+        initparams son los parametros de iniciación de la clase"""
         result=self.__class__(*initparams)#Para que coja la clase del objeto que lo invoca
         for a in self.arr:
             result.append(a)
@@ -118,8 +118,8 @@ class SetCommons:
         
     def union(self,  set,  *initparams):
         """Returns a new set, with the union comparing id
-        initparams son los parametros de iniciaci´on de la clse"""        
-        resultado=self.__class__(*initparams)#Para que coja la clase del objeto que lo invoca SetProduct(self.mem), luego ser´a self.mem
+        initparams son los parametros de iniciación de la clse"""        
+        resultado=self.__class__(*initparams)#Para que coja la clase del objeto que lo invoca SetProduct(self.mem), luego será self.mem
         for p in self.arr:
             resultado.append(p)
         for p in set.arr:
@@ -149,8 +149,8 @@ class SetCommonsQListView(SetCommons):
         
     def qlistview_getselected(self, list, *initparams):
         """Returns a new set, with the selected in the list
-        initparams son los parametros de iniciaci´on de la clse"""        
-        resultado=self.__class__(*initparams)#Para que coja la clase del objeto que lo invoca SetProduct(self.mem), luego ser´a self.mem   
+        initparams son los parametros de iniciación de la clse"""        
+        resultado=self.__class__(*initparams)#Para que coja la clase del objeto que lo invoca SetProduct(self.mem), luego será self.mem   
         for i in range(list.model().rowCount()):
             if list.model().index(i, 0).data(Qt.CheckStateRole)==Qt.Checked:
                 id=list.model().index(i, 0).data(Qt.UserRole)
@@ -164,7 +164,7 @@ class SetGroups(SetCommonsQListView):
         self.mem=mem
         
     def quit_user_from_all_groups(self, user):
-        """Se quita un usuario de todos los grupos tanto l´ogicamente como f´isicamente"""
+        """Se quita un usuario de todos los grupos tanto lógicamente como físicamente"""
         
         todelete=None#Se usa para no borrar en iteracion
         for g in self.arr:
@@ -173,7 +173,7 @@ class SetGroups(SetCommonsQListView):
                     todelete=u
             if todelete!=None:
                 g.members.remove(user)
-                g.save()# Para no grabar en bd salvoi que encuente se pone aqu´i
+                g.save()# Para no grabar en bd salvoi que encuente se pone aquí
                 todelete=None
                     
            
@@ -417,7 +417,7 @@ class User:
         cur.execute("delete from users where id=%s", (self.id, ))
         cur.close()
         
-    def getHash(self):
+    def calculateHash(self):
         if self.id==None:
             return None
         return hashlib.sha256(("u."+str(self.id)+str(self.datetime)).encode('utf-8')).hexdigest()
@@ -427,7 +427,7 @@ class User:
         if self.id==None:
             cur.execute("insert into users (datetime,post,name,mail, hash, active) values(%s,%s,%s,%s,%s, %s) returning id ", (self.datetime, self.post, self.name, self.mail, self.hash, self.active))
             self.id=cur.fetchone()[0]
-            self.hash=self.getHash()
+            self.hash=self.calculateHash()
             self.sent=0
             self.read=0
             cur.execute("update users set hash=%s where id=%s", (self.hash, self.id))
@@ -494,7 +494,7 @@ class TSend(threading.Thread):
 
     
     def run(self):    
-        con=self.mem.connect()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXI´ON DE PARAMETRO
+        con=self.mem.connect()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXIóN DE PARAMETRO
         cur=con.cursor()
         #5 minutos delay
         cur.execute("select id_documents, id_users from userdocuments, documents where userdocuments.id_documents=documents.id and sent is null and now() > datetime + interval '1 minute';")
@@ -544,7 +544,7 @@ class Mail:
 
     def message(self):
         def weekday(noww):
-            """Se hace esta funci´on para que no haya problemas con la localizaci´on de %a"""
+            """Se hace esta función para que no haya problemas con la localización de %a"""
             if noww.isoweekday()==1:
                 return "Mon"
             if noww.isoweekday()==2:
@@ -561,7 +561,7 @@ class Mail:
                 return "Sun"
                 
         def month(noww):
-            """Se hace esta funci´on para que no haya problemas con la localizaci´on de %b"""
+            """Se hace esta función para que no haya problemas con la localización de %b"""
             if noww.month==1:
                 return "Jan"
             elif noww.month==2:
@@ -671,7 +671,7 @@ class SetCountries(SetCommons):
                 combo.setCurrentIndex(combo.findData(country.id))
 
     def qcombobox_translation(self, combo,  country=None):
-        """Función que carga en un combo pasado como parámetro con los pa´ises que tienen traducci´on""" 
+        """Función que carga en un combo pasado como parámetro con los países que tienen traducción""" 
         for cu in [self.find("es"),self.find("fr"),self.find("ro"),self.find("ru"),self.find("en") ]:
             combo.addItem(cu.qicon(), cu.name, cu.id)
 
@@ -684,7 +684,7 @@ class SetDocuments(SetCommons):
         self.mem=mem #solo se usa para conexion, los datos se guardan en arr
                 
     def load(self, sql):
-        """Carga seg´un el sql pasado debe ser un select * from documents ...."""
+        """Carga según el sql pasado debe ser un select * from documents ...."""
         cur=self.mem.con.cursor()
         cur.execute(sql)
         for row in cur:
@@ -805,9 +805,7 @@ class DBData:
         self.documents_active.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration>now() order by datetime")
         self.documents_inactive=SetDocuments(self.mem)#Carga solo los de un mes y un año.
         print("Cargando dbdata",  datetime.datetime.now()-inicio)
-        
 
-        
     def users_all(self):
         return self.users_active.union(self.users_inactive, self.mem)
             
@@ -863,49 +861,62 @@ class Document:
     def __repr__(self):
         return "{0} ({1})".format(self.name, self.id)
         
+    def hasPendingMails(self):
+        """Returns a boolean, if the document has pending mails searching in database"""
+        cur=self.mem.con.cursor()
+        cur.execute("select count(*) from userdocuments  where id_documents=%s and sent is null", (self.id, ))
+        number=cur.fetchone()[0]
+        cur.close()
+        if number==0:
+            return False
+        else:
+            return True
+        
     def isExpired(self):
         if self.expiration>now(self.mem.cfgfile.localzone):
             return False
         return True
         
-    def getHash(self):
-        """Se mete el datetime porque sino se podr´ia adivinar el ocmunicado"""
+    def calculateHash(self):
+        """Se mete el datetime porque sino se podría adivinar el ocmunicado"""
         return hashlib.sha256(("d."+str(self.id)+str(self.datetime)).encode('utf-8')).hexdigest()
 
 
     def delete(self):
-        #Borra el registro de base de datosv
+        """Database delete and fisical delete"""
         cur=self.mem.con.cursor()
-#        cur.execute("select lo_unlink(%s)", (self.oid, ))
         cur.execute("delete from documents where id=%s", (self.id, ))        
         cur.close()
+        self.unlink()
         
-        #Borra el fichero de readed
+        
+    def unlink(self):
+        """Physical deletion of the document"""
         try:
             os.unlink(dirDocs+self.hash)
         except:
-            print ("Error deleting {}".format(dirDocs+self.hash))
-        
+            print ("Error deleting {}. Document {}".format(dirDocs+self.hash,  self.id))
         
         
     def save(self):
         """No se puede modificar, solo insertar de nuevo
-        Modificar es cambiar closed
-        Si hubiera necesidad de modificar ser´ia borrar y crear"""
+        Modificar es cambiar expiration
+        It creates or unlinks file in dirDocs según proceda
+        Si hubiera necesidad de modificar sería borrar y crear"""
         cur=self.mem.con.cursor()        
         if self.id==None:
             cur.execute("insert into documents (datetime, title, comment, filename, hash, expiration) values (%s, %s, %s, %s, %s, %s) returning id", (self.datetime, self.name, self.comment, self.filename, self.hash,  self.expiration))
             self.id=cur.fetchone()[0]
-            self.hash=self.getHash()
-#            shutil.copyfile(self.filename, "/tmp/"+self.hash)#Copia a /tmp (permisos postgres)#REMOVE WHEN ELIMINATIN OID
+            self.hash=self.calculateHash()
             cur.execute("update documents set hash=%s where id=%s", (self.hash,  self.id))
-#            cur.execute("update documents set file=lo_import(%s) where id=%s returning file", ("/tmp/"+self.hash,  self.id))
-#            self.oid=cur.fetchone()[0]
             self.file_to_bytea(self.filename)
             self.bytea_to_file(dirDocs+self.hash)
-#            os.system("mv {} {}".format("/tmp/" +self.hash, dirDocs+self.hash))
         else:
             cur.execute("update documents set expiration=%s where id=%s", (self.expiration, self.id ))
+            if self.isExpired()==False:
+                self.bytea_to_file(dirDocs+self.hash)
+            else:
+                self.unlink()
         cur.close()
         
     def bytea_to_file(self, filename):

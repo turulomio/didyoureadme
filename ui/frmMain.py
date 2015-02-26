@@ -159,7 +159,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         from bottle import route, run,  error, static_file
         @route('/get/<filename>/<name>')
         def get(filename,  name):
-            if filename.split("l")[0]!="admin":#Para informes no se contabilizar´a, luego no crea file            
+            if filename.split("l")[0]!="admin":#Para informes no se contabilizará, luego no crea file            
                 f=open(dirReaded+filename, "w")
                 f.close()
             return static_file(filename.split("l")[1], root=dirDocs,  download=name)
@@ -315,6 +315,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
     
     @pyqtSlot()   
     def on_actionDocumentOpen_activated(self):        
+        if os.path.exists(dirDocs+self.documents.selected.hash)==False:
+            m=QMessageBox()
+            m.setIcon(QMessageBox.Information)
+            m.setText(self.trUtf8("File not found"))
+            m.exec_() 
+            return
         QApplication.setOverrideCursor(Qt.WaitCursor);
             
         file=dirTmp+os.path.basename(self.documents.selected.filename)
@@ -376,24 +382,30 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     @pyqtSlot()   
     def on_actionDocumentExpire_activated(self):
-        if self.documents.selected.isExpired():
+        if self.documents.selected.isExpired():#Already expired
             f=frmDocumentsIBM(self.mem, self.documents.selected)
             f.exec_()
-        else:
-            self.documents.selected.expiration=now(self.mem.cfgfile.localzone)
-            self.documents.selected.save()#Update changes expiration
-            self.mem.con.commit()
-            self.mem.data.documents_active.remove(self.documents.selected)    
+        else:#Not expired yet
+            if self.documents.selected.hasPendingMails():
+                m=QMessageBox()
+                m.setIcon(QMessageBox.Information)
+                m.setText(self.trUtf8("You can't expire the document due to it has pending mails"))
+                m.exec_()   
+                return
+            else:
+                self.documents.selected.expiration=now(self.mem.cfgfile.localzone)
+                self.documents.selected.save()#Update changes expiration
+                self.mem.con.commit()
+                self.mem.data.documents_active.remove(self.documents.selected)    
         self.on_actionTablesUpdate_activated()
                 
     @pyqtSlot()   
     def on_actionDocumentDelete_activated(self):
-        """Sólo se puede borrar en 4-5 minutos seg´un base de datos o gui"""
+        """Sólo se puede borrar en 4-5 minutos según base de datos o gui"""
         if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
-            self.documents.selected.delete()#Delete ya lo quita del array self.mem.documents
+            self.documents.selected.delete()
             self.mem.con.commit()
-            #Elimina el documento de self.mem.documents.
-            self.mem.documents.remove(self.documents.selected)
+            self.documents.remove(self.documents.selected)
             self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
         else:
             m=QMessageBox()

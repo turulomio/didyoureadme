@@ -27,7 +27,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             self.cmdFile.setEnabled(False)
             self.txtTitle.setText(self.document.name)
             self.txtComment.setDocument(QTextDocument(self.document.comment))
-            self.teExpiration.setDate(self.document.expiration)
+            self.teExpiration.setDate(self.document.expiration+datetime.timedelta(days=1))
             self.setWindowTitle(self.tr("Change expiration to document"))
             self.cmd.setText(self.tr("Change expiration"))
 
@@ -47,7 +47,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
 
     def on_cmd_pressed(self):
         if self.document==None: #Nuevo
-            #Genera los self.selectedUsers a los que se enviar´a el documento
+            #Genera los self.selectedUsers a los que se enviará el documento
             if self.txtTitle.text()=="":
                 m=QMessageBox()
                 m.setIcon(QMessageBox.Information)
@@ -90,7 +90,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         else:
             self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone)
             self.document.save()
-            if self.document.expiration>now(self.mem.cfgfile.localzone):
+            if self.document.isExpired()==False:
                 self.mem.data.documents_inactive.remove(self.document)
                 self.mem.data.documents_active.append(self.document)        
                 self.mem.data.documents_active.order_by_datetime()

@@ -1,14 +1,14 @@
 from libdidyoureadme import *
 class Update:
     """DB update system
-    Cuando vaya a crear una nueva modificaci´on pondre otro if con menor que current date para uqe se ejecute solo una vez al final, tendra que 
+    Cuando vaya a crear una nueva modificación pondre otro if con menor que current date para uqe se ejecute solo una vez al final, tendra que 
     poner al final self.me.set_database_version_date(current date)
     
     To check if this class works fine, you must use a subversion_date 
         Subversion_date      DBversion_date
         1702                None
     
-    El sistema update sql ya tiene globals y  mete la versi´on de la base de datos del desarrollador, no obstante,
+    El sistema update sql ya tiene globals y  mete la versión de la base de datos del desarrollador, no obstante,
     
     AFTER EXECUTING I MUST RUN SQL UPDATE SCRIPT TO UPDATE FUTURE INSTALLATIONS
     
@@ -111,33 +111,22 @@ $_$ LANGUAGE sql STRICT;""")
         """THis function download all files from database to .didyoureadme/docs/  when needed"""
         print ("**** Regenerating files in .didyoureadme/docs")
         cur=self.mem.con.cursor()
-        cur2=self.mem.con.cursor()
         cur.execute("select id, datetime, title, comment, filename, hash, expiration  from documents;")
-        for row in cur:
-            if os.path.exists(dirDocs+row['hash'])==False:
-                d=Document(self.mem)
-                d.id=row['id']
-                d.bytea_to_file(dirDocs+row['hash'])
-                print ("Copying a .didyoureadme/docs",  row['hash'])
-        cur2.close()
+        for row in cur:                
+            d=Document(self.mem)
+            d.id=row['id']
+            d.expiration=row['expiration']
+            d.hash=row['hash']
+            if d.isExpired():
+                if os.path.exists(dirDocs+d.hash)==True:
+                    d.unlink()
+                    print ("Removing expired document .didyoureadme/docs",  d.hash)
+            else:#Not expired
+                if os.path.exists(dirDocs+d.hash)==False:
+                    d.bytea_to_file(dirDocs+d.hash)
+                    print ("Copying a .didyoureadme/docs",  d.hash)
         cur.close()
         
-#   
-#    def load_files(self):
-#        """THis function download all files from database to .didyoureadme/docs/  when needed"""
-#        print ("**** Regenerating files in .didyoureadme/docs")
-#        cur=self.mem.con.cursor()
-#        cur2=self.mem.con.cursor()
-#        cur.execute("select  id, datetime, title, comment, filename, hash, expiration  from documents;")
-#        for row in cur:
-#            if os.path.exists(dirDocs+row['hash'])==False:
-#                cur2.execute("select lo_export(%s, %s);", (row['file'],"/tmp/"+row['hash']))
-#                os.system("mv /tmp/{} {}".format(row['hash'], dirDocs))
-#                print ("Copying a .didyoureadme/docs",  row['hash'])
-#        cur2.close()
-#        cur.close()
-#        
-   
    
     def get_database_version_date(self):
         """REturns None or an Int"""
