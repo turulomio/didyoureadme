@@ -1,5 +1,6 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from Ui_frmUsersIBM import *
 from libdidyoureadme import *
 
@@ -10,15 +11,15 @@ class frmUsersIBM(QDialog, Ui_frmUsersIBM):
         self.mem=mem
         
         if user==None:   
-            self.lbl.setText(self.trUtf8("Add a new user"))
+            self.lbl.setText(self.tr("Add a new user"))
             self.user=User(self.mem, None, None, None, None, True)
-            self.setWindowTitle(self.trUtf8("New user"))
+            self.setWindowTitle(self.tr("New user"))
             self.chkActive.setEnabled(False)
             self.type=1#New
         else:
             self.user=user
             self.was_active=self.user.active
-            self.setWindowTitle(self.trUtf8("Edit user"))
+            self.setWindowTitle(self.tr("Edit user"))
             self.txtName.setText(self.user.name)
             self.txtPost.setText(self.user.post)
             self.txtMail.setText(self.user.mail)

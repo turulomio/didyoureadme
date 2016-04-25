@@ -1,5 +1,6 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 import psycopg2,  psycopg2.extras
 from Ui_frmAccess import *
@@ -28,7 +29,7 @@ class frmAccess(QDialog, Ui_frmAccess):
             return False
 
     
-    @pyqtSignature("")
+    @pyqtSlot()
     def on_cmdYN_accepted(self):
         
         self.mem.cfgfile.database=(self.txtDB.text())
@@ -38,13 +39,13 @@ class frmAccess(QDialog, Ui_frmAccess):
         self.mem.cfgfile.server=(self.txtServer.text()) 
         if self.check_connection()==False:
             m=QMessageBox()
-            m.setText(self.trUtf8("Connection error. Try it again"))
+            m.setText(self.tr("Connection error. Try it again"))
             m.exec_()        
             self.reject()
             return
         self.mem.cfgfile.save()
         self.accept()
 
-    @pyqtSignature("")
+    @pyqtSlot()
     def on_cmdYN_rejected(self):
         self.reject()

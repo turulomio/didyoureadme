@@ -1,16 +1,16 @@
 #!/usr/bin/python3
 import sys, os, datetime
+import platform
 
-so="src.linux"
-os.environ['didyoureadmeso']=so
-#src.linux src.windows bin.linux bin.windows
-if so=="src.windows" or so=="bin.windows":
-    sys.path.append("../lib/didyoureadme")
-elif so=="src.linux" or so=="bin.linux":
+
+if platform.system()=="Windows":
+    sys.path.append("ui/")
+    sys.path.append("images/")
+else:
     sys.path.append("/usr/lib/didyoureadme")
     
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from frmMain import *
 from libdidyoureadme import dirDocs, dirReaded
 

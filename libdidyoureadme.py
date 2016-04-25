@@ -1,6 +1,7 @@
 import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  pytz,  smtplib,  urllib.parse, threading,  time
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 version="20150128"
 version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
@@ -181,8 +182,8 @@ class SetGroups(SetCommonsQListView):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
         table.setColumnCount(2)
-        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Name", None, QApplication.UnicodeUTF8)))
-        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Users", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Name" )))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Users" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
         for i, p in enumerate(self.arr):
@@ -347,12 +348,12 @@ class SetUsers(SetCommonsQListView):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
         table.setColumnCount(6)
-        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Start date", None, QApplication.UnicodeUTF8)))
-        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Post", None, QApplication.UnicodeUTF8)))    
-        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("Core", "Full name", None, QApplication.UnicodeUTF8)))    
-        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("Core", "Mail", None, QApplication.UnicodeUTF8)))    
-        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("Core", "Read", None, QApplication.UnicodeUTF8)))    
-        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("Core", "Sent", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Start date" )))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Post" )))    
+        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("Core", "Full name" )))    
+        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("Core", "Mail" )))    
+        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("Core", "Read" )))    
+        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("Core", "Sent" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
         for i, u in enumerate(self.arr):
@@ -698,12 +699,12 @@ class SetDocuments(SetCommons):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
         table.setColumnCount(6)
-        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Datetime", None, QApplication.UnicodeUTF8)))
-        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Planned", None, QApplication.UnicodeUTF8)))    
-        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("Core", "Sent", None, QApplication.UnicodeUTF8)))    
-        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("Core", "Read", None, QApplication.UnicodeUTF8)))    
-        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("Core", "Expiration", None, QApplication.UnicodeUTF8)))    
-        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("Core", "Title", None, QApplication.UnicodeUTF8)))    
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Datetime" )))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Planned" )))    
+        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("Core", "Sent" )))    
+        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("Core", "Read" )))    
+        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("Core", "Expiration" )))    
+        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("Core", "Title" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
         for i, d in enumerate(self.arr):
@@ -718,7 +719,8 @@ class SetDocuments(SetCommons):
             table.setItem(i, 5, QTableWidgetItem(d.name))
             if d.numreads==d.numplanned and d.numplanned>0:
                 for column in range( 1, 4):
-                    table.item(i, column).setBackgroundColor(QColor(198, 205, 255))
+                    print("Migration must colorize")
+#                    table.item(i, column).setBackgroundColor(QColor(198, 205, 255))
 
         table.setCurrentCell(len(self.arr)-1, 0)       
         table.clearSelection()    

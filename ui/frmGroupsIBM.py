@@ -1,7 +1,8 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from Ui_frmGroupsIBM import *
 from libdidyoureadme import *
+from PyQt5.QtWidgets import *
 
 class frmGroupsIBM(QDialog, Ui_frmGroupsIBM):
     def __init__(self, mem,  group=None,  parent = None, name = None, modal = False):
@@ -10,12 +11,12 @@ class frmGroupsIBM(QDialog, Ui_frmGroupsIBM):
         self.mem=mem
         if group==None:
             self.group=Group(self.mem,"", SetUsers(self.mem))
-            self.setWindowTitle(self.trUtf8("New Group"))
+            self.setWindowTitle(self.tr("New Group"))
             self.mem.data.users_active.qlistview(self.lstMembers, self.group.members)
             self.type=1##New
         else:
             self.group=group
-            self.setWindowTitle(self.trUtf8("Edit Group"))
+            self.setWindowTitle(self.tr("Edit Group"))
             self.txtName.setText(self.group.name)
             self.mem.data.users_active.qlistview(self.lstMembers, self.group.members)
             self.type=2##Edit

@@ -1,7 +1,8 @@
 import   datetime,  urllib.request,  multiprocessing,  sys
 import shutil
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from libdidyoureadme import *
 import libdbupdates
 
@@ -19,7 +20,7 @@ from frmUsersIBM import *
 #class SystemTrayIcon(QSystemTrayIcon):
 #    def __init__(self, parent=None):
 #        QSystemTrayIcon.__init__(self, QIcon(":/didyoureadme.png"), parent)
-#        self.setToolTip(self.trUtf8("DidYouReadMe is active"))
+#        self.setToolTip(self.tr("DidYouReadMe is active"))
 ##        self.menu = QMenu(parent)
 ##        self.setContextMenu(self.menu)
 #        
@@ -31,10 +32,8 @@ from frmUsersIBM import *
 class frmMain(QMainWindow, Ui_frmMain):#    
     def __init__(self, mem, parent = 0,  flags = False):
         QMainWindow.__init__(self)
-        self.setupUi(self)                
-        self.wym.hide()
-        self.wym.initiate(2011,  datetime.date.today().year, datetime.date.today().year, datetime.date.today().month)
-        QObject.connect(self.wym, SIGNAL("changed"), self.on_wym_changed)
+        self.setupUi(self)      
+        self.mem=mem          
         
 #        
 #        self.trayIcon = QSystemTrayIcon(QIcon(":/didyoureadme.png"), None)
@@ -49,7 +48,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         
         self.confirmclose=True
-        self.mem=mem
         self.accesspass=False
         
         
@@ -57,14 +55,14 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.errorupdating=0
         
 
-        sb = QStatusBar()
-        sb.setFixedHeight(18)
-        self.setStatusBar(sb)
+#        sb = QStatusBar()
+#        sb.setFixedHeight(18)
+#        self.setStatusBar(sb)
         
         self.showMaximized()
 
         access=frmAccess(self.mem)
-        access.setWindowTitle(self.trUtf8("Login to DidYouReadMe"))
+        access.setWindowTitle(self.tr("Login to DidYouReadMe"))
         salida=access.exec_()
         if salida==QDialog.Rejected:
             sys.exit(255)
@@ -78,6 +76,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         libdbupdates.Update(self.mem)
                 
         self.mem.data.load()
+        self.wym.hide()
+        self.wym.initiate(2011,  datetime.date.today().year, datetime.date.today().year, datetime.date.today().month)
+        self.wym.changed.connect(self.on_wym_changed)
 
         ##Admin mode
         if self.mem.adminmodeinparameters:
@@ -87,34 +88,34 @@ class frmMain(QMainWindow, Ui_frmMain):#
             res=self.mem.check_admin_mode(input[0])
             if input[1]==True:
                 if res==None:
-                    self.setWindowTitle(self.trUtf8("DidYouReadMe 2013-{0} © (Admin mode)").format(version_date.year))
+                    self.setWindowTitle(self.tr("DidYouReadMe 2013-{0} © (Admin mode)").format(version_date.year))
                     self.setWindowIcon(self.mem.qicon_admin())
                     self.update()
                     self.mem.set_admin_mode(input[0])
                     self.mem.con.commit()
-                    m.setText(self.trUtf8("You have set the admin mode password. Please login again"))
+                    m.setText(self.tr("You have set the admin mode password. Please login again"))
                     m.exec_()
                     sys.exit(2)
                 elif res==True:
                     self.mem.adminmode=True
-                    self.setWindowTitle(self.trUtf8("DidYouReadMe 2013-{0} © (Admin mode)").format(version_date.year))
+                    self.setWindowTitle(self.tr("DidYouReadMe 2013-{0} © (Admin mode)").format(version_date.year))
                     self.setWindowIcon(self.mem.qicon_admin())
                     self.update()
-                    m.setText(self.trUtf8("You are logged as an administrator"))
+                    m.setText(self.tr("You are logged as an administrator"))
                     m.exec_()   
             if input[1]==False or res==False:     
-                    m.setText(self.trUtf8("Bad 'Admin mode' password. You are logged as a normal user"))
+                    m.setText(self.tr("Bad 'Admin mode' password. You are logged as a normal user"))
                     m.exec_()   
 
         self.server = multiprocessing.Process(target=self.httpserver, args=())
         self.server.start()
 
-        self.tblGroups.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
-        self.tblGroups.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
-        self.tblUsers.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
-        self.tblUsers.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
-        self.tblDocuments.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
-        self.tblDocuments.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+#        self.tblGroups.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
+#        self.tblGroups.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+#        self.tblUsers.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
+#        self.tblUsers.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+#        self.tblDocuments.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
+#        self.tblDocuments.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
 
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
@@ -128,19 +129,19 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tupdatedata.start()
         
         self.timerUpdateData=QTimer()
-        QObject.connect(self.timerUpdateData, SIGNAL("timeout()"), self.updateData) 
+        self.timerUpdateData.timeout.connect(self.updateData)
         self.timerUpdateData.start(60000)
         
         self.tsend=TSend(self.mem)#Lanza TSend desde arranque
         self.tsend.start()
         
         self.timerSendMessages=QTimer()
-        QObject.connect(self.timerSendMessages, SIGNAL("timeout()"), self.send) 
+        self.timerSendMessages.timeout.connect(self.send)
         self.timerSendMessages.start(50000)
         
         if self.mem.cfgfile.autoupdate=="True":
             self.timerUpdateTables=QTimer()
-            QObject.connect(self.timerUpdateTables, SIGNAL("timeout()"), self.on_actionTablesUpdate_activated) 
+            self.timerUpdateTables.timeout.connect(self.on_actionTablesUpdate_activated)
             self.timerUpdateTables.start(200000)
         
     def __del__(self):
@@ -174,12 +175,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
         run (host=self.mem.cfgfile.webinterface, port=int(self.mem.cfgfile.webserverport), debug=False)
 
     def updateStatusBar(self):
-        #Actualiza statusbar
-        if self.server.is_alive()==True:
-            status=self.trUtf8("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
-        else:
-            status=self.trUtf8("Web server is down. Check configuration. ")
-        self.statusBar().showMessage(status + self.trUtf8("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    
+        pass
+#        #Actualiza statusbar
+#        if self.server.is_alive()==True:
+#            status=self.tr("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
+#        else:
+#            status=self.tr("Web server is down. Check configuration. ")
+#        self.statusBar().showMessage(status + self.tr("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    
 
     def send(self):
 #        print (self.tsend.isAlive(), "send isalive")
@@ -245,7 +247,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if f.result()==QDialog.Accepted:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("DidYouReadMe is going to be closed to save settings."))
+            m.setText(self.tr("DidYouReadMe is going to be closed to save settings."))
             m.exec_()    
             self.confirmclose=False    
             self.close()
@@ -262,7 +264,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if web==None:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("I couldn't look for updates. Try it later.."))
+            m.setText(self.tr("I couldn't look for updates. Try it later.."))
             m.exec_() 
             return
 
@@ -281,13 +283,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
             if showdialogwhennoupdates==True:
                 m=QMessageBox()
                 m.setIcon(QMessageBox.Information)
-                m.setText(self.trUtf8("DidYouReadMe is in the last version"))
+                m.setText(self.tr("DidYouReadMe is in the last version"))
                 m.exec_() 
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
             m.setTextFormat(Qt.RichText)#this is what makes the links clickable
-            m.setText(self.trUtf8("There is a new DidYouReadMe version. You can download it from <a href='http://didyoureadme.sourceforge.net'>http://didyoureadme.sourceforge.net</a> or directly from <a href='https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-")+remoteversion+"/'>Sourceforge</a>")
+            m.setText(self.tr("There is a new DidYouReadMe version. You can download it from <a href='http://didyoureadme.sourceforge.net'>http://didyoureadme.sourceforge.net</a> or directly from <a href='https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-")+remoteversion+"/'>Sourceforge</a>")
             m.exec_()                 
 
         self.mem.cfgfile.lastupdate=datetime.date.today().toordinal()
@@ -297,7 +299,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
     @pyqtSlot(QEvent)   
     def closeEvent(self,event):        
         if self.confirmclose==True:#Si es un cerrado interactivo
-            reply = QMessageBox.question(self, self.trUtf8("Quit DidYouReadMe?"), self.trUtf8("If you close the app, the web server will be closed too. Users won't be able to get files.Do you with to exit?"), QMessageBox.Yes, QMessageBox.No)
+            reply = QMessageBox.question(self, self.tr("Quit DidYouReadMe?"), self.tr("If you close the app, the web server will be closed too. Users won't be able to get files.Do you with to exit?"), QMessageBox.Yes, QMessageBox.No)
         else:
             reply=QMessageBox.Yes
         if reply == QMessageBox.Yes:
@@ -318,7 +320,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if os.path.exists(dirDocs+self.documents.selected.hash)==False:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("File not found"))
+            m.setText(self.tr("File not found"))
             m.exec_() 
             return
         QApplication.setOverrideCursor(Qt.WaitCursor);
@@ -349,16 +351,16 @@ class frmMain(QMainWindow, Ui_frmMain):#
         comment=comment.replace("\n\n", "<p>")
         comment=comment.replace("\n", "<p>")
         
-        s=("<center><h1>"+self.trUtf8("DidYouReadMe Report")+"</h1>"+
-           self.trUtf8("Generation time")+": {0}".format(str(now(self.mem.cfgfile.localzone))[:19]) +"</center>"+
-           "<h2>"+self.trUtf8("Document data")+"</h2>"+
-           self.trUtf8("Created")+": {0}".format(str(self.documents.selected.datetime)[:19])+ "<p>"+
-           self.trUtf8("name")+": {0}".format(self.documents.selected.name) + "<p>"+
-           self.trUtf8("Internal id")+": {0}".format(self.documents.selected.id) + "<p>"+
-           self.trUtf8("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.documents.selected.hash, urllib.parse.quote(os.path.basename(self.documents.selected.filename.lower())), os.path.basename(self.documents.selected.filename )) +
-            self.trUtf8("Comment")+": {0}".format(comment) +"<p>"+
-           "<h2>"+self.trUtf8("User reads")+"</h2>"+
-           "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.trUtf8("User"), self.trUtf8("Sent"), self.trUtf8("First read"), self.trUtf8("Number of reads"))
+        s=("<center><h1>"+self.tr("DidYouReadMe Report")+"</h1>"+
+           self.tr("Generation time")+": {0}".format(str(now(self.mem.cfgfile.localzone))[:19]) +"</center>"+
+           "<h2>"+self.tr("Document data")+"</h2>"+
+           self.tr("Created")+": {0}".format(str(self.documents.selected.datetime)[:19])+ "<p>"+
+           self.tr("name")+": {0}".format(self.documents.selected.name) + "<p>"+
+           self.tr("Internal id")+": {0}".format(self.documents.selected.id) + "<p>"+
+           self.tr("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.documents.selected.hash, urllib.parse.quote(os.path.basename(self.documents.selected.filename.lower())), os.path.basename(self.documents.selected.filename )) +
+            self.tr("Comment")+": {0}".format(comment) +"<p>"+
+           "<h2>"+self.tr("User reads")+"</h2>"+
+           "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.tr("User"), self.tr("Sent"), self.tr("First read"), self.tr("Number of reads"))
            )
            
                     
@@ -389,7 +391,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             if self.documents.selected.hasPendingMails():
                 m=QMessageBox()
                 m.setIcon(QMessageBox.Information)
-                m.setText(self.trUtf8("You can't expire the document due to it has pending mails"))
+                m.setText(self.tr("You can't expire the document due to it has pending mails"))
                 m.exec_()   
                 return
             else:
@@ -410,7 +412,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("You can't delete an expired document"))
+            m.setText(self.tr("You can't delete an expired document"))
             m.exec_()                   
             
     @pyqtSlot()   
@@ -469,7 +471,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
-            m.setText(self.trUtf8("You can't delete it, because user is in a group or DidYouReadMe sent him some documents.\nYou can deactivate him."))
+            m.setText(self.tr("You can't delete it, because user is in a group or DidYouReadMe sent him some documents.\nYou can deactivate him."))
             m.exec_()          
             return
 
@@ -565,9 +567,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 resultado.append(g)
         
         if len (resultado)==0:
-            s=self.trUtf8("User doesn't belong to any group.")
+            s=self.tr("User doesn't belong to any group.")
         else:
-            s=self.trUtf8("User belongs to the following groups:")+"\n"
+            s=self.tr("User belongs to the following groups:")+"\n"
             for g in resultado:
                 s=s+"  - "+g.name+"\n"
 
@@ -591,12 +593,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         cur.execute("select id_users from userdocuments where id_documents=%s and sent is not null and read is null;", (self.documents.selected.id, ))
                    
         if cur.rowcount>0:
-            s=self.trUtf8("Users haven't read the selected document:")+"\n"
+            s=self.tr("Users haven't read the selected document:")+"\n"
             for row in cur:
                 u=self.mem.data.users_all().find(row['id_users'])
                 s=s+"  - "+u.name+"\n"
         else:
-            s=self.trUtf8("Everybody read the document.")
+            s=self.tr("Everybody read the document.")
 
         m=QMessageBox()
         m.setIcon(QMessageBox.Information)

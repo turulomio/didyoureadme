@@ -1,6 +1,7 @@
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from Ui_frmDocumentsIBM import *
 from libdidyoureadme import *
 
@@ -37,7 +38,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         for g in self.mem.data.groups.qlistview_getselected(self.lstGroups, self.mem).arr:
             self.selectedUsers=self.selectedUsers.union(g.members, self.mem)        
         self.selectedUsers=self.selectedUsers.union(self.mem.data.users_active.qlistview_getselected(self.lstUsers, self.mem), self.mem)
-        self.cmd.setText(self.trUtf8("Send document to {0} users".format(self.selectedUsers.length())))
+        self.cmd.setText(self.tr("Send document to {0} users".format(self.selectedUsers.length())))
 
     def on_lstUsers_clicked(self, modelindex):
         self.getSelectedUsers()
@@ -51,28 +52,28 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             if self.txtTitle.text()=="":
                 m=QMessageBox()
                 m.setIcon(QMessageBox.Information)
-                m.setText(self.trUtf8("You must add a title of the document"))
+                m.setText(self.tr("You must add a title of the document"))
                 m.exec_()          
                 return
             
             if not os.path.exists(self.txtFilename.text()):
                 m=QMessageBox()
                 m.setIcon(QMessageBox.Information)
-                m.setText(self.trUtf8("I can't find the document"))
+                m.setText(self.tr("I can't find the document"))
                 m.exec_()          
                 return
                 
             if not os.path.isfile(self.txtFilename.text()):
                 m=QMessageBox()
                 m.setIcon(QMessageBox.Information)
-                m.setText(self.trUtf8("You have not select a file. Please, select one."))
+                m.setText(self.tr("You have not select a file. Please, select one."))
                 m.exec_()          
                 return
     
             if self.selectedUsers.length()==0:
                 m=QMessageBox()
                 m.setIcon(QMessageBox.Information)
-                m.setText(self.trUtf8("You have to select at least one recipient"))
+                m.setText(self.tr("You have to select at least one recipient"))
                 m.exec_()          
                 return            
             #Genera el documento
@@ -100,5 +101,5 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
     def on_cmdFile_released(self):
         cwd=os.getcwd()
         os.chdir(os.path.expanduser("~/"))
-        self.txtFilename.setText(QFileDialog.getOpenFileName(self, "", "", self.trUtf8("All documents (*)")))
+        self.txtFilename.setText(QFileDialog.getOpenFileName(self, "", "", self.tr("All documents (*)")))
         os.chdir(cwd)
