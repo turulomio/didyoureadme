@@ -25,7 +25,7 @@ from frmUsersIBM import *
 ##        self.setContextMenu(self.menu)
 #        
 #    @pyqtSlot()     
-#    def on_activated (self, reason):
+#    def on_triggered (self, reason):
 #        print ("hola", reason)
 #        self.menu.show()
 #        
@@ -40,7 +40,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
 ##        self.trayIcon.menu.addAction(self.actionExit)
 ##        self.trayIcon.menu.addSeparator()
 ##        self.trayIcon.menu.addAction(self.actionAbout)
-#        QObject.connect(self.trayIcon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),   self.on_trayIcon_activated) 
+#        QObject.connect(self.trayIcon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),   self.on_trayIcon_triggered) 
 #        self.trayIcon.show()
 #        
         self.users=None#Pointer
@@ -141,7 +141,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         if self.mem.cfgfile.autoupdate=="True":
             self.timerUpdateTables=QTimer()
-            self.timerUpdateTables.timeout.connect(self.on_actionTablesUpdate_activated)
+            self.timerUpdateTables.timeout.connect(self.on_actionTablesUpdate_triggered)
             self.timerUpdateTables.start(200000)
         
     def __del__(self):
@@ -195,18 +195,18 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.updateStatusBar()
 
     
-    def on_trayIcon_activated(self, reason):
+    def on_trayIcon_triggered(self, reason):
         print ("hola")
 
 #    @pyqtSlot()      
-#    def on_actionBackup_activated(self):
+#    def on_actionBackup_triggered(self):
 #        QProcess.startDetached("didyoureadme-backup", [self.mem.cfgfile.server, self.mem.cfgfile.port, self.mem.cfgfile.user, self.mem.cfgfile.database] )
 #        m=QMessageBox()
 #        m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
 #        m.exec_()
 #        
     @pyqtSlot()      
-    def on_actionTablesUpdate_activated(self):
+    def on_actionTablesUpdate_triggered(self):
         inicio=datetime.datetime.now()
         self.users.qtablewidget(self.tblUsers)
         self.mem.data.groups.qtablewidget(self.tblGroups)
@@ -228,17 +228,17 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tupdatedata.start()      
 
     @pyqtSlot()      
-    def on_actionAbout_activated(self):
+    def on_actionAbout_triggered(self):
         fr=frmAbout(self,"frmabout")
         fr.open()
                 
     @pyqtSlot()      
-    def on_actionHelp_activated(self):
+    def on_actionHelp_triggered(self):
         fr=frmHelp(self,"frmHelp")
         fr.open()
         
     @pyqtSlot()      
-    def on_actionSettings_activated(self):
+    def on_actionSettings_triggered(self):
         f=frmSettings(self.mem,   self)
         f.exec_()
         self.retranslateUi(self)
@@ -253,7 +253,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.close()
         
     @pyqtSlot()      
-    def on_actionUpdates_activated(self):
+    def on_actionUpdates_triggered(self):
         self.checkUpdates(True)
         
     def checkUpdates(self, showdialogwhennoupdates=False):
@@ -310,13 +310,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         
     @pyqtSlot()   
-    def on_actionDocumentNew_activated(self):
+    def on_actionDocumentNew_triggered(self):
         f=frmDocumentsIBM(self.mem)
         f.exec_()
-        self.on_actionTablesUpdate_activated()
+        self.on_actionTablesUpdate_triggered()
     
     @pyqtSlot()   
-    def on_actionDocumentOpen_activated(self):        
+    def on_actionDocumentOpen_triggered(self):        
         if os.path.exists(dirDocs+self.documents.selected.hash)==False:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
@@ -343,7 +343,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
     
     @pyqtSlot()   
-    def on_actionDocumentReport_activated(self):
+    def on_actionDocumentReport_triggered(self):
         QApplication.setOverrideCursor(Qt.WaitCursor);
         
         doc=QTextDocument()
@@ -383,7 +383,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         QApplication.restoreOverrideCursor();
 
     @pyqtSlot()   
-    def on_actionDocumentExpire_activated(self):
+    def on_actionDocumentExpire_triggered(self):
         if self.documents.selected.isExpired():#Already expired
             f=frmDocumentsIBM(self.mem, self.documents.selected)
             f.exec_()
@@ -399,10 +399,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 self.documents.selected.save()#Update changes expiration
                 self.mem.con.commit()
                 self.mem.data.documents_active.remove(self.documents.selected)    
-        self.on_actionTablesUpdate_activated()
+        self.on_actionTablesUpdate_triggered()
                 
     @pyqtSlot()   
-    def on_actionDocumentDelete_activated(self):
+    def on_actionDocumentDelete_triggered(self):
         """Sólo se puede borrar en 4-5 minutos según base de datos o gui"""
         if self.chkDocumentsExpired.checkState()==Qt.Unchecked:
             self.documents.selected.delete()
@@ -416,7 +416,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             m.exec_()                   
             
     @pyqtSlot()   
-    def on_actionDocumentDeleteAdmin_activated(self):
+    def on_actionDocumentDeleteAdmin_triggered(self):
         """Deletes everything"""
         self.documents.selected.delete()#Delete ya lo quita del array self.mem.documents
         self.mem.con.commit()
@@ -424,28 +424,28 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.documents.qtablewidget(self.tblDocuments)
         
     @pyqtSlot()   
-    def on_actionGroupEdit_activated(self):
+    def on_actionGroupEdit_triggered(self):
         f=frmGroupsIBM(self.mem, self.mem.data.groups.selected)
         f.exec_()
         self.mem.data.groups.qtablewidget(self.tblGroups)
   
   
     @pyqtSlot()   
-    def on_actionGroupNew_activated(self):
+    def on_actionGroupNew_triggered(self):
         f=frmGroupsIBM(self.mem, None)
         f.exec_()
         self.mem.data.groups.qtablewidget(self.tblGroups)
 
 
     @pyqtSlot()   
-    def on_actionGroupDelete_activated(self):
+    def on_actionGroupDelete_triggered(self):
         self.mem.data.groups.selected.delete()
         self.mem.con.commit()
         self.mem.data.groups.remove(self.mem.data.groups.selected)
         self.mem.data.groups.qtablewidget(self.tblGroups)
 
     @pyqtSlot()   
-    def on_actionUserEdit_activated(self):
+    def on_actionUserEdit_triggered(self):
         f=frmUsersIBM(self.mem, self.users.selected)
         f.exec_()
         self.users.qtablewidget(self.tblUsers)
@@ -453,14 +453,14 @@ class frmMain(QMainWindow, Ui_frmMain):#
   
   
     @pyqtSlot()   
-    def on_actionUserNew_activated(self):
+    def on_actionUserNew_triggered(self):
         f=frmUsersIBM(self.mem, None)
         f.exec_()
         self.users.qtablewidget(self.tblUsers)
         self.mem.data.groups.qtablewidget(self.tblGroups)
 
     @pyqtSlot()   
-    def on_actionUserDelete_activated(self):            
+    def on_actionUserDelete_triggered(self):            
         if self.users.selected.isDeletable()==True:
             self.users.selected.delete()
             self.mem.data.groups.quit_user_from_all_groups(self.users.selected)

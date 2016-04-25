@@ -25,7 +25,7 @@ try:
 except:
     pass
 
-#def on_trayIcon_activated( reason):
+#def on_trayIcon_triggered( reason):
 #    print ("hola")
 
 
@@ -54,7 +54,7 @@ w=QWidget()
 #        self.trayIcon.menu.addAction(self.actionExit)
 #        self.trayIcon.menu.addSeparator()
 #        self.trayIcon.menu.addAction(self.actionAbout)
-#QObject.connect(trayIcon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),   on_trayIcon_activated) 
+#QObject.connect(trayIcon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),   on_trayIcon_triggered) 
 #trayIcon.show()
 #trayIcon.setToolTip("Octopy Multi-Clipboard Manager") 
 frmMain.show()
