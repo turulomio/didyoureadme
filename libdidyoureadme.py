@@ -108,6 +108,12 @@ class Connection(QObject):
         self._timerlastuse.timeout.connect(self._check_inactivity)
         self._timerlastuse.start(300000)
         
+    def newConnection(self):
+        """Return a new connection object, with the same connection string"""
+        new=Connection()
+        new.connect(self.connection_string())
+        return new
+        
     def disconnect(self):
         self._active=False
         if self._timerlastuse.isActive()==True:
@@ -583,7 +589,7 @@ class TUpdateData(threading.Thread):
         self.errorupdating=0
     
     def run(self):    
-        con=self.mem.connect()
+        con=self.mem.con.newConnection()
         cur=con.cursor()
         #Actualiza userdocuments
         for file in os.listdir(dirReaded):
@@ -621,7 +627,7 @@ class TSend(threading.Thread):
 
     
     def run(self):    
-        con=self.mem.connect()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXIóN DE PARAMETRO
+        con=self.mem.con.newConnection()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXIóN DE PARAMETRO
         cur=con.cursor()
         #5 minutos delay
         cur.execute("select id_documents, id_users from userdocuments, documents where userdocuments.id_documents=documents.id and sent is null and now() > datetime + interval '1 minute';")

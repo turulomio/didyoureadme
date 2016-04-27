@@ -2,7 +2,6 @@
 import sys, os
 import platform
 
-
 if platform.system()=="Windows":
     sys.path.append("ui/")
     sys.path.append("images/")
@@ -15,7 +14,6 @@ from frmMain import *
 from frmAccess import *
 from libdidyoureadme import dirDocs, dirReaded
 
-        
 try:
     os.makedirs("/tmp/didyoureadme")
 except:
@@ -25,9 +23,6 @@ try:
     os.makedirs(dirReaded)
 except:
     pass
-
-#def on_trayIcon_triggered( reason):
-#    print ("hola")
 
 
 mem=Mem()
@@ -66,16 +61,5 @@ if "admin" in sys.argv:
     mem.adminmodeinparameters=True
     
 frmMain = frmMain(mem) 
-
-#w=QWidget()
-#trayIcon = QSystemTrayIcon(QIcon(":/didyoureadme.png"), w)
-#        self.trayIcon.menu.addAction(self.actionExit)
-#        self.trayIcon.menu.addSeparator()
-#        self.trayIcon.menu.addAction(self.actionAbout)
-#QObject.connect(trayIcon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),   on_trayIcon_triggered) 
-#trayIcon.show()
-#trayIcon.setToolTip("Octopy Multi-Clipboard Manager") 
-frmMain.show()
-#trayIcon.showMessage("hola", "hola")
 sys.exit(app.exec_())
 

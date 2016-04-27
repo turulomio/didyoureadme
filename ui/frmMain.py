@@ -59,17 +59,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
 #        self.setStatusBar(sb)
         
         self.showMaximized()
-#
-#        access=frmAccess(self.mem)
-#        access.setWindowTitle(self.tr("Login to DidYouReadMe"))
-#        salida=access.exec_()
-#        if salida==QDialog.Rejected:
-#            sys.exit(255)
-#            return
             
         self.accesspass=True#Se usa en el destructor
-        
-#        self.mem.con=self.mem.connect()
     
         ##Update database
         libdbupdates.Update(self.mem)
@@ -109,13 +100,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.server = multiprocessing.Process(target=self.httpserver, args=())
         self.server.start()
 
-#        self.tblGroups.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
-#        self.tblGroups.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
-#        self.tblUsers.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
-#        self.tblUsers.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
-#        self.tblDocuments.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
-#        self.tblDocuments.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
-
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
         self.on_chkUsersInactive_stateChanged(self.chkUsersInactive.checkState())
@@ -124,19 +108,19 @@ class frmMain(QMainWindow, Ui_frmMain):#
             print ("Looking for updates")
             self.checkUpdates(False)
 
-        self.tupdatedata=TUpdateData(self.mem)
-        self.tupdatedata.start()
-        
-        self.timerUpdateData=QTimer()
-        self.timerUpdateData.timeout.connect(self.updateData)
-        self.timerUpdateData.start(60000)
-        
-        self.tsend=TSend(self.mem)#Lanza TSend desde arranque
-        self.tsend.start()
-        
-        self.timerSendMessages=QTimer()
-        self.timerSendMessages.timeout.connect(self.send)
-        self.timerSendMessages.start(50000)
+#        self.tupdatedata=TUpdateData(self.mem)
+#        self.tupdatedata.start()
+#        
+#        self.timerUpdateData=QTimer()
+#        self.timerUpdateData.timeout.connect(self.updateData)
+#        self.timerUpdateData.start(60000)
+#        
+#        self.tsend=TSend(self.mem)#Lanza TSend desde arranque
+#        self.tsend.start()
+#        
+#        self.timerSendMessages=QTimer()
+#        self.timerSendMessages.timeout.connect(self.send)
+#        self.timerSendMessages.start(50000)
         
         if self.mem.cfgfile.autoupdate=="True":
             self.timerUpdateTables=QTimer()
