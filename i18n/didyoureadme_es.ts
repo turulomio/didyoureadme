@@ -3,170 +3,180 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="../libdidyoureadme.py" line="652"/>
+        <location filename="../libdidyoureadme.py" line="778"/>
         <source>Spain</source>
         <translation>España</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="653"/>
+        <location filename="../libdidyoureadme.py" line="779"/>
         <source>Belgium</source>
         <translation>Bélgica</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="654"/>
+        <location filename="../libdidyoureadme.py" line="780"/>
         <source>China</source>
         <translation>China</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="655"/>
+        <location filename="../libdidyoureadme.py" line="781"/>
         <source>Germany</source>
         <translation>Alemania</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="656"/>
+        <location filename="../libdidyoureadme.py" line="782"/>
         <source>United Kingdom</source>
         <translation>Reino Unido</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="657"/>
+        <location filename="../libdidyoureadme.py" line="783"/>
         <source>Europe</source>
         <translation>Europa</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="658"/>
+        <location filename="../libdidyoureadme.py" line="784"/>
         <source>Finland</source>
         <translation>Finlandia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="659"/>
+        <location filename="../libdidyoureadme.py" line="785"/>
         <source>France</source>
         <translation>Francia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="660"/>
+        <location filename="../libdidyoureadme.py" line="786"/>
         <source>Ireland</source>
         <translation>Irlanda</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="661"/>
+        <location filename="../libdidyoureadme.py" line="787"/>
         <source>Italy</source>
         <translation>Italia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="662"/>
+        <location filename="../libdidyoureadme.py" line="788"/>
         <source>Japan</source>
         <translation>Japón</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="663"/>
+        <location filename="../libdidyoureadme.py" line="789"/>
         <source>Netherlands</source>
         <translation>Países bajos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="664"/>
+        <location filename="../libdidyoureadme.py" line="790"/>
         <source>Portugal</source>
         <translation>Portugal</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="665"/>
+        <location filename="../libdidyoureadme.py" line="791"/>
         <source>United States of America</source>
         <translation>Estados Unidos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="666"/>
+        <location filename="../libdidyoureadme.py" line="792"/>
         <source>Romanian</source>
         <translation>Rumania</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="667"/>
+        <location filename="../libdidyoureadme.py" line="793"/>
         <source>Rusia</source>
         <translation>Rusia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="185"/>
+        <location filename="../libdidyoureadme.py" line="312"/>
         <source>Name</source>
         <translation type="unfinished">Nombre</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="186"/>
+        <location filename="../libdidyoureadme.py" line="313"/>
         <source>Users</source>
         <translation type="unfinished">Usuarios</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="353"/>
+        <location filename="../libdidyoureadme.py" line="479"/>
         <source>Start date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="354"/>
+        <location filename="../libdidyoureadme.py" line="480"/>
         <source>Post</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="355"/>
+        <location filename="../libdidyoureadme.py" line="481"/>
         <source>Full name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="356"/>
+        <location filename="../libdidyoureadme.py" line="482"/>
         <source>Mail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="710"/>
+        <location filename="../libdidyoureadme.py" line="836"/>
         <source>Read</source>
         <translation type="unfinished">Leídos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="709"/>
+        <location filename="../libdidyoureadme.py" line="835"/>
         <source>Sent</source>
         <translation type="unfinished">Enviados</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="707"/>
+        <location filename="../libdidyoureadme.py" line="833"/>
         <source>Datetime</source>
         <translation type="unfinished">Fecha y hora</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="708"/>
+        <location filename="../libdidyoureadme.py" line="834"/>
         <source>Planned</source>
         <translation type="unfinished">Planeados</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="711"/>
+        <location filename="../libdidyoureadme.py" line="837"/>
         <source>Expiration</source>
         <translation type="unfinished">Expiración</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="712"/>
+        <location filename="../libdidyoureadme.py" line="838"/>
         <source>Title</source>
         <translation type="unfinished">Título</translation>
+    </message>
+    <message>
+        <location filename="../didyoureadme.py" line="46"/>
+        <source>Please login to the xulpymoney database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../didyoureadme.py" line="53"/>
+        <source>Error conecting to {} database in {} server</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DidYouReadMe</name>
     <message>
-        <location filename="../libdidyoureadme.py" line="602"/>
+        <location filename="../libdidyoureadme.py" line="728"/>
         <source>This is an automatic and personal mail from DidYouReadMe.</source>
         <translation>Este es un correo automático y personal desde DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="602"/>
+        <location filename="../libdidyoureadme.py" line="728"/>
         <source>Don&apos;t answer and don&apos;t resend this mail.</source>
         <translation>No lo responda ni lo reenvíe.</translation>
     </message>
     <message>
-        <location filename="../didyoureadme.py" line="44"/>
+        <location filename="../didyoureadme.py" line="62"/>
         <source>An error loading settings happened. You must check your settings are ok</source>
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="1139"/>
+        <location filename="../libdidyoureadme.py" line="1267"/>
         <source>Connection error. Try again</source>
         <translation>Error de conexión. Prueba otra vez</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="602"/>
+        <location filename="../libdidyoureadme.py" line="728"/>
         <source>When you click the next link, you will get the document associated to this mail and it will be registered as read:</source>
         <translation>Cuando pulse en el siguiente enlace, se podrá descargar el documento asociado a este correo y se registrará su lectura:</translation>
     </message>
@@ -174,14 +184,14 @@
 <context>
     <name>didyoureadme</name>
     <message>
-        <location filename="../libdidyoureadme.py" line="522"/>
+        <location filename="../libdidyoureadme.py" line="648"/>
         <source>{0} Error sending message {1} to {2}
 </source>
         <translation>{0} errores al enviar el mensaje {1} a {2}
 </translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="476"/>
+        <location filename="../libdidyoureadme.py" line="602"/>
         <source>{0} Error updating data with hash: {1}
 </source>
         <translation>{0} Error actualizando datos con hash: {1}
@@ -244,44 +254,39 @@
 <context>
     <name>frmAccess</name>
     <message>
-        <location filename="../ui/Ui_frmAccess.py" line="109"/>
-        <source>127.0.0.1</source>
-        <translation>127.0.0.1</translation>
-    </message>
-    <message>
-        <location filename="../ui/Ui_frmAccess.py" line="110"/>
-        <source>5432</source>
-        <translation>5432</translation>
-    </message>
-    <message>
-        <location filename="../ui/frmAccess.py" line="42"/>
-        <source>Connection error. Try it again</source>
-        <translation>Error de conexión. Prueba otra vez</translation>
-    </message>
-    <message>
-        <location filename="../ui/Ui_frmAccess.py" line="104"/>
+        <location filename="../ui/Ui_frmAccess.py" line="165"/>
         <source>Server</source>
         <translation>Servidor</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAccess.py" line="105"/>
+        <location filename="../ui/Ui_frmAccess.py" line="166"/>
         <source>Port</source>
         <translation>Puerto</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAccess.py" line="106"/>
+        <location filename="../ui/Ui_frmAccess.py" line="167"/>
         <source>Database</source>
         <translation>Base de datos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAccess.py" line="107"/>
+        <location filename="../ui/Ui_frmAccess.py" line="168"/>
         <source>User</source>
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAccess.py" line="108"/>
+        <location filename="../ui/Ui_frmAccess.py" line="169"/>
         <source>Password</source>
         <translation>Contraseña</translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_frmAccess.py" line="164"/>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/frmAccess.py" line="18"/>
+        <source>DidYouReadMe - Access</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -496,7 +501,7 @@
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>Filename</source>
         <translation>Nombre del fichero</translation>
     </message>
@@ -504,11 +509,6 @@
         <location filename="../ui/Ui_frmMain.py" line="251"/>
         <source>Users</source>
         <translation>Usuarios</translation>
-    </message>
-    <message>
-        <location filename="../ui/frmMain.py" line="65"/>
-        <source>Login to DidYouReadMe</source>
-        <translation>Acceso a DidYouReadMe</translation>
     </message>
     <message>
         <location filename="../ui/Ui_frmMain.py" line="284"/>
@@ -561,7 +561,7 @@
         <translation>Enviados</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="267"/>
+        <location filename="../ui/frmMain.py" line="268"/>
         <source>I couldn&apos;t look for updates. Try it later..</source>
         <translation>No he podido comprobar las actualizaciones. Intentelo más tarde..</translation>
     </message>
@@ -641,13 +641,13 @@
         <translation>Borrar usuario</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="474"/>
+        <location filename="../ui/frmMain.py" line="475"/>
         <source>You can&apos;t delete it, because user is in a group or DidYouReadMe sent him some documents.
 You can deactivate him.</source>
         <translation>No puede borrarlo, porque el usuario está en un grupo o DidYouReadMe le ha enviado algún documento. Puede desactivarlo.</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="250"/>
+        <location filename="../ui/frmMain.py" line="251"/>
         <source>DidYouReadMe is going to be closed to save settings.</source>
         <translation>DidYouReadMe se va a cerrar para actualizar la configuración.</translation>
     </message>
@@ -662,22 +662,22 @@ You can deactivate him.</source>
         <translation>Planeados</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="601"/>
+        <location filename="../ui/frmMain.py" line="602"/>
         <source>Everybody read the document.</source>
         <translation>Todos leyeron el documento.</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="570"/>
+        <location filename="../ui/frmMain.py" line="571"/>
         <source>User doesn&apos;t belong to any group.</source>
         <translation>El usuario no pertenece a ningún grupo.</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="572"/>
+        <location filename="../ui/frmMain.py" line="573"/>
         <source>User belongs to the following groups:</source>
         <translation>El usuario pertenece a los siguientes grupos:</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="596"/>
+        <location filename="../ui/frmMain.py" line="597"/>
         <source>Users haven&apos;t read the selected document:</source>
         <translation>Usuarios que no han leído este documento:</translation>
     </message>
@@ -687,47 +687,47 @@ You can deactivate him.</source>
         <translation>Generar informe</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>DidYouReadMe Report</source>
         <translation>Informe de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>User</source>
         <translation>Usuario</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>First read</source>
         <translation>Primera lectura</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>Number of reads</source>
         <translation>Número de lecturas</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>Document data</source>
         <translation>Datos del documento</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>User reads</source>
         <translation>Lecturas de los destinatarios</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>Generation time</source>
         <translation>Hora de creación</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>Created</source>
         <translation>Creado</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>Comment</source>
         <translation>Comentario</translation>
     </message>
@@ -737,32 +737,32 @@ You can deactivate him.</source>
         <translation>Abrir documento</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="286"/>
+        <location filename="../ui/frmMain.py" line="287"/>
         <source>DidYouReadMe is in the last version</source>
         <translation>DidYouReadMe está en la última versión</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="292"/>
+        <location filename="../ui/frmMain.py" line="293"/>
         <source>There is a new DidYouReadMe version. You can download it from &lt;a href=&apos;http://didyoureadme.sourceforge.net&apos;&gt;http://didyoureadme.sourceforge.net&lt;/a&gt; or directly from &lt;a href=&apos;https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-</source>
         <translation>Hay una nueva versión de DidYouReadMe. Puedes bajarla desde &lt;a href=&apos;http://didyoureadme.sourceforge.net&apos;&gt;http://didyoureadme.sourceforge.net&lt;/a&gt; o directamente desde &lt;a href=&apos;https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme- </translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="302"/>
+        <location filename="../ui/frmMain.py" line="303"/>
         <source>Quit DidYouReadMe?</source>
         <translation>¿Quieres salir de DidYouReadMe?</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="302"/>
+        <location filename="../ui/frmMain.py" line="303"/>
         <source>If you close the app, the web server will be closed too. Users won&apos;t be able to get files.Do you with to exit?</source>
         <translation>Si cierras la aplicación, el servidor web se cerrará también. Los usuarios no podrán descargarse los documentos. ¿Quieres cerrarla?</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>Internal id</source>
         <translation>Identificador interno</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="415"/>
+        <location filename="../ui/frmMain.py" line="416"/>
         <source>You can&apos;t delete an expired document</source>
         <translation>No puedes borrar un documento expirado</translation>
     </message>
@@ -777,7 +777,7 @@ You can deactivate him.</source>
         <translation>Expirar documento</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="504"/>
+        <location filename="../ui/frmMain.py" line="505"/>
         <source>Change expiration</source>
         <translation>Cambiar expiración</translation>
     </message>
@@ -792,22 +792,22 @@ You can deactivate him.</source>
         <translation>Expiración</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="87"/>
+        <location filename="../ui/frmMain.py" line="86"/>
         <source>Please introduce Admin Mode password</source>
         <translation>Por favor introduzca la contraseña del modo administrador</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="96"/>
+        <location filename="../ui/frmMain.py" line="95"/>
         <source>You have set the admin mode password. Please login again</source>
         <translation>Ha establecido la contraseña del modo administrador. Por favor autentíquese de nuevo</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="104"/>
+        <location filename="../ui/frmMain.py" line="103"/>
         <source>You are logged as an administrator</source>
         <translation>Se ha autenticado como administrador</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="107"/>
+        <location filename="../ui/frmMain.py" line="106"/>
         <source>Bad &apos;Admin mode&apos; password. You are logged as a normal user</source>
         <translation>Contraseña del &apos;modo administrador&apos; errónea. Está conectado como un usuario normal</translation>
     </message>
@@ -817,22 +817,22 @@ You can deactivate him.</source>
         <translation>Borrar documento por el administrador</translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="354"/>
+        <location filename="../ui/frmMain.py" line="355"/>
         <source>name</source>
         <translation>nombre</translation>
     </message>
     <message encoding="UTF-8">
-        <location filename="../ui/frmMain.py" line="101"/>
+        <location filename="../ui/frmMain.py" line="100"/>
         <source>DidYouReadMe 2013-{0} © (Admin mode)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="394"/>
+        <location filename="../ui/frmMain.py" line="395"/>
         <source>You can&apos;t expire the document due to it has pending mails</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmMain.py" line="323"/>
+        <location filename="../ui/frmMain.py" line="324"/>
         <source>File not found</source>
         <translation type="unfinished"></translation>
     </message>

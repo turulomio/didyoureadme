@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import sys, os, datetime
+import sys, os
 import platform
 
 
@@ -12,6 +12,7 @@ else:
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from frmMain import *
+from frmAccess import *
 from libdidyoureadme import dirDocs, dirReaded
 
         
@@ -32,11 +33,28 @@ except:
 mem=Mem()
 
 app = QApplication(sys.argv)
-app.setApplicationName("didyoureadme {0}".format(datetime.datetime.now()))
+app.setOrganizationName("Mariano Muñoz ©")
+app.setOrganizationDomain("turulomio.users.sourceforge.net")
+app.setApplicationName("DidYouReadMe")
+
 app.setQuitOnLastWindowClosed(True)
 
 mem.setQTranslator(QTranslator(app))
 mem.languages.cambiar(mem.cfgfile.language)
+
+access=frmAccess(mem)
+access.setLabel(QApplication.translate("Core","Please login to the xulpymoney database"))
+access.config_load()
+access.exec_()
+
+if access.result()==QDialog.Rejected: 
+    m=QMessageBox()
+    m.setIcon(QMessageBox.Information)
+    m.setText(QApplication.translate("Core","Error conecting to {} database in {} server").format(access.con.db, access.con.server))
+    m.exec_()   
+    sys.exit(1)
+access.config_save()
+mem.con=access.con
 
 if mem.cfgfile.error==True:
     m=QMessageBox()
@@ -49,7 +67,7 @@ if "admin" in sys.argv:
     
 frmMain = frmMain(mem) 
 
-w=QWidget()
+#w=QWidget()
 #trayIcon = QSystemTrayIcon(QIcon(":/didyoureadme.png"), w)
 #        self.trayIcon.menu.addAction(self.actionExit)
 #        self.trayIcon.menu.addSeparator()

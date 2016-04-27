@@ -10,7 +10,6 @@ from Ui_frmMain import *
 from frmAbout import *
 from frmSettings import *
 from frmHelp import *
-from frmAccess import *
 from frmDocumentsIBM import *
 from frmGroupsIBM import *
 from frmUsersIBM import *
@@ -60,17 +59,17 @@ class frmMain(QMainWindow, Ui_frmMain):#
 #        self.setStatusBar(sb)
         
         self.showMaximized()
-
-        access=frmAccess(self.mem)
-        access.setWindowTitle(self.tr("Login to DidYouReadMe"))
-        salida=access.exec_()
-        if salida==QDialog.Rejected:
-            sys.exit(255)
-            return
+#
+#        access=frmAccess(self.mem)
+#        access.setWindowTitle(self.tr("Login to DidYouReadMe"))
+#        salida=access.exec_()
+#        if salida==QDialog.Rejected:
+#            sys.exit(255)
+#            return
             
         self.accesspass=True#Se usa en el destructor
         
-        self.mem.con=self.mem.connect()
+#        self.mem.con=self.mem.connect()
     
         ##Update database
         libdbupdates.Update(self.mem)
@@ -143,6 +142,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.timerUpdateTables=QTimer()
             self.timerUpdateTables.timeout.connect(self.on_actionTablesUpdate_triggered)
             self.timerUpdateTables.start(200000)
+            
+        print ("Aqui")
         
     def __del__(self):
         if self.accesspass==True:
