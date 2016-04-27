@@ -50,6 +50,7 @@ if access.result()==QDialog.Rejected:
     sys.exit(1)
 access.config_save()
 mem.con=access.con
+access.hide()
 
 if mem.cfgfile.error==True:
     m=QMessageBox()

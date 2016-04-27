@@ -15,48 +15,24 @@ from frmGroupsIBM import *
 from frmUsersIBM import *
 
 
-            
-#class SystemTrayIcon(QSystemTrayIcon):
-#    def __init__(self, parent=None):
-#        QSystemTrayIcon.__init__(self, QIcon(":/didyoureadme.png"), parent)
-#        self.setToolTip(self.tr("DidYouReadMe is active"))
-##        self.menu = QMenu(parent)
-##        self.setContextMenu(self.menu)
-#        
-#    @pyqtSlot()     
-#    def on_triggered (self, reason):
-#        print ("hola", reason)
-#        self.menu.show()
-#        
 class frmMain(QMainWindow, Ui_frmMain):#    
     def __init__(self, mem, parent = 0,  flags = False):
         QMainWindow.__init__(self)
         self.setupUi(self)      
         self.mem=mem          
-        
-#        
-#        self.trayIcon = QSystemTrayIcon(QIcon(":/didyoureadme.png"), None)
-##        self.trayIcon.menu.addAction(self.actionExit)
-##        self.trayIcon.menu.addSeparator()
-##        self.trayIcon.menu.addAction(self.actionAbout)
-#        QObject.connect(self.trayIcon, SIGNAL("activated(QSystemTrayIcon::ActivationReason)"),   self.on_trayIcon_triggered) 
-#        self.trayIcon.show()
-#        
+
         self.users=None#Pointer
         self.documents=None#Pointer
-        
         
         self.confirmclose=True
         self.accesspass=False
         
-        
         self.errorsending=0
         self.errorupdating=0
         
-
-#        sb = QStatusBar()
-#        sb.setFixedHeight(18)
-#        self.setStatusBar(sb)
+        sb = QStatusBar()
+        sb.setFixedHeight(18)
+        self.setStatusBar(sb)
         
         self.showMaximized()
             
@@ -108,19 +84,19 @@ class frmMain(QMainWindow, Ui_frmMain):#
             print ("Looking for updates")
             self.checkUpdates(False)
 
-#        self.tupdatedata=TUpdateData(self.mem)
-#        self.tupdatedata.start()
-#        
-#        self.timerUpdateData=QTimer()
-#        self.timerUpdateData.timeout.connect(self.updateData)
-#        self.timerUpdateData.start(60000)
-#        
-#        self.tsend=TSend(self.mem)#Lanza TSend desde arranque
-#        self.tsend.start()
-#        
-#        self.timerSendMessages=QTimer()
-#        self.timerSendMessages.timeout.connect(self.send)
-#        self.timerSendMessages.start(50000)
+        self.tupdatedata=TUpdateData(self.mem)
+        self.tupdatedata.start()
+        
+        self.timerUpdateData=QTimer()
+        self.timerUpdateData.timeout.connect(self.updateData)
+        self.timerUpdateData.start(60000)
+        
+        self.tsend=TSend(self.mem)#Lanza TSend desde arranque
+        self.tsend.start()
+        
+        self.timerSendMessages=QTimer()
+        self.timerSendMessages.timeout.connect(self.send)
+        self.timerSendMessages.start(50000)
         
         if self.mem.cfgfile.autoupdate=="True":
             self.timerUpdateTables=QTimer()
@@ -160,13 +136,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         run (host=self.mem.cfgfile.webinterface, port=int(self.mem.cfgfile.webserverport), debug=False)
 
     def updateStatusBar(self):
-        pass
-#        #Actualiza statusbar
-#        if self.server.is_alive()==True:
-#            status=self.tr("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
-#        else:
-#            status=self.tr("Web server is down. Check configuration. ")
-#        self.statusBar().showMessage(status + self.tr("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    
+        #Actualiza statusbar
+        if self.server.is_alive()==True:
+            status=self.tr("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
+        else:
+            status=self.tr("Web server is down. Check configuration. ")
+        self.statusBar().showMessage(status + self.tr("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    
 
     def send(self):
 #        print (self.tsend.isAlive(), "send isalive")

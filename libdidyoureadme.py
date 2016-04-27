@@ -617,7 +617,7 @@ class TUpdateData(threading.Thread):
             if d.isExpired()==False:
                 d.updateNums()            
         cur.close()  
-        self.mem.disconnect(con)
+        con.disconnect()
 
 class TSend(threading.Thread):
     def __init__(self, mem):
@@ -655,7 +655,7 @@ class TSend(threading.Thread):
             mail.document.updateNums()
             time.sleep(5)                  
         cur.close()
-        self.mem.disconnect(con)
+        con.disconnect()
         
             
 class Language:
@@ -1224,7 +1224,7 @@ class Mem:
         
     def __del__(self):
         if self.con:#Needed when reject frmAccess
-            self.disconnect(self.con)
+            self.con.disconnect()
                 
     def qicon_admin(self):
         icon = QIcon()

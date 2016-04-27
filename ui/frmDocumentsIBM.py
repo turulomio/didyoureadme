@@ -101,5 +101,5 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
     def on_cmdFile_released(self):
         cwd=os.getcwd()
         os.chdir(os.path.expanduser("~/"))
-        self.txtFilename.setText(QFileDialog.getOpenFileName(self, "", "", self.tr("All documents (*)")))
+        self.txtFilename.setText(QFileDialog.getOpenFileName(self, "", "", self.tr("All documents (*)")) [0])
         os.chdir(cwd)
