@@ -16,10 +16,7 @@ from libdidyoureadme import dirDocs
 
 def qt_message_handler(mode, context, message):
     f=open("error.txt", "a")
-    s="""
-Mio: line: {} func: {} file {}
-{}
-""".format(context.line, context.function, context.file, message)
+    s="""{} ({}). Line: {}. Func: {}. File: {}. {}\n""".format(datetime.datetime.now(),  mode, context.line, context.function, context.file, message)
     f.write(s)
     f.close()
     print(s)
@@ -46,14 +43,12 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
 
     mem=Mem()
 
-
     app.setQuitOnLastWindowClosed(True)
-
     mem.setQTranslator(QTranslator(app))
     mem.languages.cambiar(mem.cfgfile.language)
 
     access=frmAccess(mem)
-    access.setLabel(QApplication.translate("Core","Please login to the xulpymoney database"))
+    access.setLabel(QApplication.translate("Core","Please login to the DidYouReadMe database"))
     access.config_load()
     access.exec_()
 

@@ -1,4 +1,13 @@
-import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  pytz,  smtplib,  urllib.parse, threading,  time
+import os
+import datetime
+import configparser
+import hashlib
+import platform
+import psycopg2
+import psycopg2.extras
+import pytz
+import smtplib 
+import urllib.parse
 import sys
 import io
 from PyQt5.QtGui import *
@@ -16,7 +25,7 @@ dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
 
 class Connection(QObject):
     """Futuro conection object
-    COPIADA DE XULPYMONEY NO EDITAR"""
+    COPIADA DE didyoureadme NO EDITAR"""
     inactivity_timeout=pyqtSignal()
     def __init__(self):
         QObject.__init__(self)
@@ -150,9 +159,7 @@ class Backup:
 class MyHTTPServer(socketserver.TCPServer):
     """Clase usada para pasar el objeto mem, al servidor y a sus request"""
     def __init__(self, server_address, RequestHandlerClass, bind_and_activate=True, mem=None):
-        qDebug("HTTP Server arrancad1o")
         socketserver.TCPServer.__init__(self, server_address, RequestHandlerClass, bind_and_activate)
-        qDebug("HTTP Server arrancado3")
         self.mem=mem    
         self.served=0
         self.errors=0
@@ -165,7 +172,7 @@ class MyHTTPServer(socketserver.TCPServer):
         qDebug("finish continuado")
         
         
-        if request.served:
+        if request.request_ended==True:
             #Actualiza la base de datos
             con=self.mem.con.newConnection()
             cur=con.cursor()
@@ -197,34 +204,14 @@ class MyHTTPServer(socketserver.TCPServer):
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self,request, client_address, server, mem=None):
+        qDebug("MyHTTPRequestHandler constructor inicado")
         self.mem=mem#Debe ir antes
         self.userhash=None
         self.documenthash=None
-        self.served=False
+        self.request_ended=False
         http.server.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
-        
-    def list_directory(self, path):
-        """To avoid listing"""
-        enc = sys.getfilesystemencoding()
-        title = 'You cannot list directory files'
-        r=[]
-        r.append('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" '
-                 '"http://www.w3.org/TR/html4/strict.dtd">')
-        r.append('<html>\n<head>')
-        r.append('<meta http-equiv="Content-Type" '
-                 'content="text/html; charset=%s">' % enc)
-        r.append('<title>%s</title>\n</head>' % title)
-        r.append('<body>\n<h1>%s</h1>' % title)
-        r.append('</body>\n</html>\n')
-        encoded = '\n'.join(r).encode(enc, 'surrogateescape')
-        f = io.BytesIO()
-        f.write(encoded)
-        f.seek(0)
-        self.send_response(200)
-        self.send_header("Content-type", "text/html; charset=%s" % enc)
-        self.send_header("Content-Length", str(len(encoded)))
-        self.end_headers()
-        return f
+        qDebug("MyHTTPRequestHandler constructor finalizado")
+
         
     def NotFound(self, path):
         """To avoid listing"""
@@ -250,24 +237,61 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         return f
         
     def send_head(self):
-        """Overriden"""
-        try:
+        """Overriden
+        
+        Tras muchos dolores de cabeza no consigo nada
+        Funciona bien lanzando co eric
+        Pero al pasar por freeze falla en esta función
+        He usado qdebug apra verlo, no se ve bien
+        Parece que es al abrir el fichero f, con el descriptor, tambien puede ser el send 200
+        
+        Si hago un debug desde wine funciona y se ve bien
+        
+        He comprobado el firewall y no era.
+        
+        
+        
+        """
+        qDebug("MyHTTPRequestHandler.send_head ## "+ self.path)
+#        try:
             #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
+            
+        try:
             (self.userhash, self.documenthash)=self.path.split("/")[2].split("l")
-            path = self.translate_path(self.documenthash)                
-            #Lo abre luego existe
-            ctype = self.guess_type(path)
+        except:
+            qDebug("Error converting path")
+            return self.NotFound("")
+            
+            
+        path = self.translate_path(self.documenthash)  
+        f=None
+        if os.path.isdir(path):
+            return self.NotFound("")
+        
+        ctype = self.guess_type(path)
+        qDebug(ctype+" "+ path)
+        
+#        path=path.replace('\\', '/')
+        qDebug(path)
+        try:
             f = open(path, 'rb')
+        except OSError:
+            self.send_error(404, "File not found")
+            qDebug("404 fino not found")
+            return None
+            
+        try:
             self.send_response(200)
             self.send_header("Content-type", ctype)
-            fs = os.fstat(f.fileno())
-            self.send_header("Content-Length", str(fs[6]))
-            self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
+#            fs = os.fstat(f.fileno())
+#            self.send_header("Content-Length", str(fs[6]))
+#            self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
             self.end_headers()
-            self.served=True
-            return f            
+            self.request_ended=True
+            return f
         except:
-            return self.NotFound("")
+            f.close()
+            raise
             
 
 
@@ -543,19 +567,12 @@ class SetLanguages(SetCommons):
                 combo.setCurrentIndex(combo.findData(selected.id))
 
     def cambiar(self, id):  
-        """language es un string"""
-        self.mem.qtranslator.load("/usr/lib/xulpymoney/xulpymoney_" + id + ".qm")
+        if platform.system()=="Windows":
+            self.mem.qtranslator.load("i18n/didyoureadme_" + id + ".qm")
+        else:
+            self.mem.qtranslator.load("/usr/lib/didyoureadme/didyoureadme_" + id + ".qm")
         qApp.installTranslator(self.mem.qtranslator);
-#        def cargarQTranslator(cfgfile):  
-#    """language es un string"""
-#    so=os.environ['didyoureadmeso']
-#    if so=="src.linux":
-#        cfgfile.qtranslator.load("/usr/share/didyoureadme/didyoureadme_" + cfgfile.language + ".qm")
-#    elif so=="src.windows":
-#        cfgfile.qtranslator.load("../share/didyoureadme/didyoureadme_" + cfgfile.language + ".qm")
-#    elif so=="bin.windows" or so=="bin.linux":
-#        cfgfile.qtranslator.load("didyoureadme_" + cfgfile.language + ".qm")
-#    qApp.installTranslator(cfgfile.qtranslator);
+
         
 class SetUsers(SetCommonsQListView):
     def __init__(self, mem):
@@ -711,43 +728,74 @@ class User:
         self.read=cur.fetchone()[0]
         cur.close()
 
-class TSend(threading.Thread):
+class TWebServer(QThread):
     def __init__(self, mem):
-        threading.Thread.__init__(self)
+        QThread.__init__(self)
         self.mem=mem
-        self.errorsending=0
+        
+        os.chdir(dirDocs)
+        qDebug("tserver Server arrancado2")
+        self.server=MyHTTPServer((self.mem.cfgfile.webinterface, int(self.mem.cfgfile.webserverport)), MyHTTPRequestHandler, mem=self.mem)
+        qDebug("tserver Server arrancado3")
+
+    def run(self):
+        self.server.serve_forever()
+
+class TSend(QThread):
+    def __init__(self, mem):
+        QThread.__init__(self)
+        self.mem=mem
+        self.errors=0
+        self.sent=0
+        self.stop_request=False
+        self.interval=30#segundos
+        
+    def setInterval(self, interval):
+        self.interval=interval
+        
+    def shutdown(self):
+        self.stop_request=True
 
     
     def run(self):    
-        con=self.mem.con.newConnection()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXIóN DE PARAMETRO
-        cur=con.cursor()
-        #5 minutos delay
-        cur.execute("select id_documents, id_users from userdocuments, documents where userdocuments.id_documents=documents.id and sent is null and now() > datetime + interval '1 minute';")
-        for row in cur:
-            doc=self.mem.data.documents_active.find(row['id_documents'])
-            u=self.mem.data.users_active.find(row['id_users'])
-            mail=Mail(doc, u, self.mem)
-            mail.send()
-            
-            if mail.sent==True:
-                print ("Send message of document {0} to {1}".format(mail.document.id, mail.user.mail))
-                d=UserDocument(mail.user, mail.document, self.mem)
-                if d.sent==None:
-                    d.sent=datetime.datetime.now(pytz.timezone(self.mem.cfgfile.localzone))
-                d.save()
-                con.commit()
-            else:
-                self.errorsending=self.errorsending+1  
-                try: #Unicode en mail
-                    f=open(self.mem.pathlogmail, "a")
-                    f.write(QApplication.translate("didyoureadme","{0} Error sending message {1} to {2}\n").format(now(self.mem.cfgfile.localzone), mail.document.id, mail.user.mail))
-                    f.close()          
-                except:
-                    print ("TSend error al escribir log")
-            mail.document.updateNums()
-            time.sleep(5)                  
-        cur.close()
-        con.disconnect()
+        qDebug("tsend Server arrancado2")
+        while self.stop_request==False:
+            con=self.mem.con.newConnection()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXIóN DE PARAMETRO
+            cur=con.cursor()
+            #5 minutos delay
+            cur.execute("select id_documents, id_users from userdocuments, documents where userdocuments.id_documents=documents.id and sent is null and now() > datetime + interval '1 minute';")
+            for row in cur:
+                doc=self.mem.data.documents_active.find(row['id_documents'])
+                u=self.mem.data.users_active.find(row['id_users'])
+                mail=Mail(doc, u, self.mem)
+                mail.send()
+                
+                if mail.sent==True:
+                    print ("Send message of document {0} to {1}".format(mail.document.id, mail.user.mail))
+                    d=UserDocument(mail.user, mail.document, self.mem)
+                    if d.sent==None:
+                        d.sent=datetime.datetime.now(pytz.timezone(self.mem.cfgfile.localzone))
+                    d.save()
+                    con.commit()
+                    self.sent=self.sent+1
+                else:
+                    self.errors=self.errors+1  
+                    try: #Unicode en mail
+                        f=open(self.mem.pathlogmail, "a")
+                        f.write(QApplication.translate("didyoureadme","{0} Error sending message {1} to {2}\n").format(now(self.mem.cfgfile.localzone), mail.document.id, mail.user.mail))
+                        f.close()          
+                    except:
+                        print ("TSend error al escribir log")
+                mail.document.updateNums()
+                self.sleep(2) 
+            cur.close()
+            con.disconnect()
+            #Interactive wait
+            for i in range(self.interval):
+                if self.stop_request==True:
+                    break
+                else:
+                    self.sleep(1)
         
             
 class Language:
@@ -943,8 +991,7 @@ class SetDocuments(SetCommons):
             table.setItem(i, 5, QTableWidgetItem(d.name))
             if d.numreads==d.numplanned and d.numplanned>0:
                 for column in range( 1, 4):
-                    print("Migration must colorize")
-#                    table.item(i, column).setBackgroundColor(QColor(198, 205, 255))
+                    table.item(i, column).setBackground(QColor(198, 205, 255))
 
         table.setCurrentCell(len(self.arr)-1, 0)       
         table.clearSelection()    

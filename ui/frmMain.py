@@ -1,7 +1,6 @@
 import datetime
 import urllib.request
 import sys
-import threading
 import shutil
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -24,32 +23,35 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.setupUi(self)      
         self.mem=mem          
 
+        ##Update database
+        libdbupdates.Update(self.mem)
+        self.mem.data.load()
+        
         self.users=None#Pointer
         self.documents=None#Pointer
         
         self.confirmclose=True
-        self.accesspass=False
         
-        self.errorsending=0
-        self.errorupdating=0
+        self.setWindowTitle(self.tr("DidYouReadMe 2012-{} \xa9").format(version_date.year))
         
-        sb = QStatusBar()
-        sb.setFixedHeight(18)
-        self.setStatusBar(sb)
+        self.lblStatus=QLabel()
+        self.lblStatusMail=QLabel()
+        self.statusBar.addWidget(self.lblStatus)
+        self.statusBar.addWidget(self.lblStatusMail)        
         
-        self.showMaximized()
-            
-        self.accesspass=True#Se usa en el destructor
-    
-        ##Update database
-        libdbupdates.Update(self.mem)
-                
-        self.mem.data.load()
         self.wym.hide()
         self.wym.initiate(2011,  datetime.date.today().year, datetime.date.today().year, datetime.date.today().month)
         self.wym.changed.connect(self.on_wym_changed)
+                        
+        self.showMaximized()
+    
+        
+        self.tserver=TWebServer(self.mem)
+        self.tserver.start()
+        
+        self.tsend=TSend(self.mem)#Lanza TSend desde arranque
+        self.tsend.start()
 
-#        qDebug("Mierda3")
         ##Admin mode
         if self.mem.adminmodeinparameters:
             m=QMessageBox()
@@ -77,13 +79,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
                     m.setText(self.tr("Bad 'Admin mode' password. You are logged as a normal user"))
                     m.exec_()   
 
-
-        self.server=None
-        qDebug("tserver Server arrancado1")
-        self.tserver=threading.Thread(target=self.httpserver, args=(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
-        self.tserver.start()
-        qDebug("tserver Server arrancado2")
-
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
         self.on_chkUsersInactive_stateChanged(self.chkUsersInactive.checkState())
@@ -92,61 +87,26 @@ class frmMain(QMainWindow, Ui_frmMain):#
             print ("Looking for updates")
             self.checkUpdates(False)
 
-
-        
-        self.tsend=TSend(self.mem)#Lanza TSend desde arranque
-        self.tsend.start()
-        
-        self.timerSendMessages=QTimer()
-        self.timerSendMessages.timeout.connect(self.send)
-        self.timerSendMessages.start(50000)
-        
-        if self.mem.cfgfile.autoupdate=="True":
-            self.timerUpdateTables=QTimer()
-            self.timerUpdateTables.timeout.connect(self.on_actionTablesUpdate_triggered)
-            self.timerUpdateTables.start(200000)
-        
     def __del__(self):
-        if self.accesspass==True:
-            self.timerSendMessages.stop()
-            self.tsend.join()
-            self.server.shutdown()
-            self.tserver.join()
-            self.mem.__del__() 
+        self.tsend.shutdown()
+        self.tserver.server.shutdown()
+        self.tsend.wait()
+        self.tsend.wait()
+        self.mem.__del__() 
+        qDebug("DidYouReadMe correctly shutdown")
         
         
-    def httpserver(self, host, port):
-        qDebug("serving1")
-        os.chdir(dirDocs)
-        self.server=MyHTTPServer((host, int(port)), MyHTTPRequestHandler, mem=self.mem)
-        qDebug("serving2")
-        self.server.serve_forever()
-        qDebug("serving3")
-
     def updateStatusBar(self):
-        if self.tserver.is_alive()==True:
-            status=self.tr("Running Web server at {}:{} ({}/{}).".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport, self.server.errors, self.server.served+self.server.errors))
+        if self.tserver.isRunning()==True:
+            status=self.tr("Running Web server at {}:{} (Errors: {}/{}).".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport, self.tserver.server.errors, self.tserver.server.served+self.tserver.server.errors))
         else:
             status=self.tr("Web server is down. Check configuration.")
-        if self.tsend.is_alive()==True:
-            statusmail=self.tr("Running mail sender with {} errors.".format(self.errorsending))
+        if self.tsend.isRunning()==True:
+            statusmail=self.tr("Running mail sender (Errors: {}/{}).".format(self.tsend.errors, self.tsend.errors+ self.tsend.sent))
         else:
             statusmail=self.tr("Mail sender is not working.")
-        self.statusBar().showMessage(status +" "+ statusmail)
-
-    def send(self):
-        if self.tsend.isAlive()==False:
-            self.errorsending=self.errorsending+self.tsend.errorsending
-            del self.tsend#Lo borro porque sino no me volvia a enviar
-            QCoreApplication.processEvents()
-            self.tsend=TSend(self.mem)
-            self.tsend.start()      
-            
-        self.updateStatusBar()
-
-    
-    def on_trayIcon_triggered(self, reason):
-        print ("hola")
+        self.lblStatus.setText(status)
+        self.lblStatusMail.setText(statusmail)
         
     @pyqtSlot()      
     def on_actionTablesUpdate_triggered(self):
@@ -160,15 +120,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
     @pyqtSlot()      
     def on_wym_changed(self):
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
-
-    def updateData(self):
-        """Parsea el directorio readed y actualizada dotos"""
-        if self.tupdatedata.isAlive()==False:
-            self.errorupdating=self.errorupdating+self.tupdatedata.errorupdating
-            del self.tupdatedata#Lo borro porque sino no me volvia a enviar
-            QCoreApplication.processEvents()
-            self.tupdatedata=TUpdateData(self.mem)
-            self.tupdatedata.start()      
 
     @pyqtSlot()      
     def on_actionAbout_triggered(self):
@@ -242,7 +193,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
     @pyqtSlot(QEvent)   
     def closeEvent(self,event):        
         if self.confirmclose==True:#Si es un cerrado interactivo
-            reply = QMessageBox.question(self, self.tr("Quit DidYouReadMe?"), self.tr("If you close the app, the web server will be closed too. Users won't be able to get files.Do you with to exit?"), QMessageBox.Yes, QMessageBox.No)
+            reply = QMessageBox.question(self, self.tr("Quit DidYouReadMe?"), self.tr("If you close the app, the web server will be closed too and users won't be able to get files. Do you want to exit?"), QMessageBox.Yes, QMessageBox.No)
         else:
             reply=QMessageBox.Yes
         if reply == QMessageBox.Yes:

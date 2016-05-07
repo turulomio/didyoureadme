@@ -17,9 +17,6 @@
   <property name="cursor">
    <cursorShape>PointingHandCursor</cursorShape>
   </property>
-  <property name="windowTitle">
-   <string>DidYouReadMe 2012-2015. GNU General Public License</string>
-  </property>
   <property name="windowIcon">
    <iconset resource="../images/didyoureadme.qrc">
     <normaloff>:/didyoureadme.png</normaloff>:/didyoureadme.png</iconset>
@@ -295,7 +292,7 @@
    <addaction name="separator"/>
    <addaction name="actionExit"/>
   </widget>
-  <widget class="QStatusBar" name="status"/>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
    <property name="icon">
     <iconset resource="../images/didyoureadme.qrc">
