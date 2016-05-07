@@ -75,7 +75,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
         self.server = multiprocessing.Process(target=self.httpserver, args=())
         self.server.start()
-
+        print("why")
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
         self.on_chkUsersInactive_stateChanged(self.chkUsersInactive.checkState())
@@ -118,7 +118,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if '/usr/bin' in sys.path: #En gentoo hay un ejecutable bottle.py, que ademas era 2.7, se quita del path
             sys.path.remove('/usr/bin')
             print('/usr/bin removed from path, to use site-packaged  version, check if problems')
+            
         from bottle import route, run,  error, static_file
+        print(dir(bottle))
         @route('/get/<filename>/<name>')
         def get(filename,  name):
             if filename.split("l")[0]!="admin":#Para informes no se contabilizará, luego no crea file            
@@ -144,6 +146,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.statusBar().showMessage(status + self.tr("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    
 
     def send(self):
+        print("Poraquin")
 #        print (self.tsend.isAlive(), "send isalive")
         if self.tsend.isAlive()==False:
             self.errorsending=self.errorsending+self.tsend.errorsending

@@ -3,7 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-version="20150128"
+version="20160507"
 version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
 
 
@@ -322,7 +322,8 @@ class SetGroups(SetCommonsQListView):
         for i, p in enumerate(self.arr):
             table.setItem(i, 0, QTableWidgetItem(p.name))
             table.setItem(i, 1, QTableWidgetItem(p.members.string_of_names()))
-        table.clearSelection()    
+        table.clearSelection() 
+        print("fin qtablewidget")
 
     def load(self, sql):
         cur=self.mem.con.cursor()

@@ -2,6 +2,7 @@ from cx_Freeze import setup, Executable
 import sys
 import os
 import subprocess
+import pytz
 import platform
 sys.path.append('ui')
 sys.path.append('images')
@@ -55,11 +56,13 @@ name="didyoureadme"
 #Add files
 include_files=[ 'images/didyoureadme.ico', 'GPL-3.txt']
 include_files.append(("i18n/didyoureadme_es.qm", "i18n/didyoureadme_es.qm"))
+include_files.append(("sql/didyoureadme.sql", "sql/didyoureadme.sql"))
 
 #Build options
 if sys.platform=='win32':
       base = 'Win32GUI'
       include_files.append("didyoureadme.iss")
+      include_files.append(pytz.__path__[0])
       build_msi_options = {
            'upgrade_code': '{3849730B-2375-4F76-B4A5-343277A23B9B}',
            'add_to_path': False,
