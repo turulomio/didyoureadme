@@ -2,7 +2,7 @@ import   datetime
 import urllib.request
 import sys
 import threading
-from bottle import route, run,  error, static_file
+#from bottle import route, run,  error, static_file
 import shutil
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -77,11 +77,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
                     m.setText(self.tr("Bad 'Admin mode' password. You are logged as a normal user"))
                     m.exec_()   
 
+
+        print(self.mem)
         self.server=threading.Thread(target=self.httpserver, args=(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
         self.server.start()
-        #    self.server = multiprocessing.Process(target=self.httpserver, args=())
-        #self.server.start()
-        print("why")
+
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
         self.on_chkUsersInactive_stateChanged(self.chkUsersInactive.checkState())
@@ -119,26 +119,33 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tupdatedata.join()
             self.mem.__del__() 
         
+        
     def httpserver(self, host, port):
-        if '/usr/bin' in sys.path: #En gentoo hay un ejecutable bottle.py, que ademas era 2.7, se quita del path
-            sys.path.remove('/usr/bin')
-            print('/usr/bin removed from path, to use site-packaged  version, check if problems')
-            
-        @route('/get/<filename>/<name>')
-        def get(filename,  name):
-            if filename.split("l")[0]!="admin":#Para informes no se contabilizará, luego no crea file            
-                f=open(dirReaded+filename, "w")
-                f.close()
-            return static_file(filename.split("l")[1], root=dirDocs,  download=name)
+        os.chdir(dirDocs)
+        httpd=MyHTTPServer((host, int(port)), MyHTTPRequestHandler, mem=self.mem)
+        print("serving")
+        httpd.serve_forever()
         
-        @error(404)
-        def error404(error):
-            return 'Nothing here, sorry'
-        @error(403)
-        def error403(error):
-            return 'Nothing here, sorry'
-        
-        run (host=host, port=int(port), debug=True)
+#    def httpserver(self, host, port):
+#        if '/usr/bin' in sys.path: #En gentoo hay un ejecutable bottle.py, que ademas era 2.7, se quita del path
+#            sys.path.remove('/usr/bin')
+#            print('/usr/bin removed from path, to use site-packaged  version, check if problems')
+#            
+#        @route('/get/<filename>/<name>')
+#        def get(filename,  name):
+#            if filename.split("l")[0]!="admin":#Para informes no se contabilizará, luego no crea file            
+#                f=open(dirReaded+filename, "w")
+#                f.close()
+#            return static_file(filename.split("l")[1], root=dirDocs,  download=name)
+#        
+#        @error(404)
+#        def error404(error):
+#            return 'Nothing here, sorry'
+#        @error(403)
+#        def error403(error):
+#            return 'Nothing here, sorry'
+#        
+#        run (host=host, port=int(port), debug=True)
 
     def updateStatusBar(self):
         if self.server.is_alive()==True:

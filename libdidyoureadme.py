@@ -1,7 +1,11 @@
 import os,  datetime,  configparser,  hashlib,   psycopg2,  psycopg2.extras,  pytz,  smtplib,  urllib.parse, threading,  time
+import sys
+import io
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+import http.server
+import socketserver
 
 version="20160507"
 version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
@@ -141,7 +145,132 @@ class Backup:
     def save(self):
         pass
             
+            
+            
+            
+class MyHTTPServer(socketserver.TCPServer):
+    """Clase usada para pasar el objeto mem, al servidor y a sus request"""
+    def __init__(self, server_address, RequestHandlerClass, bind_and_activate=True, mem=None):
+        socketserver.TCPServer.__init__(self, server_address, RequestHandlerClass, bind_and_activate)
+        self.mem=mem        
+
+    def finish_request(self, request, client_address):
+        """Finish one request by instantiating RequestHandlerClass."""
+        self.RequestHandlerClass(request, client_address, self, mem=self.mem)
+
+
+
+class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self,request, client_address, server, mem=None):
+        print("Antes")
+        self.mem=mem#Debe ir antes
+        http.server.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
+        print(self.mem, "Dentro")
         
+    def list_directory(self, path):
+        """To avoid listing"""
+        enc = sys.getfilesystemencoding()
+        title = 'You cannot list directory files'
+        r=[]
+        r.append('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" '
+                 '"http://www.w3.org/TR/html4/strict.dtd">')
+        r.append('<html>\n<head>')
+        r.append('<meta http-equiv="Content-Type" '
+                 'content="text/html; charset=%s">' % enc)
+        r.append('<title>%s</title>\n</head>' % title)
+        r.append('<body>\n<h1>%s</h1>' % title)
+        r.append('</body>\n</html>\n')
+        encoded = '\n'.join(r).encode(enc, 'surrogateescape')
+        f = io.BytesIO()
+        f.write(encoded)
+        f.seek(0)
+        self.send_response(200)
+        self.send_header("Content-type", "text/html; charset=%s" % enc)
+        self.send_header("Content-Length", str(len(encoded)))
+        self.end_headers()
+        return f
+        
+    def NotFound(self, path):
+        """To avoid listing"""
+        enc = sys.getfilesystemencoding()
+        title = 'Fichero no encontrado'
+        r=[]
+        r.append('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" '
+                 '"http://www.w3.org/TR/html4/strict.dtd">')
+        r.append('<html>\n<head>')
+        r.append('<meta http-equiv="Content-Type" '
+                 'content="text/html; charset=%s">' % enc)
+        r.append('<title>%s</title>\n</head>' % title)
+        r.append('<body>\n<h1>%s</h1>' % title)
+        r.append('</body>\n</html>\n')
+        encoded = '\n'.join(r).encode(enc, 'surrogateescape')
+        f = io.BytesIO()
+        f.write(encoded)
+        f.seek(0)
+        self.send_response(200)
+        self.send_header("Content-type", "text/html; charset=%s" % enc)
+        self.send_header("Content-Length", str(len(encoded)))
+        self.end_headers()
+        return f
+        
+    def send_head(self):
+        """Overriden"""
+        #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
+        (userhash, documenthash)=self.path.split("/")[2].split("l")
+        path = self.translate_path(documenthash)        
+        
+        if os.path.exists(path):
+            #Actualiza la base de datos
+            con=self.mem.con.newConnection()
+            cur=con.cursor()
+            try:
+                d=Document(self.mem).init__from_hash(documenthash)
+                ud=UserDocument(self.mem.data.users_all().user_from_hash(userhash), d, self.mem)
+                ud.readed( self.mem.cfgfile.localzone)
+                con.commit()
+            except:
+                self.errorupdating=self.errorupdating+1
+                fl=open(self.mem.pathlogupdate, "a")
+                fl.write(QApplication.translate("didyoureadme","{0} Error updating data with hash: {1}\n").format(now(self.mem.cfgfile.localzone), file))
+                fl.close()
+            #Actualiza users
+            for u in self.mem.data.users_active.arr:
+                u.updateSent()
+                u.updateRead()
+            #Consulta
+            for i, d in enumerate(self.mem.data.documents_active.arr):
+                if d.isExpired()==False:
+                    d.updateNums()            
+            cur.close()  
+            con.disconnect()
+        else:
+            print("Fichero no existe y no se mete en bd")
+        
+        
+        
+        try:
+            #Lo abre luego existe
+            ctype = self.guess_type(path)
+            f = open(path, 'rb')
+            
+
+            #Devuelve el fichero
+            self.send_response(200)
+            self.send_header("Content-type", ctype)
+            fs = os.fstat(f.fileno())
+            self.send_header("Content-Length", str(fs[6]))
+            self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
+            self.end_headers()
+            return f
+        except OSError:
+            return self.NotFound(path)
+        except:
+            print("Error")
+            f.close()            
+            
+
+
+
 class SetCommons:
     """Base clase to create Sets, it needs id and name attributes, as index. It has a list arr and a dics dic_arr to access objects of the set"""
     def __init__(self):
@@ -323,7 +452,6 @@ class SetGroups(SetCommonsQListView):
             table.setItem(i, 0, QTableWidgetItem(p.name))
             table.setItem(i, 1, QTableWidgetItem(p.members.string_of_names()))
         table.clearSelection() 
-        print("fin qtablewidget")
 
     def load(self, sql):
         cur=self.mem.con.cursor()
