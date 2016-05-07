@@ -39,7 +39,7 @@ class Connection(QObject):
         self._active=False
         
         self.restart_timeout()
-        self.inactivity_timeout_minutes=30
+        self.inactivity_timeout_minutes=12321321321
         self.init=None
         
     def init__create(self, user, password, server, port, db):
@@ -163,7 +163,6 @@ class MyHTTPServer(socketserver.TCPServer):
         self.mem=mem    
         self.served=0
         self.errors=0
-        qDebug("HTTP Server arrancado2")
 
     def finish_request(self, request, client_address):
         """Finish one request by instantiating RequestHandlerClass."""
@@ -246,6 +245,8 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         Parece que es al abrir el fichero f, con el descriptor, tambien puede ser el send 200
         
         Si hago un debug desde wine funciona y se ve bien
+        
+        No funciona tampoco con 32 bits ni con 64 bits
         
         He comprobado el firewall y no era.
         

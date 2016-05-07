@@ -3,142 +3,142 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="../libdidyoureadme.py" line="920"/>
+        <location filename="../libdidyoureadme.py" line="925"/>
         <source>Spain</source>
         <translation>España</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="921"/>
+        <location filename="../libdidyoureadme.py" line="926"/>
         <source>Belgium</source>
         <translation>Bélgica</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="922"/>
+        <location filename="../libdidyoureadme.py" line="927"/>
         <source>China</source>
         <translation>China</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="923"/>
+        <location filename="../libdidyoureadme.py" line="928"/>
         <source>Germany</source>
         <translation>Alemania</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="924"/>
+        <location filename="../libdidyoureadme.py" line="929"/>
         <source>United Kingdom</source>
         <translation>Reino Unido</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="925"/>
+        <location filename="../libdidyoureadme.py" line="930"/>
         <source>Europe</source>
         <translation>Europa</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="926"/>
+        <location filename="../libdidyoureadme.py" line="931"/>
         <source>Finland</source>
         <translation>Finlandia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="927"/>
+        <location filename="../libdidyoureadme.py" line="932"/>
         <source>France</source>
         <translation>Francia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="928"/>
+        <location filename="../libdidyoureadme.py" line="933"/>
         <source>Ireland</source>
         <translation>Irlanda</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="929"/>
+        <location filename="../libdidyoureadme.py" line="934"/>
         <source>Italy</source>
         <translation>Italia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="930"/>
+        <location filename="../libdidyoureadme.py" line="935"/>
         <source>Japan</source>
         <translation>Japón</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="931"/>
+        <location filename="../libdidyoureadme.py" line="936"/>
         <source>Netherlands</source>
         <translation>Países bajos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="932"/>
+        <location filename="../libdidyoureadme.py" line="937"/>
         <source>Portugal</source>
         <translation>Portugal</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="933"/>
+        <location filename="../libdidyoureadme.py" line="938"/>
         <source>United States of America</source>
         <translation>Estados Unidos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="934"/>
+        <location filename="../libdidyoureadme.py" line="939"/>
         <source>Romanian</source>
         <translation>Rumania</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="935"/>
+        <location filename="../libdidyoureadme.py" line="940"/>
         <source>Rusia</source>
         <translation>Rusia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="468"/>
+        <location filename="../libdidyoureadme.py" line="473"/>
         <source>Name</source>
         <translation type="unfinished">Nombre</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="469"/>
+        <location filename="../libdidyoureadme.py" line="474"/>
         <source>Users</source>
         <translation type="unfinished">Usuarios</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="628"/>
+        <location filename="../libdidyoureadme.py" line="633"/>
         <source>Start date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="629"/>
+        <location filename="../libdidyoureadme.py" line="634"/>
         <source>Post</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="630"/>
+        <location filename="../libdidyoureadme.py" line="635"/>
         <source>Full name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="631"/>
+        <location filename="../libdidyoureadme.py" line="636"/>
         <source>Mail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="978"/>
+        <location filename="../libdidyoureadme.py" line="983"/>
         <source>Read</source>
         <translation type="unfinished">Leídos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="977"/>
+        <location filename="../libdidyoureadme.py" line="982"/>
         <source>Sent</source>
         <translation type="unfinished">Enviados</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="975"/>
+        <location filename="../libdidyoureadme.py" line="980"/>
         <source>Datetime</source>
         <translation type="unfinished">Fecha y hora</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="976"/>
+        <location filename="../libdidyoureadme.py" line="981"/>
         <source>Planned</source>
         <translation type="unfinished">Planeados</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="979"/>
+        <location filename="../libdidyoureadme.py" line="984"/>
         <source>Expiration</source>
         <translation type="unfinished">Expiración</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="980"/>
+        <location filename="../libdidyoureadme.py" line="985"/>
         <source>Title</source>
         <translation type="unfinished">Título</translation>
     </message>
@@ -156,12 +156,12 @@
 <context>
     <name>DidYouReadMe</name>
     <message>
-        <location filename="../libdidyoureadme.py" line="870"/>
+        <location filename="../libdidyoureadme.py" line="875"/>
         <source>This is an automatic and personal mail from DidYouReadMe.</source>
         <translation>Este es un correo automático y personal desde DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="870"/>
+        <location filename="../libdidyoureadme.py" line="875"/>
         <source>Don&apos;t answer and don&apos;t resend this mail.</source>
         <translation>No lo responda ni lo reenvíe.</translation>
     </message>
@@ -171,7 +171,7 @@
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="870"/>
+        <location filename="../libdidyoureadme.py" line="875"/>
         <source>When you click the next link, you will get the document associated to this mail and it will be registered as read:</source>
         <translation>Cuando pulse en el siguiente enlace, se podrá descargar el documento asociado a este correo y se registrará su lectura:</translation>
     </message>
@@ -179,14 +179,14 @@
 <context>
     <name>didyoureadme</name>
     <message>
-        <location filename="../libdidyoureadme.py" line="784"/>
+        <location filename="../libdidyoureadme.py" line="789"/>
         <source>{0} Error sending message {1} to {2}
 </source>
         <translation>{0} errores al enviar el mensaje {1} a {2}
 </translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="188"/>
+        <location filename="../libdidyoureadme.py" line="187"/>
         <source>{0} Error updating data with hash: {1}
 </source>
         <translation>{0} Error actualizando datos con hash: {1}
