@@ -3,21 +3,21 @@
 
 #define MyAppName "didyoureadme"
 #define MyAppPublisher "Mariano Muñoz"
-#define MyAppURL "http://deviceninlan.sourceforge.net"
+#define MyAppURL "http://didyoureadme.sourceforge.net"
 #define MyAppExeName "didyoureadme.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{3849730B-2375-4F76-B4A5-A5976456AB9B}
+AppId={{3849730B-2375-4F76-B4A5-A5975656AB9B}
 AppName={#MyAppName}
 AppVersion={#VERSION_NAME}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\devicensinlan
+DefaultDirName={pf}\didyoureadme
 DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
@@ -47,7 +47,8 @@ Source: "i18n/*.qm"; DestDir: "{app}/i18n/"; Flags: ignoreversion
 Source: "*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "library.zip"; DestDir: "{app}"; Flags: ignoreversion        
 Source: "platforms\*"; DestDir: "{app}\platforms\"; Flags: ignoreversion recursesubdirs createallsubdirs    
-Source: "imageformats\*"; DestDir: "{app}\imageformats\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "imageformats\*"; DestDir: "{app}\imageformats\"; Flags: ignoreversion recursesubdirs createallsubdirs       
+Source: "pytz\*"; DestDir: "{app}\pytz\"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "sql\*"; DestDir: "{app}\sql\"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

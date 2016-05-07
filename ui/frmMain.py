@@ -1,8 +1,7 @@
-import   datetime
+import datetime
 import urllib.request
 import sys
 import threading
-#from bottle import route, run,  error, static_file
 import shutil
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -50,6 +49,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.wym.initiate(2011,  datetime.date.today().year, datetime.date.today().year, datetime.date.today().month)
         self.wym.changed.connect(self.on_wym_changed)
 
+#        qDebug("Mierda3")
         ##Admin mode
         if self.mem.adminmodeinparameters:
             m=QMessageBox()
@@ -78,9 +78,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
                     m.exec_()   
 
 
-        print(self.mem)
-        self.server=threading.Thread(target=self.httpserver, args=(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
-        self.server.start()
+        self.server=None
+        qDebug("tserver Server arrancado1")
+        self.tserver=threading.Thread(target=self.httpserver, args=(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
+        self.tserver.start()
+        qDebug("tserver Server arrancado2")
 
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
@@ -90,12 +92,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             print ("Looking for updates")
             self.checkUpdates(False)
 
-        self.tupdatedata=TUpdateData(self.mem)
-        self.tupdatedata.start()
-        
-        self.timerUpdateData=QTimer()
-        self.timerUpdateData.timeout.connect(self.updateData)
-        self.timerUpdateData.start(60000)
+
         
         self.tsend=TSend(self.mem)#Lanza TSend desde arranque
         self.tsend.start()
@@ -108,51 +105,34 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.timerUpdateTables=QTimer()
             self.timerUpdateTables.timeout.connect(self.on_actionTablesUpdate_triggered)
             self.timerUpdateTables.start(200000)
-            
-        self.updateStatusBar()
         
     def __del__(self):
         if self.accesspass==True:
             self.timerSendMessages.stop()
-            self.timerUpdateData.stop()
             self.tsend.join()
-            self.tupdatedata.join()
+            self.server.shutdown()
+            self.tserver.join()
             self.mem.__del__() 
         
         
     def httpserver(self, host, port):
+        qDebug("serving1")
         os.chdir(dirDocs)
-        httpd=MyHTTPServer((host, int(port)), MyHTTPRequestHandler, mem=self.mem)
-        print("serving")
-        httpd.serve_forever()
-        
-#    def httpserver(self, host, port):
-#        if '/usr/bin' in sys.path: #En gentoo hay un ejecutable bottle.py, que ademas era 2.7, se quita del path
-#            sys.path.remove('/usr/bin')
-#            print('/usr/bin removed from path, to use site-packaged  version, check if problems')
-#            
-#        @route('/get/<filename>/<name>')
-#        def get(filename,  name):
-#            if filename.split("l")[0]!="admin":#Para informes no se contabilizará, luego no crea file            
-#                f=open(dirReaded+filename, "w")
-#                f.close()
-#            return static_file(filename.split("l")[1], root=dirDocs,  download=name)
-#        
-#        @error(404)
-#        def error404(error):
-#            return 'Nothing here, sorry'
-#        @error(403)
-#        def error403(error):
-#            return 'Nothing here, sorry'
-#        
-#        run (host=host, port=int(port), debug=True)
+        self.server=MyHTTPServer((host, int(port)), MyHTTPRequestHandler, mem=self.mem)
+        qDebug("serving2")
+        self.server.serve_forever()
+        qDebug("serving3")
 
     def updateStatusBar(self):
-        if self.server.is_alive()==True:
-            status=self.tr("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
+        if self.tserver.is_alive()==True:
+            status=self.tr("Running Web server at {}:{} ({}/{}).".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport, self.server.errors, self.server.served+self.server.errors))
         else:
-            status=self.tr("Web server is down. Check configuration. ")
-        self.statusBar().showMessage(status + self.tr("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    
+            status=self.tr("Web server is down. Check configuration.")
+        if self.tsend.is_alive()==True:
+            statusmail=self.tr("Running mail sender with {} errors.".format(self.errorsending))
+        else:
+            statusmail=self.tr("Mail sender is not working.")
+        self.statusBar().showMessage(status +" "+ statusmail)
 
     def send(self):
         if self.tsend.isAlive()==False:
@@ -167,14 +147,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
     
     def on_trayIcon_triggered(self, reason):
         print ("hola")
-
-#    @pyqtSlot()      
-#    def on_actionBackup_triggered(self):
-#        QProcess.startDetached("didyoureadme-backup", [self.mem.cfgfile.server, self.mem.cfgfile.port, self.mem.cfgfile.user, self.mem.cfgfile.database] )
-#        m=QMessageBox()
-#        m.setText(QApplication.translate("DidYouReadMe","Backup will be created in the home directory"))
-#        m.exec_()
-#        
+        
     @pyqtSlot()      
     def on_actionTablesUpdate_triggered(self):
         inicio=datetime.datetime.now()

@@ -12,7 +12,17 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from frmMain import *
 from frmAccess import *
-from libdidyoureadme import dirDocs, dirReaded
+from libdidyoureadme import dirDocs
+
+def qt_message_handler(mode, context, message):
+    f=open("error.txt", "a")
+    s="""
+Mio: line: {} func: {} file {}
+{}
+""".format(context.line, context.function, context.file, message)
+    f.write(s)
+    f.close()
+    print(s)
 
 if __name__=='__main__':#Needed due to multiprocessing in windows load all process again and launch frmAccess twice
     try:
@@ -21,9 +31,13 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         pass
     try:
         os.makedirs(dirDocs)
-        os.makedirs(dirReaded)
     except:
         pass
+
+
+
+    QtCore.qInstallMessageHandler(qt_message_handler)
+
 
     app = QApplication(sys.argv)
     app.setOrganizationName("Mariano Muñoz ©")
@@ -63,5 +77,6 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         mem.adminmodeinparameters=True
         
     frmMain = frmMain(mem) 
+    
     sys.exit(app.exec_())
 

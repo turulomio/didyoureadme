@@ -13,7 +13,6 @@ version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]
 
 dirTmp=os.path.expanduser("/tmp/didyoureadme/")
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
-dirReaded=os.path.expanduser("~/.didyoureadme/readed/")
 
 class Connection(QObject):
     """Futuro conection object
@@ -151,21 +150,58 @@ class Backup:
 class MyHTTPServer(socketserver.TCPServer):
     """Clase usada para pasar el objeto mem, al servidor y a sus request"""
     def __init__(self, server_address, RequestHandlerClass, bind_and_activate=True, mem=None):
+        qDebug("HTTP Server arrancad1o")
         socketserver.TCPServer.__init__(self, server_address, RequestHandlerClass, bind_and_activate)
-        self.mem=mem        
+        qDebug("HTTP Server arrancado3")
+        self.mem=mem    
+        self.served=0
+        self.errors=0
+        qDebug("HTTP Server arrancado2")
 
     def finish_request(self, request, client_address):
         """Finish one request by instantiating RequestHandlerClass."""
-        self.RequestHandlerClass(request, client_address, self, mem=self.mem)
-
-
+        qDebug("finish arrancado")
+        request=self.RequestHandlerClass(request, client_address, self)
+        qDebug("finish continuado")
+        
+        
+        if request.served:
+            #Actualiza la base de datos
+            con=self.mem.con.newConnection()
+            cur=con.cursor()
+            try:
+                d=Document(self.mem).init__from_hash(request.documenthash)
+                ud=UserDocument(self.mem.data.users_all().user_from_hash(request.userhash), d, self.mem)
+                ud.readed( self.mem.cfgfile.localzone)
+                con.commit()
+                print("Metido en base de datos")
+            except:
+                self.errorupdating=self.errorupdating+1
+                fl=open(self.mem.pathlogupdate, "a")
+                fl.write(QApplication.translate("didyoureadme","{0} Error updating data with hash: {1}\n").format(now(self.mem.cfgfile.localzone), file))
+                fl.close()
+            #Actualiza users
+            for u in self.mem.data.users_active.arr:
+                u.updateSent()
+                u.updateRead()
+            #Consulta
+            for i, d in enumerate(self.mem.data.documents_active.arr):
+                if d.isExpired()==False:
+                    d.updateNums()            
+            cur.close()  
+            con.disconnect()
+            self.served=self.served+1
+        else:
+            print("Fichero no existe y no se mete en bd")
+            self.errors=self.errors+1
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self,request, client_address, server, mem=None):
-        print("Antes")
         self.mem=mem#Debe ir antes
+        self.userhash=None
+        self.documenthash=None
+        self.served=False
         http.server.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
-        print(self.mem, "Dentro")
         
     def list_directory(self, path):
         """To avoid listing"""
@@ -215,58 +251,23 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         
     def send_head(self):
         """Overriden"""
-        #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
-        (userhash, documenthash)=self.path.split("/")[2].split("l")
-        path = self.translate_path(documenthash)        
-        
-        if os.path.exists(path):
-            #Actualiza la base de datos
-            con=self.mem.con.newConnection()
-            cur=con.cursor()
-            try:
-                d=Document(self.mem).init__from_hash(documenthash)
-                ud=UserDocument(self.mem.data.users_all().user_from_hash(userhash), d, self.mem)
-                ud.readed( self.mem.cfgfile.localzone)
-                con.commit()
-            except:
-                self.errorupdating=self.errorupdating+1
-                fl=open(self.mem.pathlogupdate, "a")
-                fl.write(QApplication.translate("didyoureadme","{0} Error updating data with hash: {1}\n").format(now(self.mem.cfgfile.localzone), file))
-                fl.close()
-            #Actualiza users
-            for u in self.mem.data.users_active.arr:
-                u.updateSent()
-                u.updateRead()
-            #Consulta
-            for i, d in enumerate(self.mem.data.documents_active.arr):
-                if d.isExpired()==False:
-                    d.updateNums()            
-            cur.close()  
-            con.disconnect()
-        else:
-            print("Fichero no existe y no se mete en bd")
-        
-        
-        
         try:
+            #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
+            (self.userhash, self.documenthash)=self.path.split("/")[2].split("l")
+            path = self.translate_path(self.documenthash)                
             #Lo abre luego existe
             ctype = self.guess_type(path)
             f = open(path, 'rb')
-            
-
-            #Devuelve el fichero
             self.send_response(200)
             self.send_header("Content-type", ctype)
             fs = os.fstat(f.fileno())
             self.send_header("Content-Length", str(fs[6]))
             self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
             self.end_headers()
-            return f
-        except OSError:
-            return self.NotFound(path)
+            self.served=True
+            return f            
         except:
-            print("Error")
-            f.close()            
+            return self.NotFound("")
             
 
 
@@ -709,44 +710,6 @@ class User:
         cur.execute("select count(*) from userdocuments where id_users=%s and read is not null", (self.id, ))
         self.read=cur.fetchone()[0]
         cur.close()
-
-
-class TUpdateData(threading.Thread):
-    def __init__(self, mem):
-        threading.Thread.__init__(self)
-        self.mem=mem
-        self.errorupdating=0
-    
-    def run(self):    
-        con=self.mem.con.newConnection()
-        cur=con.cursor()
-        #Actualiza userdocuments
-        for file in os.listdir(dirReaded):
-            try:
-                (userhash, documenthash)=file.split("l")
-                d=Document(self.mem).init__from_hash(documenthash)
-                ud=UserDocument(self.mem.data.users_all().user_from_hash(userhash), d, self.mem)
-                ud.readed( self.mem.cfgfile.localzone)
-                con.commit()
-            except:
-                self.errorupdating=self.errorupdating+1
-                f=open(self.mem.pathlogupdate, "a")
-                f.write(QApplication.translate("didyoureadme","{0} Error updating data with hash: {1}\n").format(now(self.mem.cfgfile.localzone), file))
-                f.close()
-            finally:
-                os.remove(dirReaded+file)
-            
-        #Actualiza users
-        for u in self.mem.data.users_active.arr:
-            u.updateSent()
-            u.updateRead()
-            
-        #Consulta
-        for i, d in enumerate(self.mem.data.documents_active.arr):
-            if d.isExpired()==False:
-                d.updateNums()            
-        cur.close()  
-        con.disconnect()
 
 class TSend(threading.Thread):
     def __init__(self, mem):
