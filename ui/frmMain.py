@@ -1,4 +1,8 @@
-import   datetime,  urllib.request,  multiprocessing,  sys
+import   datetime
+import urllib.request
+import sys
+import threading
+from bottle import route, run,  error, static_file
 import shutil
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -73,8 +77,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
                     m.setText(self.tr("Bad 'Admin mode' password. You are logged as a normal user"))
                     m.exec_()   
 
-        self.server = multiprocessing.Process(target=self.httpserver, args=())
+        self.server=threading.Thread(target=self.httpserver, args=(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
         self.server.start()
+        #    self.server = multiprocessing.Process(target=self.httpserver, args=())
+        #self.server.start()
         print("why")
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
@@ -103,24 +109,21 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.timerUpdateTables.timeout.connect(self.on_actionTablesUpdate_triggered)
             self.timerUpdateTables.start(200000)
             
-        print ("Aqui")
+        self.updateStatusBar()
         
     def __del__(self):
         if self.accesspass==True:
             self.timerSendMessages.stop()
             self.timerUpdateData.stop()
-            self.server.terminate()
             self.tsend.join()
             self.tupdatedata.join()
             self.mem.__del__() 
         
-    def httpserver(self):
+    def httpserver(self, host, port):
         if '/usr/bin' in sys.path: #En gentoo hay un ejecutable bottle.py, que ademas era 2.7, se quita del path
             sys.path.remove('/usr/bin')
             print('/usr/bin removed from path, to use site-packaged  version, check if problems')
             
-        from bottle import route, run,  error, static_file
-        print(dir(bottle))
         @route('/get/<filename>/<name>')
         def get(filename,  name):
             if filename.split("l")[0]!="admin":#Para informes no se contabilizará, luego no crea file            
@@ -134,11 +137,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
         @error(403)
         def error403(error):
             return 'Nothing here, sorry'
-            
-        run (host=self.mem.cfgfile.webinterface, port=int(self.mem.cfgfile.webserverport), debug=False)
+        
+        run (host=host, port=int(port), debug=True)
 
     def updateStatusBar(self):
-        #Actualiza statusbar
         if self.server.is_alive()==True:
             status=self.tr("Running web server at {0}:{1}. ".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport))
         else:
@@ -146,8 +148,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.statusBar().showMessage(status + self.tr("{0} sending errors. {1} updating errors.".format(self.errorsending,  self.errorupdating)))    
 
     def send(self):
-        print("Poraquin")
-#        print (self.tsend.isAlive(), "send isalive")
         if self.tsend.isAlive()==False:
             self.errorsending=self.errorsending+self.tsend.errorsending
             del self.tsend#Lo borro porque sino no me volvia a enviar
@@ -325,7 +325,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
            "<h2>"+self.tr("User reads")+"</h2>"+
            "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.tr("User"), self.tr("Sent"), self.tr("First read"), self.tr("Number of reads"))
            )
-           
+        print(s)
                     
         cur=self.mem.con.cursor()     
         cur.execute("select * from users, userdocuments where id_documents=%s and userdocuments.id_users=users.id order by name", (self.documents.selected.id, ))    
