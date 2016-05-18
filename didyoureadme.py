@@ -12,18 +12,18 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from frmMain import *
 from frmAccess import *
-from libdidyoureadme import dirDocs
+from libdidyoureadme import dirDocs, version,  dirTmp
 
 def qt_message_handler(mode, context, message):
-    f=open("error.txt", "a")
-    s="""{} ({}). Line: {}. Func: {}. File: {}. {}\n""".format(datetime.datetime.now(),  mode, context.line, context.function, context.file, message)
+    f=open("log.txt", "a")
+    s="{} {}".format(datetime.datetime.now(),  message)
     f.write(s)
     f.close()
     print(s)
 
 if __name__=='__main__':#Needed due to multiprocessing in windows load all process again and launch frmAccess twice
     try:
-        os.makedirs("/tmp/didyoureadme")
+        os.makedirs(dirTmp)
     except:
         pass
     try:
@@ -41,6 +41,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
     app.setOrganizationDomain("turulomio.users.sourceforge.net")
     app.setApplicationName("DidYouReadMe")
 
+    qDebug(QApplication.translate("Core", "Iniciando Didyoureadme-{}".format(version)))
     mem=Mem()
 
     app.setQuitOnLastWindowClosed(True)

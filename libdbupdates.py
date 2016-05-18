@@ -28,19 +28,19 @@ class Update:
             self.set_database_version_date(201501260851)
         if self.dbversion_date<201501261046: #Documentos a base de datos
         
-            print ("**** Migrating old didyoureadme files")
+            qDebug ("Migrating old didyoureadme files")
             cur=self.mem.con.cursor()
             cur2=self.mem.con.cursor()
-            print ("THIS MUST BE DONE IN THE DATABASE SERVER")
+            qDebug ("THIS MUST BE DONE IN THE DATABASE SERVER")
             cur.execute("select * from documents;")
             for row in cur:
                 if os.path.exists(dirDocs+row['hash'])==False:
-                    print ("No existe y no se puede cargar a base de datos",  row['hash'])
+                    qDebug ("No existe y no se puede cargar la base de datos",  row['hash'])
                     continue
                 if row['file']==None:
                     os.system("cp {} /tmp".format(dirDocs+row['hash']))
                     cur2.execute("update documents set file=lo_import(%s) where id=%s", ("/tmp/"+row['hash'], row['id']))
-                    print ("Insertando en database para oid vacio ",  row['hash'])
+                    qDebug ("Insertando en database para oid vacio ",  row['hash'])
                     os.system("rm /tmp/{}".format(row['hash']))
             cur2.close()
             cur.close()
@@ -105,11 +105,11 @@ $_$ LANGUAGE sql STRICT;""")
     
     OJO EN LOS REEMPLAZOS MASIVOS PORQUE UN ACTIVE DE PRODUCTS LUEGO PASA A LLAMARSE AUTOUPDATE PERO DEBERA MANTENERSSE EN SU MOMENTO TEMPORAL"""  
         self.load_files_bytea()
-        print ("**** Database already updated")
+        qDebug ("Database already updated")
         
     def load_files_bytea(self):
         """THis function download all files from database to .didyoureadme/docs/  when needed"""
-        print ("**** Regenerating files in .didyoureadme/docs")
+        qDebug ("Regenerating files in .didyoureadme/docs")
         cur=self.mem.con.cursor()
         cur.execute("select id, datetime, title, comment, filename, hash, expiration  from documents;")
         for row in cur:                
@@ -120,11 +120,11 @@ $_$ LANGUAGE sql STRICT;""")
             if d.isExpired():
                 if os.path.exists(dirDocs+d.hash)==True:
                     d.unlink()
-                    print ("Removing expired document .didyoureadme/docs",  d.hash)
+                    qDebug ("Removing expired document .didyoureadme/docs",  d.hash)
             else:#Not expired
                 if os.path.exists(dirDocs+d.hash)==False:
                     d.bytea_to_file(dirDocs+d.hash)
-                    print ("Copying a .didyoureadme/docs",  d.hash)
+                    qDebug ("Copying a .didyoureadme/docs",  d.hash)
         cur.close()
         
    
@@ -151,7 +151,7 @@ $_$ LANGUAGE sql STRICT;""")
         
     def set_database_version_date(self, valor):
         """Tiene el commit"""
-        print ("**** Updating database from {} to {}".format(self.dbversion_date, valor))
+        qDebug ("Updating database from {} to {}".format(self.dbversion_date, valor))
         cur=self.mem.con.cursor()
         if self.dbversion_date==None:
             cur.execute("insert into globals (id_globals,global,value) values (%s,%s,%s);", (1,"version_date", valor ))

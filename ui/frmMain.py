@@ -5,6 +5,7 @@ import shutil
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtPrintSupport import *
 from libdidyoureadme import *
 import libdbupdates
 
@@ -110,12 +111,22 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
     @pyqtSlot()      
     def on_actionTablesUpdate_triggered(self):
-        inicio=datetime.datetime.now()
+        inicio=datetime.datetime.now()           
+       
+        #Actualiza users
+        for u in self.mem.data.users_active.arr:
+            u.updateSent()
+            u.updateRead()
+        #Consulta
+        for i, d in enumerate(self.mem.data.documents_active.arr):
+            if d.isExpired()==False:
+                d.updateNums()
+
         self.users.qtablewidget(self.tblUsers)
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.documents.qtablewidget(self.tblDocuments)
         self.updateStatusBar()
-        print ("Update tables took {}".format(datetime.datetime.now()-inicio))
+        qDebug(self.tr("Update tables took {}".format(datetime.datetime.now()-inicio)))
 
     @pyqtSlot()      
     def on_wym_changed(self):
@@ -221,10 +232,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
             
         file=dirTmp+os.path.basename(self.documents.selected.filename)
         shutil.copyfile(dirDocs+self.documents.selected.hash, file)
+        qDebug(self.tr("Opening document {} from {}".format(self.documents.selected.id, file)))
         
         self.openWithDefaultApp(file)
             
-        QApplication.restoreOverrideCursor();
+        QApplication.restoreOverrideCursor()
     
     def openWithDefaultApp(self, file):
         if os.path.exists("/usr/bin/kfmclient"):
@@ -256,7 +268,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
            "<h2>"+self.tr("User reads")+"</h2>"+
            "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.tr("User"), self.tr("Sent"), self.tr("First read"), self.tr("Number of reads"))
            )
-        print(s)
                     
         cur=self.mem.con.cursor()     
         cur.execute("select * from users, userdocuments where id_documents=%s and userdocuments.id_users=users.id order by name", (self.documents.selected.id, ))    
@@ -267,7 +278,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         doc.setHtml(s)
         printer=QPrinter()
-        file=dirTmp+"{0} DidYouReadMe document.pdf".format(str(self.documents.selected.datetime)[:19])
+        file=dirTmp+"{0} DidYouReadMe document.pdf".format(str(self.documents.selected.datetime)[:16]).replace(":", "").replace("-", "")
+        qDebug(self.tr("Document {} report was generated in {}".format(self.documents.selected.id, file)))
         printer.setOutputFileName(file)
         printer.setOutputFormat(QPrinter.PdfFormat);
         doc.print(printer)

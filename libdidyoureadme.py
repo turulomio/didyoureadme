@@ -8,7 +8,6 @@ import psycopg2.extras
 import pytz
 import smtplib 
 import urllib.parse
-import sys
 import io
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -16,17 +15,19 @@ from PyQt5.QtWidgets import *
 import http.server
 import socketserver
 
-version="20160507"
+version="20160518"
 version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
 
-
-dirTmp=os.path.expanduser("/tmp/didyoureadme/")
-dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
+if platform.system()=="Windows":
+    dirTmp=os.path.expanduser("~\\.didyoureadme\\tmp\\")
+    dirDocs=os.path.expanduser("~\\.didyoureadme\\docs\\")
+else:
+    dirTmp=os.path.expanduser("~/.didyoureadme/tmp/")
+    dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
 
 class Connection(QObject):
     """Futuro conection object
     COPIADA DE didyoureadme NO EDITAR"""
-    inactivity_timeout=pyqtSignal()
     def __init__(self):
         QObject.__init__(self)
         
@@ -37,9 +38,6 @@ class Connection(QObject):
         self.db=None
         self._con=None
         self._active=False
-        
-        self.restart_timeout()
-        self.inactivity_timeout_minutes=12321321321
         self.init=None
         
     def init__create(self, user, password, server, port, db):
@@ -49,21 +47,11 @@ class Connection(QObject):
         self.port=port
         self.db=db
         return self
-        
-    def _check_inactivity(self):
-        if datetime.datetime.now()-self._lastuse>datetime.timedelta(minutes=self.inactivity_timeout_minutes):
-            self.disconnect()
-            self._timerlastuse.stop()
-            self.inactivity_timeout.emit()
-        print ("Remaining time {}".format(self._lastuse+datetime.timedelta(minutes=self.inactivity_timeout_minutes)-datetime.datetime.now()))
+
 
     def cursor(self):
-        self.restart_timeout()#Datetime who saves the las use of connection
         return self._con.cursor()
-        
-    def restart_timeout(self):
-        """Resets timeout, usefull in long process without database connections"""
-        self._lastuse=datetime.datetime.now()
+
         
     
     def mogrify(self, sql, arr):
@@ -75,7 +63,6 @@ class Connection(QObject):
         
     def cursor_one_row(self, sql, arr=[]):
         """Returns only one row"""
-        self.restart_timeout()
         cur=self._con.cursor()
         cur.execute(sql, arr)
         row=cur.fetchone()
@@ -84,7 +71,6 @@ class Connection(QObject):
         
     def cursor_one_column(self, sql, arr=[]):
         """Returns un array with the results of the column"""
-        self.restart_timeout()
         cur=self._con.cursor()
         cur.execute(sql, arr)
         for row in cur:
@@ -115,10 +101,7 @@ class Connection(QObject):
             return
         self._active=True
         self.init=datetime.datetime.now()
-        self.restart_timeout()
-        self._timerlastuse = QTimer()
-        self._timerlastuse.timeout.connect(self._check_inactivity)
-        self._timerlastuse.start(300000)
+
         
     def newConnection(self):
         """Return a new connection object, with the same connection string"""
@@ -128,8 +111,6 @@ class Connection(QObject):
         
     def disconnect(self):
         self._active=False
-        if self._timerlastuse.isActive()==True:
-            self._timerlastuse.stop()
         self._con.close()
         
     def is_active(self):
@@ -166,10 +147,7 @@ class MyHTTPServer(socketserver.TCPServer):
 
     def finish_request(self, request, client_address):
         """Finish one request by instantiating RequestHandlerClass."""
-        qDebug("finish arrancado")
         request=self.RequestHandlerClass(request, client_address, self)
-        qDebug("finish continuado")
-        
         
         if request.request_ended==True:
             #Actualiza la base de datos
@@ -177,60 +155,48 @@ class MyHTTPServer(socketserver.TCPServer):
             cur=con.cursor()
             try:
                 d=Document(self.mem).init__from_hash(request.documenthash)
-                ud=UserDocument(self.mem.data.users_all().user_from_hash(request.userhash), d, self.mem)
+                u=self.mem.data.users_all().user_from_hash(request.userhash)
+                ud=UserDocument(u, d, self.mem)
                 ud.readed( self.mem.cfgfile.localzone)
                 con.commit()
-                print("Metido en base de datos")
+                qDebug(QApplication.translate("Core","User {} downloaded document {}").format(u.mail, d.id))
             except:
-                self.errorupdating=self.errorupdating+1
-                fl=open(self.mem.pathlogupdate, "a")
-                fl.write(QApplication.translate("didyoureadme","{0} Error updating data with hash: {1}\n").format(now(self.mem.cfgfile.localzone), file))
-                fl.close()
-            #Actualiza users
-            for u in self.mem.data.users_active.arr:
-                u.updateSent()
-                u.updateRead()
-            #Consulta
-            for i, d in enumerate(self.mem.data.documents_active.arr):
-                if d.isExpired()==False:
-                    d.updateNums()            
+                self.errors=self.errors+1
+                qDebug(QApplication.translate("Core", "Error registering in database"))    
             cur.close()  
             con.disconnect()
             self.served=self.served+1
         else:
-            print("Fichero no existe y no se mete en bd")
+            qDebug("Fichero no existe y no se mete en bd")
             self.errors=self.errors+1
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self,request, client_address, server, mem=None):
-        qDebug("MyHTTPRequestHandler constructor inicado")
         self.mem=mem#Debe ir antes
         self.userhash=None
         self.documenthash=None
         self.request_ended=False
         http.server.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
-        qDebug("MyHTTPRequestHandler constructor finalizado")
-
         
-    def NotFound(self, path):
+    def ErrorPage(self, text):
         """To avoid listing"""
-        enc = sys.getfilesystemencoding()
-        title = 'Fichero no encontrado'
-        r=[]
-        r.append('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" '
-                 '"http://www.w3.org/TR/html4/strict.dtd">')
-        r.append('<html>\n<head>')
-        r.append('<meta http-equiv="Content-Type" '
-                 'content="text/html; charset=%s">' % enc)
-        r.append('<title>%s</title>\n</head>' % title)
-        r.append('<body>\n<h1>%s</h1>' % title)
-        r.append('</body>\n</html>\n')
-        encoded = '\n'.join(r).encode(enc, 'surrogateescape')
+        s="""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset={0}">
+    <title>DidYouReadMe error page</title>
+</head>
+<body>
+    <h1>{0}</h1>
+    {1}
+</body>
+</html>""".format(text, QApplication.translate("Core", "There has been a problem with your request..."))
+        encoded=s.encode("UTF-8", 'surrogateescape')
         f = io.BytesIO()
         f.write(encoded)
         f.seek(0)
         self.send_response(200)
-        self.send_header("Content-type", "text/html; charset=%s" % enc)
+        self.send_header("Content-type", "text/html; charset=UTF-8")
         self.send_header("Content-Length", str(len(encoded)))
         self.end_headers()
         return f
@@ -239,58 +205,39 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         """Overriden
         
         Tras muchos dolores de cabeza no consigo nada
-        Funciona bien lanzando co eric
+        Funciona bien lanzando con eric
         Pero al pasar por freeze falla en esta función
-        He usado qdebug apra verlo, no se ve bien
-        Parece que es al abrir el fichero f, con el descriptor, tambien puede ser el send 200
-        
-        Si hago un debug desde wine funciona y se ve bien
-        
-        No funciona tampoco con 32 bits ni con 64 bits
-        
-        He comprobado el firewall y no era.
-        
-        
-        
+        He usado qdebug para verlo
+        Se produce cuando es compilado sin consola con Win32 en la base del setup. Si se pone base="Console" funciona
         """
-        qDebug("MyHTTPRequestHandler.send_head ## "+ self.path)
-#        try:
-            #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
-            
+        #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
         try:
             (self.userhash, self.documenthash)=self.path.split("/")[2].split("l")
         except:
-            qDebug("Error converting path")
-            return self.NotFound("")
+            qDebug(QApplication.translate("Core","Error converting path"))
+            return self.ErrorPage(QApplication.translate("Core","Error converting path"))
             
             
         path = self.translate_path(self.documenthash)  
-        f=None
-        if os.path.isdir(path):
-            return self.NotFound("")
-        
         ctype = self.guess_type(path)
-        qDebug(ctype+" "+ path)
-        
-#        path=path.replace('\\', '/')
-        qDebug(path)
+
+        f=None
         try:
             f = open(path, 'rb')
         except OSError:
-            self.send_error(404, "File not found")
-            qDebug("404 fino not found")
-            return None
+            return self.ErrorPage(QApplication.translate("Core","File not found"))
             
         try:
             self.send_response(200)
             self.send_header("Content-type", ctype)
-#            fs = os.fstat(f.fileno())
-#            self.send_header("Content-Length", str(fs[6]))
-#            self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
+            fs = os.fstat(f.fileno())
+            self.send_header("Content-Length", str(fs[6]))
+            self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
             self.end_headers()
             self.request_ended=True
             return f
         except:
+            qDebug("Sending page raised an error")
             f.close()
             raise
             
@@ -603,26 +550,7 @@ class SetUsers(SetCommonsQListView):
         for u in self.arr:
             users=users+u.name+"\n"
         return users[:-1]
-        
 
-    
-#    def qlistview(self, list, inactivos, selected):
-#        """inactivos si muestra inactivos
-#        selected lista de user a seleccionar"""
-#        self.order_by_name()
-#        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
-#        for i,  u in enumerate(self.arr):
-#            if inactivos==False and u.active==False:
-#                continue
-#            item = QStandardItem(u.name)
-#            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
-#            if u in selected.arr:
-#                item.setData(Qt.Checked, Qt.CheckStateRole)
-#            else:
-#                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
-#            item.setData(u.id, Qt.UserRole) # Para el role usuario
-#            model.setItem(i, 0, item);
-#        list.setModel(model)
            
     def qtablewidget(self, table):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
@@ -735,9 +663,7 @@ class TWebServer(QThread):
         self.mem=mem
         
         os.chdir(dirDocs)
-        qDebug("tserver Server arrancado2")
         self.server=MyHTTPServer((self.mem.cfgfile.webinterface, int(self.mem.cfgfile.webserverport)), MyHTTPRequestHandler, mem=self.mem)
-        qDebug("tserver Server arrancado3")
 
     def run(self):
         self.server.serve_forever()
@@ -757,9 +683,7 @@ class TSend(QThread):
     def shutdown(self):
         self.stop_request=True
 
-    
     def run(self):    
-        qDebug("tsend Server arrancado2")
         while self.stop_request==False:
             con=self.mem.con.newConnection()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXIóN DE PARAMETRO
             cur=con.cursor()
@@ -772,7 +696,7 @@ class TSend(QThread):
                 mail.send()
                 
                 if mail.sent==True:
-                    print ("Send message of document {0} to {1}".format(mail.document.id, mail.user.mail))
+                    qDebug ("Document {0} was sent to {1}".format(mail.document.id, mail.user.mail))
                     d=UserDocument(mail.user, mail.document, self.mem)
                     if d.sent==None:
                         d.sent=datetime.datetime.now(pytz.timezone(self.mem.cfgfile.localzone))
@@ -781,13 +705,7 @@ class TSend(QThread):
                     self.sent=self.sent+1
                 else:
                     self.errors=self.errors+1  
-                    try: #Unicode en mail
-                        f=open(self.mem.pathlogmail, "a")
-                        f.write(QApplication.translate("didyoureadme","{0} Error sending message {1} to {2}\n").format(now(self.mem.cfgfile.localzone), mail.document.id, mail.user.mail))
-                        f.close()          
-                    except:
-                        print ("TSend error al escribir log")
-                mail.document.updateNums()
+                    qDebug(QApplication.translate("didyoureadme","{0} Error sending message {1} to {2}").format(now(self.mem.cfgfile.localzone), mail.document.id, mail.user.mail))  
                 self.sleep(2) 
             cur.close()
             con.disconnect()
@@ -797,8 +715,7 @@ class TSend(QThread):
                     break
                 else:
                     self.sleep(1)
-        
-            
+
 class Language:
     def __init__(self, mem, id, name):
         self.id=id
@@ -1078,7 +995,7 @@ class DBData:
         self.documents_active=SetDocuments(self.mem)
         self.documents_active.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration>now() order by datetime")
         self.documents_inactive=SetDocuments(self.mem)#Carga solo los de un mes y un año.
-        print("Cargando dbdata",  datetime.datetime.now()-inicio)
+        qDebug(QApplication.translate("Core","Loading data from database took {}".format(datetime.datetime.now()-inicio)))
 
     def users_all(self):
         return self.users_active.union(self.users_inactive, self.mem)

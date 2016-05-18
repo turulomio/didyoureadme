@@ -60,7 +60,8 @@ include_files.append(("sql/didyoureadme.sql", "sql/didyoureadme.sql"))
 
 #Build options
 if sys.platform=='win32':
-      base = 'Win32GUI'
+      #base = 'Win32GUI'
+      base="Console"#Used to do debugging
       include_files.append("didyoureadme.iss")
       include_files.append(pytz.__path__[0])
       build_msi_options = {
@@ -69,7 +70,7 @@ if sys.platform=='win32':
            'initial_target_dir': r'[ProgramFilesFolder]\%s' % (name),
             }
  
-      build_exe_options = dict(includes = [ ],excludes=[], include_files=include_files)
+      build_exe_options = dict(includes = [ ],excludes=[], include_files=include_files, optimize=0)
 
       options={'bdist_msi': build_msi_options,
                'build_exe': build_exe_options}
