@@ -537,7 +537,7 @@ class SetUsers(SetCommonsQListView):
         for u in self.arr:
             if u.hash==hash:
                 return u
-        print ("User not found")
+        qDebug("User {} not found".format(hash))
         return None
         
     def load(self, sql):

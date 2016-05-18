@@ -55,6 +55,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
 
     if access.result()==QDialog.Rejected: 
         m=QMessageBox()
+        m.setWindowIcon(QIcon(":/didyoureadme.png"))
         m.setIcon(QMessageBox.Information)
         m.setText(QApplication.translate("DidYouReadMe","Error conecting to {} database in {} server").format(access.con.db, access.con.server))
         m.exec_()   
@@ -65,6 +66,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
 
     if mem.cfgfile.error==True:
         m=QMessageBox()
+        m.setWindowIcon(QIcon(":/didyoureadme.png"))
         m.setIcon(QMessageBox.Information)
         m.setText(QApplication.translate("DidYouReadMe","An error loading settings happened. You must check your settings are ok"))
         m.exec_()      

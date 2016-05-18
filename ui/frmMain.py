@@ -45,17 +45,23 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.wym.changed.connect(self.on_wym_changed)
                         
         self.showMaximized()
-    
         
-        self.tserver=TWebServer(self.mem)
-        self.tserver.start()
-        
+        self.tserver=None
+        try:
+            self.tserver=TWebServer(self.mem)
+            self.tserver.start()
+        except:
+            qDebug(self.tr("Web server failed to start"))
+            self.tserver=None
+            pass
+            
         self.tsend=TSend(self.mem)#Lanza TSend desde arranque
         self.tsend.start()
 
         ##Admin mode
         if self.mem.adminmodeinparameters:
             m=QMessageBox()
+            m.setWindowIcon(QIcon(":/didyoureadme.png"))
             m.setIcon(QMessageBox.Information)
             input=QInputDialog.getText(self,  "DidYouReadMe",  self.tr("Please introduce Admin Mode password"), QLineEdit.Password)
             res=self.mem.check_admin_mode(input[0])
@@ -90,7 +96,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     def __del__(self):
         self.tsend.shutdown()
-        self.tserver.server.shutdown()
+        if self.tserver:
+            self.tserver.server.shutdown()
         self.tsend.wait()
         self.tsend.wait()
         self.mem.__del__() 
@@ -98,10 +105,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         
     def updateStatusBar(self):
-        if self.tserver.isRunning()==True:
-            status=self.tr("Running Web server at {}:{} (Errors: {}/{}).".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport, self.tserver.server.errors, self.tserver.server.served+self.tserver.server.errors))
-        else:
-            status=self.tr("Web server is down. Check configuration.")
+        status=""
+        if self.tserver!=None:
+            if self.tserver.isRunning()==True:
+                status=self.tr("Running Web server at {}:{} (Errors: {}/{}).".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport, self.tserver.server.errors, self.tserver.server.served+self.tserver.server.errors))
+            else:
+                status=self.tr("Web server is down. Check configuration.")
         if self.tsend.isRunning()==True:
             statusmail=self.tr("Running mail sender (Errors: {}/{}).".format(self.tsend.errors, self.tsend.errors+ self.tsend.sent))
         else:
@@ -151,6 +160,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
         if f.result()==QDialog.Accepted:
             m=QMessageBox()
+            m.setWindowIcon(QIcon(":/didyoureadme.png"))
             m.setIcon(QMessageBox.Information)
             m.setText(self.tr("DidYouReadMe is going to be closed to save settings."))
             m.exec_()    
@@ -168,6 +178,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             web=None
         if web==None:
             m=QMessageBox()
+            m.setWindowIcon(QIcon(":/didyoureadme.png"))
             m.setIcon(QMessageBox.Information)
             m.setText(self.tr("I couldn't look for updates. Try it later.."))
             m.exec_() 
@@ -187,11 +198,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if remoteversion==version.replace("+", ""):#Quita el más de desarrollo 
             if showdialogwhennoupdates==True:
                 m=QMessageBox()
+                m.setWindowIcon(QIcon(":/didyoureadme.png"))
                 m.setIcon(QMessageBox.Information)
                 m.setText(self.tr("DidYouReadMe is in the last version"))
                 m.exec_() 
         else:
             m=QMessageBox()
+            m.setWindowIcon(QIcon(":/didyoureadme.png"))
             m.setIcon(QMessageBox.Information)
             m.setTextFormat(Qt.RichText)#this is what makes the links clickable
             m.setText(self.tr("There is a new DidYouReadMe version. You can download it from <a href='http://didyoureadme.sourceforge.net'>http://didyoureadme.sourceforge.net</a> or directly from <a href='https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-")+remoteversion+"/'>Sourceforge</a>")
@@ -299,6 +312,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         else:#Not expired yet
             if self.documents.selected.hasPendingMails():
                 m=QMessageBox()
+                m.setWindowIcon(QIcon(":/didyoureadme.png"))
                 m.setIcon(QMessageBox.Information)
                 m.setText(self.tr("You can't expire the document due to it has pending mails"))
                 m.exec_()   
@@ -379,6 +393,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.mem.data.groups.qtablewidget(self.tblGroups)
         else:
             m=QMessageBox()
+            m.setWindowIcon(QIcon(":/didyoureadme.png"))
             m.setIcon(QMessageBox.Information)
             m.setText(self.tr("You can't delete it, because user is in a group or DidYouReadMe sent him some documents.\nYou can deactivate him."))
             m.exec_()          
@@ -483,6 +498,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 s=s+"  - "+g.name+"\n"
 
         m=QMessageBox()
+        m.setWindowIcon(QIcon(":/didyoureadme.png"))
         m.setIcon(QMessageBox.Information)
         m.setText(s[:-1])
         m.exec_()           
@@ -510,6 +526,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             s=self.tr("Everybody read the document.")
 
         m=QMessageBox()
+        m.setWindowIcon(QIcon(":/didyoureadme.png"))
         m.setIcon(QMessageBox.Information)
         m.setText(s[:-1])
         m.exec_()           

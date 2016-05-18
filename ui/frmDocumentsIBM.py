@@ -51,6 +51,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             #Genera los self.selectedUsers a los que se enviará el documento
             if self.txtTitle.text()=="":
                 m=QMessageBox()
+                m.setWindowIcon(QIcon(":/didyoureadme.png"))
                 m.setIcon(QMessageBox.Information)
                 m.setText(self.tr("You must add a title of the document"))
                 m.exec_()          
@@ -58,6 +59,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             
             if not os.path.exists(self.txtFilename.text()):
                 m=QMessageBox()
+                m.setWindowIcon(QIcon(":/didyoureadme.png"))
                 m.setIcon(QMessageBox.Information)
                 m.setText(self.tr("I can't find the document"))
                 m.exec_()          
@@ -65,6 +67,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 
             if not os.path.isfile(self.txtFilename.text()):
                 m=QMessageBox()
+                m.setWindowIcon(QIcon(":/didyoureadme.png"))
                 m.setIcon(QMessageBox.Information)
                 m.setText(self.tr("You have not select a file. Please, select one."))
                 m.exec_()          
@@ -72,6 +75,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
     
             if self.selectedUsers.length()==0:
                 m=QMessageBox()
+                m.setWindowIcon(QIcon(":/didyoureadme.png"))
                 m.setIcon(QMessageBox.Information)
                 m.setText(self.tr("You have to select at least one recipient"))
                 m.exec_()          

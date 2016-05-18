@@ -27,7 +27,6 @@ class Update:
             self.mem.con.commit()
             self.set_database_version_date(201501260851)
         if self.dbversion_date<201501261046: #Documentos a base de datos
-        
             qDebug ("Migrating old didyoureadme files")
             cur=self.mem.con.cursor()
             cur2=self.mem.con.cursor()
@@ -35,12 +34,12 @@ class Update:
             cur.execute("select * from documents;")
             for row in cur:
                 if os.path.exists(dirDocs+row['hash'])==False:
-                    qDebug ("No existe y no se puede cargar la base de datos",  row['hash'])
+                    qDebug ("No existe y no se puede cargar la base de datos" + row['hash'])
                     continue
                 if row['file']==None:
                     os.system("cp {} /tmp".format(dirDocs+row['hash']))
                     cur2.execute("update documents set file=lo_import(%s) where id=%s", ("/tmp/"+row['hash'], row['id']))
-                    qDebug ("Insertando en database para oid vacio ",  row['hash'])
+                    qDebug ("Insertando en database para oid vacio "+  row['hash'])
                     os.system("rm /tmp/{}".format(row['hash']))
             cur2.close()
             cur.close()
@@ -120,11 +119,11 @@ $_$ LANGUAGE sql STRICT;""")
             if d.isExpired():
                 if os.path.exists(dirDocs+d.hash)==True:
                     d.unlink()
-                    qDebug ("Removing expired document .didyoureadme/docs",  d.hash)
+                    qDebug ("Removing expired document: {}".format(dirDocs+d.hash))
             else:#Not expired
                 if os.path.exists(dirDocs+d.hash)==False:
                     d.bytea_to_file(dirDocs+d.hash)
-                    qDebug ("Copying a .didyoureadme/docs",  d.hash)
+                    qDebug ("Adding document: {}".format(dirDocs+d.hash))
         cur.close()
         
    
