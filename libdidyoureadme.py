@@ -18,12 +18,9 @@ import socketserver
 version="20160518"
 version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
 
-if platform.system()=="Windows":
-    dirTmp=os.path.expanduser("~\\.didyoureadme\\tmp\\")
-    dirDocs=os.path.expanduser("~\\.didyoureadme\\docs\\")
-else:
-    dirTmp=os.path.expanduser("~/.didyoureadme/tmp/")
-    dirDocs=os.path.expanduser("~/.didyoureadme/docs/")
+dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
+dirDocs=os.path.expanduser("~/.didyoureadme/docs/").replace("\\", "/")
+
 
 class Connection(QObject):
     """Futuro conection object

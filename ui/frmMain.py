@@ -239,6 +239,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         QApplication.restoreOverrideCursor()
     
     def openWithDefaultApp(self, file):
+        if platform.system()=="Windows":
+            QDesktopServices.openUrl(QUrl("file:///"+file))#Needs 3
+        
         if os.path.exists("/usr/bin/kfmclient"):
             QProcess.startDetached("kfmclient", ["openURL", file] )
         elif os.path.exists("/usr/bin/gnome-open"):
