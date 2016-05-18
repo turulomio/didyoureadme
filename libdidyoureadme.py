@@ -144,7 +144,7 @@ class MyHTTPServer(socketserver.TCPServer):
 
     def finish_request(self, request, client_address):
         """Finish one request by instantiating RequestHandlerClass."""
-        request=self.RequestHandlerClass(request, client_address, self)
+        request=self.RequestHandlerClass(request, client_address, self, self.mem)
         
         if request.request_ended==True:
             #Actualiza la base de datos
@@ -156,15 +156,16 @@ class MyHTTPServer(socketserver.TCPServer):
                 ud=UserDocument(u, d, self.mem)
                 ud.readed( self.mem.cfgfile.localzone)
                 con.commit()
-                qDebug(QApplication.translate("Core","User {} downloaded document {}").format(u.mail, d.id))
+                qDebug(QApplication.translate("DidYouReadMe","User {} downloaded document {}").format(u.mail, d.id))
             except:
                 self.errors=self.errors+1
-                qDebug(QApplication.translate("Core", "Error registering in database"))    
+                qDebug(QApplication.translate("DidYouReadMe", "Error registering in database"))    
             cur.close()  
             con.disconnect()
             self.served=self.served+1
         else:
-            qDebug("Fichero no existe y no se mete en bd")
+            #"""Puede ser por muchos motivos, expirados, no existe, no encontrado...""", se trata en la request
+            qDebug(QApplication.translate("DidYouReadMe", "Request hasn't ended correctly, so it is not registered"))
             self.errors=self.errors+1
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -185,9 +186,10 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 </head>
 <body>
     <h1>{0}</h1>
-    {1}
+    {1}<p>
+    {2}
 </body>
-</html>""".format(text, QApplication.translate("Core", "There has been a problem with your request..."))
+</html>""".format(text, QApplication.translate("DidYouReadMe", "There has been a problem with your request...") , QApplication.translate("DidYouReadMe", "Please talk with DidYouReadMe administrator."))
         encoded=s.encode("UTF-8", 'surrogateescape')
         f = io.BytesIO()
         f.write(encoded)
@@ -211,18 +213,24 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         try:
             (self.userhash, self.documenthash)=self.path.split("/")[2].split("l")
         except:
-            qDebug(QApplication.translate("Core","Error converting path"))
-            return self.ErrorPage(QApplication.translate("Core","Error converting path"))
+            qDebug(QApplication.translate("DidYouReadMe","Error converting path"))
+            return self.ErrorPage(QApplication.translate("DidYouReadMe","Error converting path"))
             
             
         path = self.translate_path(self.documenthash)  
+        
+        
+        document=Document(self.mem).init__from_hash(self.documenthash)
+        if document.expiration<now(self.mem.cfgfile.localzone):
+            return self.ErrorPage(QApplication.translate("DidYouReadMe","This document has expired"))
+            
         ctype = self.guess_type(path)
 
         f=None
         try:
             f = open(path, 'rb')
         except OSError:
-            return self.ErrorPage(QApplication.translate("Core","File not found"))
+            return self.ErrorPage(QApplication.translate("DidYouReadMe","File not found"))
             
         try:
             self.send_response(200)
@@ -414,8 +422,8 @@ class SetGroups(SetCommonsQListView):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
         table.setColumnCount(2)
-        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Name" )))
-        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Users" )))    
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Name" )))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Users" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
         for i, p in enumerate(self.arr):
@@ -553,12 +561,12 @@ class SetUsers(SetCommonsQListView):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
         table.setColumnCount(6)
-        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Start date" )))
-        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Post" )))    
-        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("Core", "Full name" )))    
-        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("Core", "Mail" )))    
-        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("Core", "Read" )))    
-        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("Core", "Sent" )))    
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Start date" )))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Post" )))    
+        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Full name" )))    
+        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Mail" )))    
+        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Read" )))    
+        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Sent" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
         for i, u in enumerate(self.arr):
@@ -702,7 +710,7 @@ class TSend(QThread):
                     self.sent=self.sent+1
                 else:
                     self.errors=self.errors+1  
-                    qDebug(QApplication.translate("didyoureadme","{0} Error sending message {1} to {2}").format(now(self.mem.cfgfile.localzone), mail.document.id, mail.user.mail))  
+                    qDebug(QApplication.translate("DidYouReadMe","Error sending message {} to {}").format(mail.document.id, mail.user.mail))  
                 self.sleep(2) 
             cur.close()
             con.disconnect()
@@ -831,22 +839,22 @@ class SetCountries(SetCommons):
         self.mem=mem   
         
     def load_all(self):
-        self.append(Country().init__create("es",QApplication.translate("Core","Spain")))
-        self.append(Country().init__create("be",QApplication.translate("Core","Belgium")))
-        self.append(Country().init__create("cn",QApplication.translate("Core","China")))
-        self.append(Country().init__create("de",QApplication.translate("Core","Germany")))
-        self.append(Country().init__create("en",QApplication.translate("Core","United Kingdom")))
-        self.append(Country().init__create("eu",QApplication.translate("Core","Europe")))
-        self.append(Country().init__create("fi",QApplication.translate("Core","Finland")))
-        self.append(Country().init__create("fr",QApplication.translate("Core","France")))
-        self.append(Country().init__create("ie",QApplication.translate("Core","Ireland")))
-        self.append(Country().init__create("it",QApplication.translate("Core","Italy")))
-        self.append(Country().init__create("jp",QApplication.translate("Core","Japan")))
-        self.append(Country().init__create("nl",QApplication.translate("Core","Netherlands")))
-        self.append(Country().init__create("pt",QApplication.translate("Core","Portugal")))
-        self.append(Country().init__create("us",QApplication.translate("Core","United States of America")))
-        self.append(Country().init__create("ro",QApplication.translate("Core","Romanian")))
-        self.append(Country().init__create("ru",QApplication.translate("Core","Rusia")))
+        self.append(Country().init__create("es",QApplication.translate("DidYouReadMe","Spain")))
+        self.append(Country().init__create("be",QApplication.translate("DidYouReadMe","Belgium")))
+        self.append(Country().init__create("cn",QApplication.translate("DidYouReadMe","China")))
+        self.append(Country().init__create("de",QApplication.translate("DidYouReadMe","Germany")))
+        self.append(Country().init__create("en",QApplication.translate("DidYouReadMe","United Kingdom")))
+        self.append(Country().init__create("eu",QApplication.translate("DidYouReadMe","Europe")))
+        self.append(Country().init__create("fi",QApplication.translate("DidYouReadMe","Finland")))
+        self.append(Country().init__create("fr",QApplication.translate("DidYouReadMe","France")))
+        self.append(Country().init__create("ie",QApplication.translate("DidYouReadMe","Ireland")))
+        self.append(Country().init__create("it",QApplication.translate("DidYouReadMe","Italy")))
+        self.append(Country().init__create("jp",QApplication.translate("DidYouReadMe","Japan")))
+        self.append(Country().init__create("nl",QApplication.translate("DidYouReadMe","Netherlands")))
+        self.append(Country().init__create("pt",QApplication.translate("DidYouReadMe","Portugal")))
+        self.append(Country().init__create("us",QApplication.translate("DidYouReadMe","United States of America")))
+        self.append(Country().init__create("ro",QApplication.translate("DidYouReadMe","Romanian")))
+        self.append(Country().init__create("ru",QApplication.translate("DidYouReadMe","Rusia")))
         self.order_by_name()
 
     def qcombobox(self, combo,  country=None):
@@ -886,12 +894,12 @@ class SetDocuments(SetCommons):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
         table.setColumnCount(6)
-        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("Core", "Datetime" )))
-        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("Core", "Planned" )))    
-        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("Core", "Sent" )))    
-        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("Core", "Read" )))    
-        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("Core", "Expiration" )))    
-        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("Core", "Title" )))    
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Datetime" )))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Planned" )))    
+        table.setHorizontalHeaderItem(2, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Sent" )))    
+        table.setHorizontalHeaderItem(3, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Read" )))    
+        table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Expiration" )))    
+        table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Title" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
         for i, d in enumerate(self.arr):
@@ -992,7 +1000,7 @@ class DBData:
         self.documents_active=SetDocuments(self.mem)
         self.documents_active.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration>now() order by datetime")
         self.documents_inactive=SetDocuments(self.mem)#Carga solo los de un mes y un año.
-        qDebug(QApplication.translate("Core","Loading data from database took {}".format(datetime.datetime.now()-inicio)))
+        qDebug(QApplication.translate("DidYouReadMe","Loading data from database took {}".format(datetime.datetime.now()-inicio)))
 
     def users_all(self):
         return self.users_active.union(self.users_inactive, self.mem)

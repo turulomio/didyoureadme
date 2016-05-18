@@ -15,11 +15,11 @@ from frmAccess import *
 from libdidyoureadme import dirDocs, version,  dirTmp
 
 def qt_message_handler(mode, context, message):
-    f=open("log.txt", "a")
-    s="{} {}".format(datetime.datetime.now(),  message)
+    f=open(dirDocs+"log.txt", "a")
+    s="{} {}\n".format(datetime.datetime.now(),  message)
     f.write(s)
     f.close()
-    print(s)
+    print(s[:-1])
 
 if __name__=='__main__':#Needed due to multiprocessing in windows load all process again and launch frmAccess twice
     try:
@@ -41,7 +41,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
     app.setOrganizationDomain("turulomio.users.sourceforge.net")
     app.setApplicationName("DidYouReadMe")
 
-    qDebug(QApplication.translate("Core", "Iniciando Didyoureadme-{}".format(version)))
+    qDebug(QApplication.translate("DidYouReadMe", "Iniciando Didyoureadme-{}".format(version)))
     mem=Mem()
 
     app.setQuitOnLastWindowClosed(True)
@@ -49,14 +49,14 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
     mem.languages.cambiar(mem.cfgfile.language)
 
     access=frmAccess(mem)
-    access.setLabel(QApplication.translate("Core","Please login to the DidYouReadMe database"))
+    access.setLabel(QApplication.translate("DidYouReadMe","Please login to the DidYouReadMe database"))
     access.config_load()
     access.exec_()
 
     if access.result()==QDialog.Rejected: 
         m=QMessageBox()
         m.setIcon(QMessageBox.Information)
-        m.setText(QApplication.translate("Core","Error conecting to {} database in {} server").format(access.con.db, access.con.server))
+        m.setText(QApplication.translate("DidYouReadMe","Error conecting to {} database in {} server").format(access.con.db, access.con.server))
         m.exec_()   
         sys.exit(1)
     access.config_save()
