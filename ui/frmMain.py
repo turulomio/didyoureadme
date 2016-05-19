@@ -486,8 +486,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             return
         
         resultado=[]
-        for g in self.mem.groups.arr:
-            if self.users.selected in g.members:
+        for g in self.mem.data.groups.arr:
+            if self.users.selected in g.members.arr:
                 resultado.append(g)
         
         if len (resultado)==0:
