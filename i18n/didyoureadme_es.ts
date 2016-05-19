@@ -38,11 +38,6 @@
         <translation>Por favor, ponte en contacto con el administrador de DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="229"/>
-        <source>This document has expired</source>
-        <translation>El documento ha expirado</translation>
-    </message>
-    <message>
         <location filename="../libdidyoureadme.py" line="238"/>
         <source>File not found</source>
         <translation>Fichero no encontrado</translation>
@@ -216,22 +211,22 @@
 <context>
     <name>frmAbout</name>
     <message>
-        <location filename="../ui/Ui_frmAbout.py" line="227"/>
+        <location filename="../ui/Ui_frmAbout.py" line="225"/>
         <source>DidYouReadMe</source>
         <translation>DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAbout.py" line="226"/>
+        <location filename="../ui/Ui_frmAbout.py" line="224"/>
         <source>About DidYouReadMe</source>
         <translation>Acerca de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAbout.py" line="228"/>
+        <location filename="../ui/Ui_frmAbout.py" line="226"/>
         <source>Credits</source>
         <translation>Créditos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAbout.py" line="229"/>
+        <location filename="../ui/Ui_frmAbout.py" line="227"/>
         <source>License</source>
         <translation>Licencia</translation>
     </message>
@@ -491,27 +486,27 @@
 <context>
     <name>frmMain</name>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="273"/>
+        <location filename="../ui/Ui_frmMain.py" line="270"/>
         <source>toolBar</source>
         <translation>toolBar</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="276"/>
+        <location filename="../ui/Ui_frmMain.py" line="273"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="283"/>
+        <location filename="../ui/Ui_frmMain.py" line="280"/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="256"/>
+        <location filename="../ui/Ui_frmMain.py" line="253"/>
         <source>Datetime</source>
         <translation>Fecha y hora</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="266"/>
+        <location filename="../ui/Ui_frmMain.py" line="263"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
@@ -521,57 +516,57 @@
         <translation>Nombre del fichero</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="253"/>
+        <location filename="../ui/Ui_frmMain.py" line="250"/>
         <source>Users</source>
         <translation>Usuarios</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="286"/>
+        <location filename="../ui/Ui_frmMain.py" line="283"/>
         <source>New Document</source>
         <translation>Nuevo documento</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="251"/>
+        <location filename="../ui/Ui_frmMain.py" line="248"/>
         <source>Groups</source>
         <translation>Grupos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="248"/>
+        <location filename="../ui/Ui_frmMain.py" line="245"/>
         <source>Name</source>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="267"/>
+        <location filename="../ui/Ui_frmMain.py" line="264"/>
         <source>Documents</source>
         <translation>Documentos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="268"/>
+        <location filename="../ui/Ui_frmMain.py" line="265"/>
         <source>H&amp;elp</source>
         <translation>A&amp;yuda</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="274"/>
+        <location filename="../ui/Ui_frmMain.py" line="271"/>
         <source>E&amp;xit</source>
         <translation>S&amp;alir</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="275"/>
+        <location filename="../ui/Ui_frmMain.py" line="272"/>
         <source>Exit</source>
         <translation>Salir</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="278"/>
+        <location filename="../ui/Ui_frmMain.py" line="275"/>
         <source>About DidYouReadMe</source>
         <translation>Acerca de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="262"/>
+        <location filename="../ui/Ui_frmMain.py" line="259"/>
         <source>Read</source>
         <translation>Leídos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="260"/>
+        <location filename="../ui/Ui_frmMain.py" line="257"/>
         <source>Sent</source>
         <translation>Enviados</translation>
     </message>
@@ -581,77 +576,77 @@
         <translation>No he podido comprobar las actualizaciones. Intentelo más tarde..</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="252"/>
+        <location filename="../ui/Ui_frmMain.py" line="249"/>
         <source>Show inactive users</source>
         <translation>Mostrar usuarios inactivos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="269"/>
+        <location filename="../ui/Ui_frmMain.py" line="266"/>
         <source>S&amp;ystem</source>
         <translation>S&amp;istema</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="270"/>
+        <location filename="../ui/Ui_frmMain.py" line="267"/>
         <source>D&amp;ocuments</source>
         <translation>D&amp;ocumentos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="271"/>
+        <location filename="../ui/Ui_frmMain.py" line="268"/>
         <source>G&amp;roups</source>
         <translation>G&amp;rupos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="272"/>
+        <location filename="../ui/Ui_frmMain.py" line="269"/>
         <source>U&amp;sers</source>
         <translation>U&amp;suarios</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="280"/>
+        <location filename="../ui/Ui_frmMain.py" line="277"/>
         <source>Settings</source>
         <translation>Preferencias</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="282"/>
+        <location filename="../ui/Ui_frmMain.py" line="279"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="285"/>
+        <location filename="../ui/Ui_frmMain.py" line="282"/>
         <source>Look for updates</source>
         <translation>Busca actualizaciones</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="288"/>
+        <location filename="../ui/Ui_frmMain.py" line="285"/>
         <source>Delete Document</source>
         <translation>Borrar documento</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="290"/>
+        <location filename="../ui/Ui_frmMain.py" line="287"/>
         <source>New Group</source>
         <translation>Nuevo grupo</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="292"/>
+        <location filename="../ui/Ui_frmMain.py" line="289"/>
         <source>Delete Group</source>
         <translation>Borrar grupo</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="294"/>
+        <location filename="../ui/Ui_frmMain.py" line="291"/>
         <source>Edit Group</source>
         <translation>Modificar grupo</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="296"/>
+        <location filename="../ui/Ui_frmMain.py" line="293"/>
         <source>New User</source>
         <translation>Nuevo usuario</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="300"/>
+        <location filename="../ui/Ui_frmMain.py" line="297"/>
         <source>Edit User</source>
         <translation>Modificar usuario</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="298"/>
+        <location filename="../ui/Ui_frmMain.py" line="295"/>
         <source>Delete User</source>
         <translation>Borrar usuario</translation>
     </message>
@@ -667,12 +662,12 @@ You can deactivate him.</source>
         <translation>DidYouReadMe se va a cerrar para actualizar la configuración.</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="302"/>
+        <location filename="../ui/Ui_frmMain.py" line="299"/>
         <source>Update tables</source>
         <translation>Actualizar tablas</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="258"/>
+        <location filename="../ui/Ui_frmMain.py" line="255"/>
         <source>Planned</source>
         <translation>Planeados</translation>
     </message>
@@ -697,7 +692,7 @@ You can deactivate him.</source>
         <translation>Usuarios que no han leído este documento:</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="306"/>
+        <location filename="../ui/Ui_frmMain.py" line="303"/>
         <source>Generate report</source>
         <translation>Generar informe</translation>
     </message>
@@ -747,7 +742,7 @@ You can deactivate him.</source>
         <translation>Comentario</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="308"/>
+        <location filename="../ui/Ui_frmMain.py" line="305"/>
         <source>Open document</source>
         <translation>Abrir documento</translation>
     </message>
@@ -777,12 +772,12 @@ You can deactivate him.</source>
         <translation>No puedes borrar un documento expirado</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="254"/>
+        <location filename="../ui/Ui_frmMain.py" line="251"/>
         <source>Show documents expired</source>
         <translation>Mostrar documentos expirados</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="304"/>
+        <location filename="../ui/Ui_frmMain.py" line="301"/>
         <source>Expire document</source>
         <translation>Expirar documento</translation>
     </message>
@@ -792,7 +787,7 @@ You can deactivate him.</source>
         <translation>Cambiar expiración</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="264"/>
+        <location filename="../ui/Ui_frmMain.py" line="261"/>
         <source>Expiration</source>
         <translation>Expiración</translation>
     </message>
@@ -817,7 +812,7 @@ You can deactivate him.</source>
         <translation>Contraseña del &apos;modo administrador&apos; errónea. Está conectado como un usuario normal</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmMain.py" line="310"/>
+        <location filename="../ui/Ui_frmMain.py" line="307"/>
         <source>Delete document by administrator</source>
         <translation>Borrar documento por el administrador</translation>
     </message>
@@ -895,92 +890,92 @@ You can deactivate him.</source>
 <context>
     <name>frmSettings</name>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="181"/>
+        <location filename="../ui/Ui_frmSettings.py" line="178"/>
         <source>DidYouReadMe settings</source>
         <translation>Configuración de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="190"/>
+        <location filename="../ui/Ui_frmSettings.py" line="187"/>
         <source>Main settings</source>
         <translation>Opciones principales</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="204"/>
+        <location filename="../ui/Ui_frmSettings.py" line="201"/>
         <source>SMTP Server</source>
         <translation>Servidor SMTP</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="197"/>
+        <location filename="../ui/Ui_frmSettings.py" line="194"/>
         <source>Web Server</source>
         <translation>Servidor Web</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="193"/>
+        <location filename="../ui/Ui_frmSettings.py" line="190"/>
         <source>Server port</source>
         <translation>Puerto del servidor</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="194"/>
+        <location filename="../ui/Ui_frmSettings.py" line="191"/>
         <source>8000</source>
         <translation>8000</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="183"/>
+        <location filename="../ui/Ui_frmSettings.py" line="180"/>
         <source>Support text</source>
         <translation>Texto de soporte</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="199"/>
+        <location filename="../ui/Ui_frmSettings.py" line="196"/>
         <source>SMTP user</source>
         <translation>Usuario SMTP</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="200"/>
+        <location filename="../ui/Ui_frmSettings.py" line="197"/>
         <source>SMTP password</source>
         <translation>Contraseña SMTP</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="201"/>
+        <location filename="../ui/Ui_frmSettings.py" line="198"/>
         <source>TLS</source>
         <translation>TLS</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="202"/>
+        <location filename="../ui/Ui_frmSettings.py" line="199"/>
         <source>From address</source>
         <translation>Remitente</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="203"/>
+        <location filename="../ui/Ui_frmSettings.py" line="200"/>
         <source>SMTP Port</source>
         <translation>Puerto SMTP</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="192"/>
+        <location filename="../ui/Ui_frmSettings.py" line="189"/>
         <source>Must be the IP of the server, with visibility for users</source>
         <translation>Debe ser la IP del servidor que tenga visibilidad para los destinatarios</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="191"/>
+        <location filename="../ui/Ui_frmSettings.py" line="188"/>
         <source>Server name/IP address for mails</source>
         <translation>Nombre del servidor/Dirección IP para correos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="195"/>
+        <location filename="../ui/Ui_frmSettings.py" line="192"/>
         <source>Interface IP</source>
         <translation>Dirección IP del dispositivo</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="196"/>
+        <location filename="../ui/Ui_frmSettings.py" line="193"/>
         <source>Web server Interface IP</source>
         <translation>Dirección IP del servidor web</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="189"/>
+        <location filename="../ui/Ui_frmSettings.py" line="186"/>
         <source>Autoupdate tables</source>
         <translation>Actualización de tablas automático</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="184"/>
+        <location filename="../ui/Ui_frmSettings.py" line="181"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -989,7 +984,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="182"/>
+        <location filename="../ui/Ui_frmSettings.py" line="179"/>
         <source>Select a language</source>
         <translation>Selecciona un idioma</translation>
     </message>

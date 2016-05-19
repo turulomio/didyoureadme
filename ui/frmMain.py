@@ -197,8 +197,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
         #Saca la version de internet
         remoteversion=None
         for line in web.split(b"\n"):
-            if line.find(b'folder warn')!=-1:
-                remoteversion=line.decode("utf-8").split('didyoureadme-')[1].split('"') [0]
+            if line.find(b'Click to enter didyoureadme-')!=-1:
+                remoteversion=line.decode("utf-8").split('"')[1].split('-')[1]
                 break
         #Si no hay version sale
         print ("Remote version",  remoteversion)

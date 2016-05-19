@@ -163,8 +163,8 @@ class MyHTTPServer(socketserver.TCPServer):
             self.served=self.served+1
         else:
             #"""Puede ser por muchos motivos, expirados, no existe, no encontrado...""", se trata en la request
-            qDebug(QApplication.translate("DidYouReadMe", "Request has not been served correctly, so it is not registered"))
             self.errors=self.errors+1
+            qDebug(QApplication.translate("DidYouReadMe", "Request has not been served correctly, so it is not registered"))
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self,request, client_address, server, mem=None):
@@ -226,7 +226,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         if self.document.expiration<now(self.mem.cfgfile.localzone):
             qDebug(QApplication.translate("DidYouReadMe", "Document {} has expired".format(self.document.id)))
-            return self.ErrorPage(QApplication.translate("DidYouReadMe","Document '{}' of {} has expired".format(self.document.name, self.document.datetime)))
+            return self.ErrorPage(QApplication.translate("DidYouReadMe","Document '{}' of '{}' has expired".format(self.document.name, self.document.datetime)))
             
         ctype = self.guess_type(path)
 
