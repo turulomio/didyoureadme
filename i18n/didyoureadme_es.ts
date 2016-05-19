@@ -3,7 +3,7 @@
 <context>
     <name>Core</name>
     <message>
-        <location filename="../didyoureadme.py" line="71"/>
+        <location filename="../didyoureadme.py" line="70"/>
         <source>DidYouReadMe needs to update its database schema. Please login with an admin role.</source>
         <translation>DidYouReadMe necesita actualizar el esquema de la base de datos. Por favor autentíquese con un rol de administrador.</translation>
     </message>
@@ -186,12 +186,12 @@
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="../didyoureadme.py" line="46"/>
+        <location filename="../didyoureadme.py" line="45"/>
         <source>Please login to the DidYouReadMe database</source>
         <translation>Por favor autentíquese en la base de datos de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../didyoureadme.py" line="54"/>
+        <location filename="../didyoureadme.py" line="53"/>
         <source>Error conecting to {} database in {} server</source>
         <translation>Se ha producido un error al conectar a la base de datos {} del servidor {}</translation>
     </message>
@@ -206,7 +206,7 @@
         <translation>Error al procesar la ruta</translation>
     </message>
     <message>
-        <location filename="../didyoureadme.py" line="62"/>
+        <location filename="../didyoureadme.py" line="61"/>
         <source>Database user hasn&apos;t a valid DidYouReadMe role</source>
         <translation>El usuario de base de datos no tiene un rol válido de DidYouReadMe</translation>
     </message>
