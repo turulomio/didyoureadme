@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import *
 import http.server
 import socketserver
 
-version="20160518"
+version="20160519"
 version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
@@ -146,17 +146,15 @@ class MyHTTPServer(socketserver.TCPServer):
         """Finish one request by instantiating RequestHandlerClass."""
         request=self.RequestHandlerClass(request, client_address, self, self.mem)
         
-        if request.request_ended==True:
+        if request.request_served==True:
             #Actualiza la base de datos
             con=self.mem.con.newConnection()
             cur=con.cursor()
             try:
-                d=Document(self.mem).init__from_hash(request.documenthash)
-                u=self.mem.data.users_all().user_from_hash(request.userhash)
-                ud=UserDocument(u, d, self.mem)
+                ud=UserDocument(request.user, request.document, self.mem)
                 ud.readed( self.mem.cfgfile.localzone)
                 con.commit()
-                qDebug(QApplication.translate("DidYouReadMe","User {} downloaded document {}").format(u.mail, d.id))
+                qDebug(QApplication.translate("DidYouReadMe","User {} downloaded document {}".format(request.user.mail, request.document.id)))
             except:
                 self.errors=self.errors+1
                 qDebug(QApplication.translate("DidYouReadMe", "Error registering in database"))    
@@ -165,7 +163,7 @@ class MyHTTPServer(socketserver.TCPServer):
             self.served=self.served+1
         else:
             #"""Puede ser por muchos motivos, expirados, no existe, no encontrado...""", se trata en la request
-            qDebug(QApplication.translate("DidYouReadMe", "Request hasn't ended correctly, so it is not registered"))
+            qDebug(QApplication.translate("DidYouReadMe", "Request has not been served correctly, so it is not registered"))
             self.errors=self.errors+1
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -173,7 +171,9 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.mem=mem#Debe ir antes
         self.userhash=None
         self.documenthash=None
-        self.request_ended=False
+        self.user=None
+        self.document=None
+        self.request_served=False
         http.server.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
         
     def ErrorPage(self, text):
@@ -211,17 +211,21 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         """
         #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
         try:
-            (self.userhash, self.documenthash)=self.path.split("/")[2].split("l")
+            (userhash, documenthash)=self.path.split("/")[2].split("l")
+            self.document=Document(self.mem).init__from_hash(documenthash)
+            self.user=self.mem.data.users_all().user_from_hash(userhash)
+            assert type(self.document) is Document,  "Asserting error"
+            assert type(self.user) is User,  "Asserting error"
         except:
-            qDebug(QApplication.translate("DidYouReadMe","Error converting path"))
-            return self.ErrorPage(QApplication.translate("DidYouReadMe","Error converting path"))
+            self.document=None
+            self.user=None
+            qDebug(QApplication.translate("DidYouReadMe","Error parsing path"))
+            return self.ErrorPage(QApplication.translate("DidYouReadMe","Error parsing path"))
             
-            
-        path = self.translate_path(self.documenthash)  
-        
-        
-        document=Document(self.mem).init__from_hash(self.documenthash)
-        if document.expiration<now(self.mem.cfgfile.localzone):
+        path = self.translate_path(self.document.hash)  
+
+        if self.document.expiration<now(self.mem.cfgfile.localzone):
+            qDebug(QApplication.translate("DidYouReadMe", "Document {} has expired".format(self.document.id)))
             return self.ErrorPage(QApplication.translate("DidYouReadMe","This document has expired"))
             
         ctype = self.guess_type(path)
@@ -230,6 +234,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         try:
             f = open(path, 'rb')
         except OSError:
+            qDebug(QApplication.translate("DidYouReadMe", "File {} not found".format(path)))
             return self.ErrorPage(QApplication.translate("DidYouReadMe","File not found"))
             
         try:
@@ -239,7 +244,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_header("Content-Length", str(fs[6]))
             self.send_header("Last-Modified", self.date_time_string(fs.st_mtime))
             self.end_headers()
-            self.request_ended=True
+            self.request_served=True
             return f
         except:
             qDebug("Sending page raised an error")
@@ -1046,12 +1051,12 @@ class Document:
             cur.close()
             return self
         elif cur.rowcount>1:
-            print ("There are several documents with the same hash")
+            qDebug("There are several documents with the same hash")
             cur.close()
             return None
         else:
             cur.close()
-            print ("I couldn't create document from hash {}".format(hash ))
+            qDegug("I couldn't create document from hash {}".format(hash ))
             return None
         
     def __repr__(self):

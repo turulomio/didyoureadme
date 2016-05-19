@@ -3,39 +3,29 @@
 <context>
     <name>DidYouReadMe</name>
     <message>
-        <location filename="../libdidyoureadme.py" line="797"/>
+        <location filename="../libdidyoureadme.py" line="802"/>
         <source>This is an automatic and personal mail from DidYouReadMe.</source>
         <translation>Este es un correo automático y personal desde DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="797"/>
+        <location filename="../libdidyoureadme.py" line="802"/>
         <source>Don&apos;t answer and don&apos;t resend this mail.</source>
         <translation>No lo responda ni lo reenvíe.</translation>
     </message>
     <message>
-        <location filename="../didyoureadme.py" line="71"/>
+        <location filename="../didyoureadme.py" line="72"/>
         <source>An error loading settings happened. You must check your settings are ok</source>
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="797"/>
+        <location filename="../libdidyoureadme.py" line="802"/>
         <source>When you click the next link, you will get the document associated to this mail and it will be registered as read:</source>
         <translation>Cuando pulse en el siguiente enlace, se podrá descargar el documento asociado a este correo y se registrará su lectura:</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="159"/>
-        <source>User {} downloaded document {}</source>
-        <translation>El usuario {} descargó el documento {}</translation>
-    </message>
-    <message>
-        <location filename="../libdidyoureadme.py" line="162"/>
+        <location filename="../libdidyoureadme.py" line="160"/>
         <source>Error registering in database</source>
         <translation>Error registrando en la base de datos</translation>
-    </message>
-    <message>
-        <location filename="../libdidyoureadme.py" line="168"/>
-        <source>Request hasn&apos;t ended correctly, so it is not registered</source>
-        <translation>La petición no ha acabado correctamente, por lo que no ha sido registrada</translation>
     </message>
     <message>
         <location filename="../libdidyoureadme.py" line="192"/>
@@ -48,195 +38,200 @@
         <translation>Por favor, ponte en contacto con el administrador de DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="217"/>
-        <source>Error converting path</source>
-        <translation>Error convirtiendo la ruta</translation>
-    </message>
-    <message>
-        <location filename="../libdidyoureadme.py" line="225"/>
+        <location filename="../libdidyoureadme.py" line="229"/>
         <source>This document has expired</source>
         <translation>El documento ha expirado</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="233"/>
+        <location filename="../libdidyoureadme.py" line="238"/>
         <source>File not found</source>
         <translation>Fichero no encontrado</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="425"/>
+        <location filename="../libdidyoureadme.py" line="430"/>
         <source>Name</source>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="426"/>
+        <location filename="../libdidyoureadme.py" line="431"/>
         <source>Users</source>
         <translation>Usuarios</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="566"/>
+        <location filename="../libdidyoureadme.py" line="571"/>
         <source>Start date</source>
         <translation>Fecha de inicio</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="567"/>
+        <location filename="../libdidyoureadme.py" line="572"/>
         <source>Post</source>
         <translation>Empleo</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="568"/>
+        <location filename="../libdidyoureadme.py" line="573"/>
         <source>Full name</source>
         <translation>Nombre completo</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="569"/>
+        <location filename="../libdidyoureadme.py" line="574"/>
         <source>Mail</source>
         <translation>Correo</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="905"/>
+        <location filename="../libdidyoureadme.py" line="910"/>
         <source>Read</source>
         <translation>Leídos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="904"/>
+        <location filename="../libdidyoureadme.py" line="909"/>
         <source>Sent</source>
         <translation>Enviados</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="847"/>
+        <location filename="../libdidyoureadme.py" line="852"/>
         <source>Spain</source>
         <translation>España</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="848"/>
+        <location filename="../libdidyoureadme.py" line="853"/>
         <source>Belgium</source>
         <translation>Bélgica</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="849"/>
+        <location filename="../libdidyoureadme.py" line="854"/>
         <source>China</source>
         <translation>China</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="850"/>
+        <location filename="../libdidyoureadme.py" line="855"/>
         <source>Germany</source>
         <translation>Alemania</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="851"/>
+        <location filename="../libdidyoureadme.py" line="856"/>
         <source>United Kingdom</source>
         <translation>Reino Unido</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="852"/>
+        <location filename="../libdidyoureadme.py" line="857"/>
         <source>Europe</source>
         <translation>Europa</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="853"/>
+        <location filename="../libdidyoureadme.py" line="858"/>
         <source>Finland</source>
         <translation>Finlandia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="854"/>
+        <location filename="../libdidyoureadme.py" line="859"/>
         <source>France</source>
         <translation>Francia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="855"/>
+        <location filename="../libdidyoureadme.py" line="860"/>
         <source>Ireland</source>
         <translation>Irlanda</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="856"/>
+        <location filename="../libdidyoureadme.py" line="861"/>
         <source>Italy</source>
         <translation>Italia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="857"/>
+        <location filename="../libdidyoureadme.py" line="862"/>
         <source>Japan</source>
         <translation>Japón</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="858"/>
+        <location filename="../libdidyoureadme.py" line="863"/>
         <source>Netherlands</source>
         <translation>Países bajos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="859"/>
+        <location filename="../libdidyoureadme.py" line="864"/>
         <source>Portugal</source>
         <translation>Portugal</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="860"/>
+        <location filename="../libdidyoureadme.py" line="865"/>
         <source>United States of America</source>
         <translation>Estados Unidos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="861"/>
+        <location filename="../libdidyoureadme.py" line="866"/>
         <source>Romanian</source>
         <translation>Rumania</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="862"/>
+        <location filename="../libdidyoureadme.py" line="867"/>
         <source>Rusia</source>
         <translation>Rusia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="902"/>
+        <location filename="../libdidyoureadme.py" line="907"/>
         <source>Datetime</source>
         <translation>Fecha y hora</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="903"/>
+        <location filename="../libdidyoureadme.py" line="908"/>
         <source>Planned</source>
         <translation>Planeados</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="906"/>
+        <location filename="../libdidyoureadme.py" line="911"/>
         <source>Expiration</source>
         <translation>Expiración</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="907"/>
+        <location filename="../libdidyoureadme.py" line="912"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="../didyoureadme.py" line="52"/>
+        <location filename="../didyoureadme.py" line="53"/>
         <source>Please login to the DidYouReadMe database</source>
         <translation>Por favor autentíquese en la base de datos de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../didyoureadme.py" line="60"/>
+        <location filename="../didyoureadme.py" line="61"/>
         <source>Error conecting to {} database in {} server</source>
         <translation>Se ha producido un error al conectar a la base de datos {} del servidor {}</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="716"/>
+        <location filename="../libdidyoureadme.py" line="721"/>
         <source>Error sending message {} to {}</source>
         <translation>Error enviando el correo {} a {}</translation>
+    </message>
+    <message>
+        <location filename="../libdidyoureadme.py" line="166"/>
+        <source>Request has not been served correctly, so it is not registered</source>
+        <translation>La petición no ha sido servida correctamente por lo que no ha sido registrada</translation>
+    </message>
+    <message>
+        <location filename="../libdidyoureadme.py" line="223"/>
+        <source>Error parsing path</source>
+        <translation>Error al procesar la ruta</translation>
     </message>
 </context>
 <context>
     <name>frmAbout</name>
     <message>
-        <location filename="../ui/Ui_frmAbout.py" line="216"/>
+        <location filename="../ui/Ui_frmAbout.py" line="225"/>
         <source>DidYouReadMe</source>
         <translation>DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAbout.py" line="215"/>
+        <location filename="../ui/Ui_frmAbout.py" line="224"/>
         <source>About DidYouReadMe</source>
         <translation>Acerca de DidYouReadMe</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAbout.py" line="217"/>
+        <location filename="../ui/Ui_frmAbout.py" line="226"/>
         <source>Credits</source>
         <translation>Créditos</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmAbout.py" line="218"/>
+        <location filename="../ui/Ui_frmAbout.py" line="227"/>
         <source>License</source>
         <translation>Licencia</translation>
     </message>
@@ -254,11 +249,6 @@
         <location filename="../ui/frmAbout.py" line="23"/>
         <source>to the following languages&lt;p&gt;</source>
         <translation>a los siguientes idiomas&lt;p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../ui/frmAbout.py" line="23"/>
-        <source>Bottle (&lt;a href=&quot;http://bottlepy.org/docs/dev/&quot;&gt;http://bottlepy.org/docs/dev/&lt;/a&gt;) has been used as the associated web server.</source>
-        <translation>Bottle (&lt;a href=&quot;http://bottlepy.org/docs/dev/&quot;&gt;http://bottlepy.org/docs/dev/&lt;/a&gt;) se ha usado como el servidor web asociado a la aplicación.</translation>
     </message>
     <message>
         <location filename="../ui/frmAbout.py" line="22"/>
@@ -899,16 +889,11 @@ You can deactivate him.</source>
     <message>
         <location filename="../ui/frmMain.py" line="54"/>
         <source>Web server failed to start</source>
-        <translation type="unfinished"></translation>
+        <translation>El servidor web falló al arrancar</translation>
     </message>
 </context>
 <context>
     <name>frmSettings</name>
-    <message>
-        <location filename="../ui/Ui_frmSettings.py" line="179"/>
-        <source>Selecciona un idioma</source>
-        <translation type="unfinished">Selecciona un idioma</translation>
-    </message>
     <message>
         <location filename="../ui/Ui_frmSettings.py" line="178"/>
         <source>DidYouReadMe settings</source>
@@ -943,19 +928,6 @@ You can deactivate him.</source>
         <location filename="../ui/Ui_frmSettings.py" line="180"/>
         <source>Support text</source>
         <translation>Texto de soporte</translation>
-    </message>
-    <message>
-        <location filename="../ui/Ui_frmSettings.py" line="181"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Please contact DidYouReadMe administrator, for any problem&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Por favor, contacte con el administrador de DidYouReadMe ante cualquier problema.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../ui/Ui_frmSettings.py" line="196"/>
@@ -1007,10 +979,19 @@ p, li { white-space: pre-wrap; }
         <source>Autoupdate tables</source>
         <translation>Actualización de tablas automático</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="../ui/Ui_frmSettings.py" line="177"/>
-        <source>Configuración de DidYouReadMe</source>
+    <message>
+        <location filename="../ui/Ui_frmSettings.py" line="181"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Please contact DidYouReadMe administrator, for any problem&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_frmSettings.py" line="179"/>
+        <source>Select a language</source>
+        <translation>Selecciona un idioma</translation>
     </message>
 </context>
 <context>

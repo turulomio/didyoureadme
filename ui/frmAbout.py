@@ -26,5 +26,4 @@ class frmAbout(QDialog, Ui_frmAbout):
             self.tr("It has been translated by:")+
             "<ul><li>Mariano Muñoz</li></ul><p>\n"+
             self.tr("to the following languages<p>")+
-            "<ul><li>English</li><li>Espa\xf1ol</li></ul><p>"+
-            self.tr("Bottle (<a href=\"http://bottlepy.org/docs/dev/\">http://bottlepy.org/docs/dev/</a>) has been used as the associated web server."))
+            "<ul><li>English</li><li>Espa\xf1ol</li></ul><p>")

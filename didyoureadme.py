@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-import sys, os
+import sys
+import os
 import platform
 
 if platform.system()=="Windows":
@@ -15,11 +16,11 @@ from frmAccess import *
 from libdidyoureadme import dirDocs, version,  dirTmp
 
 def qt_message_handler(mode, context, message):
-    f=open(dirDocs+"log.txt", "a")
     s="{} {}\n".format(datetime.datetime.now(),  message)
-    f.write(s)
-    f.close()
     print(s[:-1])
+    with open(dirDocs+"log.txt", "a") as f:
+        f.write(s)
+        f.close()
 
 if __name__=='__main__':#Needed due to multiprocessing in windows load all process again and launch frmAccess twice
     try:
