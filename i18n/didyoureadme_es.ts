@@ -1,24 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="2.0" language="es" sourcelanguage="">
 <context>
+    <name>Core</name>
+    <message>
+        <location filename="../didyoureadme.py" line="84"/>
+        <source>DidYouReadMe needs to update its database schema. Please login with an admin role.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DidYouReadMe</name>
     <message>
-        <location filename="../libdidyoureadme.py" line="819"/>
+        <location filename="../libdidyoureadme.py" line="886"/>
         <source>This is an automatic and personal mail from DidYouReadMe.</source>
         <translation>Este es un correo automático y personal desde DidYouReadMe.</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="819"/>
+        <location filename="../libdidyoureadme.py" line="886"/>
         <source>Don&apos;t answer and don&apos;t resend this mail.</source>
         <translation>No lo responda ni lo reenvíe.</translation>
     </message>
     <message>
-        <location filename="../didyoureadme.py" line="71"/>
+        <location filename="../didyoureadme.py" line="75"/>
         <source>An error loading settings happened. You must check your settings are ok</source>
         <translation>Ha habido un error al cargar la configuración. Compruebe que sus preferencias están bien</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="819"/>
+        <location filename="../libdidyoureadme.py" line="886"/>
         <source>When you click the next link, you will get the document associated to this mail and it will be registered as read:</source>
         <translation>Cuando pulse en el siguiente enlace, se podrá descargar el documento asociado a este correo y se registrará su lectura:</translation>
     </message>
@@ -73,112 +81,112 @@
         <translation>Correo</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="927"/>
+        <location filename="../libdidyoureadme.py" line="994"/>
         <source>Read</source>
         <translation>Leídos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="926"/>
+        <location filename="../libdidyoureadme.py" line="993"/>
         <source>Sent</source>
         <translation>Enviados</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="869"/>
+        <location filename="../libdidyoureadme.py" line="936"/>
         <source>Spain</source>
         <translation>España</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="870"/>
+        <location filename="../libdidyoureadme.py" line="937"/>
         <source>Belgium</source>
         <translation>Bélgica</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="871"/>
+        <location filename="../libdidyoureadme.py" line="938"/>
         <source>China</source>
         <translation>China</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="872"/>
+        <location filename="../libdidyoureadme.py" line="939"/>
         <source>Germany</source>
         <translation>Alemania</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="873"/>
+        <location filename="../libdidyoureadme.py" line="940"/>
         <source>United Kingdom</source>
         <translation>Reino Unido</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="874"/>
+        <location filename="../libdidyoureadme.py" line="941"/>
         <source>Europe</source>
         <translation>Europa</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="875"/>
+        <location filename="../libdidyoureadme.py" line="942"/>
         <source>Finland</source>
         <translation>Finlandia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="876"/>
+        <location filename="../libdidyoureadme.py" line="943"/>
         <source>France</source>
         <translation>Francia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="877"/>
+        <location filename="../libdidyoureadme.py" line="944"/>
         <source>Ireland</source>
         <translation>Irlanda</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="878"/>
+        <location filename="../libdidyoureadme.py" line="945"/>
         <source>Italy</source>
         <translation>Italia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="879"/>
+        <location filename="../libdidyoureadme.py" line="946"/>
         <source>Japan</source>
         <translation>Japón</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="880"/>
+        <location filename="../libdidyoureadme.py" line="947"/>
         <source>Netherlands</source>
         <translation>Países bajos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="881"/>
+        <location filename="../libdidyoureadme.py" line="948"/>
         <source>Portugal</source>
         <translation>Portugal</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="882"/>
+        <location filename="../libdidyoureadme.py" line="949"/>
         <source>United States of America</source>
         <translation>Estados Unidos</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="883"/>
+        <location filename="../libdidyoureadme.py" line="950"/>
         <source>Romanian</source>
         <translation>Rumania</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="884"/>
+        <location filename="../libdidyoureadme.py" line="951"/>
         <source>Rusia</source>
         <translation>Rusia</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="924"/>
+        <location filename="../libdidyoureadme.py" line="991"/>
         <source>Datetime</source>
         <translation>Fecha y hora</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="925"/>
+        <location filename="../libdidyoureadme.py" line="992"/>
         <source>Planned</source>
         <translation>Planeados</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="928"/>
+        <location filename="../libdidyoureadme.py" line="995"/>
         <source>Expiration</source>
         <translation>Expiración</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="929"/>
+        <location filename="../libdidyoureadme.py" line="996"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
@@ -193,19 +201,19 @@
         <translation>Se ha producido un error al conectar a la base de datos {} del servidor {}</translation>
     </message>
     <message>
-        <location filename="../libdidyoureadme.py" line="738"/>
+        <location filename="../libdidyoureadme.py" line="805"/>
         <source>Error sending message {} to {}</source>
         <translation>Error enviando el correo {} a {}</translation>
-    </message>
-    <message>
-        <location filename="../libdidyoureadme.py" line="182"/>
-        <source>Request has not been served correctly, so it is not registered</source>
-        <translation>La petición no ha sido servida correctamente por lo que no ha sido registrada</translation>
     </message>
     <message>
         <location filename="../libdidyoureadme.py" line="238"/>
         <source>Error parsing path</source>
         <translation>Error al procesar la ruta</translation>
+    </message>
+    <message>
+        <location filename="../didyoureadme.py" line="68"/>
+        <source>Database user hasn&apos;t a valid DidYouReadMe role</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

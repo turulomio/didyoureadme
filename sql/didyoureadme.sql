@@ -14,14 +14,14 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -30,7 +30,7 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 SET search_path = public, pg_catalog;
 
 --
--- Name: lo_readall(oid); Type: FUNCTION; Schema: public; Owner: -
+-- Name: lo_readall(oid); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION lo_readall(oid) RETURNS bytea
@@ -48,12 +48,14 @@ AS q3
 $_$;
 
 
+ALTER FUNCTION public.lo_readall(oid) OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: documents; Type: TABLE; Schema: public; Owner: -
+-- Name: documents; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE documents (
@@ -68,8 +70,10 @@ CREATE TABLE documents (
 );
 
 
+ALTER TABLE documents OWNER TO postgres;
+
 --
--- Name: documents_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: documents_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE documents_id_seq
@@ -80,26 +84,29 @@ CREATE SEQUENCE documents_id_seq
     CACHE 1;
 
 
+ALTER TABLE documents_id_seq OWNER TO postgres;
+
 --
--- Name: documents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: documents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE documents_id_seq OWNED BY documents.id;
 
 
 --
--- Name: globals; Type: TABLE; Schema: public; Owner: -
+-- Name: globals; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE globals (
-    id_globals integer NOT NULL,
-    global text,
+    global text NOT NULL,
     value text
 );
 
 
+ALTER TABLE globals OWNER TO postgres;
+
 --
--- Name: groups; Type: TABLE; Schema: public; Owner: -
+-- Name: groups; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE groups (
@@ -109,8 +116,10 @@ CREATE TABLE groups (
 );
 
 
+ALTER TABLE groups OWNER TO postgres;
+
 --
--- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE posts_id_seq
@@ -121,15 +130,17 @@ CREATE SEQUENCE posts_id_seq
     CACHE 1;
 
 
+ALTER TABLE posts_id_seq OWNER TO postgres;
+
 --
--- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE posts_id_seq OWNED BY groups.id;
 
 
 --
--- Name: userdocuments; Type: TABLE; Schema: public; Owner: -
+-- Name: userdocuments; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE userdocuments (
@@ -141,15 +152,17 @@ CREATE TABLE userdocuments (
 );
 
 
+ALTER TABLE userdocuments OWNER TO postgres;
+
 --
--- Name: COLUMN userdocuments.read; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN userdocuments.read; Type: COMMENT; Schema: public; Owner: postgres
 --
 
 COMMENT ON COLUMN userdocuments.read IS 'First time user read';
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE users (
@@ -163,8 +176,10 @@ CREATE TABLE users (
 );
 
 
+ALTER TABLE users OWNER TO postgres;
+
 --
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE users_id_seq
@@ -175,36 +190,38 @@ CREATE SEQUENCE users_id_seq
     CACHE 1;
 
 
+ALTER TABLE users_id_seq OWNER TO postgres;
+
 --
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY documents ALTER COLUMN id SET DEFAULT nextval('documents_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('posts_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
--- Name: documents_pk; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: documents_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY documents
@@ -212,7 +229,15 @@ ALTER TABLE ONLY documents
 
 
 --
--- Name: pk_posts; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: globals_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY globals
+    ADD CONSTRAINT globals_pk PRIMARY KEY (global);
+
+
+--
+-- Name: pk_posts; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY groups
@@ -220,7 +245,7 @@ ALTER TABLE ONLY groups
 
 
 --
--- Name: userdocuments_pk; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: userdocuments_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY userdocuments
@@ -228,7 +253,7 @@ ALTER TABLE ONLY userdocuments
 
 
 --
--- Name: users_pk; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: users_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY users
@@ -236,7 +261,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: userdocuments_fk_documents; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: userdocuments_fk_documents; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY userdocuments
@@ -244,7 +269,7 @@ ALTER TABLE ONLY userdocuments
 
 
 --
--- Name: userdocuments_fk_users; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: userdocuments_fk_users; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY userdocuments
@@ -252,7 +277,7 @@ ALTER TABLE ONLY userdocuments
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: -
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
@@ -262,83 +287,91 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --
--- Name: documents; Type: ACL; Schema: public; Owner: -
+-- Name: documents; Type: ACL; Schema: public; Owner: postgres
 --
 
 REVOKE ALL ON TABLE documents FROM PUBLIC;
 REVOKE ALL ON TABLE documents FROM postgres;
 GRANT ALL ON TABLE documents TO postgres;
 GRANT ALL ON TABLE documents TO didyoureadme_user;
+GRANT ALL ON TABLE documents TO didyoureadme_admin;
 
 
 --
--- Name: documents_id_seq; Type: ACL; Schema: public; Owner: -
+-- Name: documents_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
 REVOKE ALL ON SEQUENCE documents_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE documents_id_seq FROM postgres;
 GRANT ALL ON SEQUENCE documents_id_seq TO postgres;
 GRANT ALL ON SEQUENCE documents_id_seq TO didyoureadme_user;
+GRANT ALL ON SEQUENCE documents_id_seq TO didyoureadme_admin;
 
 
 --
--- Name: globals; Type: ACL; Schema: public; Owner: -
+-- Name: globals; Type: ACL; Schema: public; Owner: postgres
 --
 
 REVOKE ALL ON TABLE globals FROM PUBLIC;
 REVOKE ALL ON TABLE globals FROM postgres;
 GRANT ALL ON TABLE globals TO postgres;
 GRANT ALL ON TABLE globals TO didyoureadme_user;
+GRANT ALL ON TABLE globals TO didyoureadme_admin;
 
 
 --
--- Name: groups; Type: ACL; Schema: public; Owner: -
+-- Name: groups; Type: ACL; Schema: public; Owner: postgres
 --
 
 REVOKE ALL ON TABLE groups FROM PUBLIC;
 REVOKE ALL ON TABLE groups FROM postgres;
 GRANT ALL ON TABLE groups TO postgres;
 GRANT ALL ON TABLE groups TO didyoureadme_user;
+GRANT ALL ON TABLE groups TO didyoureadme_admin;
 
 
 --
--- Name: posts_id_seq; Type: ACL; Schema: public; Owner: -
+-- Name: posts_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
 REVOKE ALL ON SEQUENCE posts_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE posts_id_seq FROM postgres;
 GRANT ALL ON SEQUENCE posts_id_seq TO postgres;
 GRANT ALL ON SEQUENCE posts_id_seq TO didyoureadme_user;
+GRANT ALL ON SEQUENCE posts_id_seq TO didyoureadme_admin;
 
 
 --
--- Name: userdocuments; Type: ACL; Schema: public; Owner: -
+-- Name: userdocuments; Type: ACL; Schema: public; Owner: postgres
 --
 
 REVOKE ALL ON TABLE userdocuments FROM PUBLIC;
 REVOKE ALL ON TABLE userdocuments FROM postgres;
 GRANT ALL ON TABLE userdocuments TO postgres;
 GRANT ALL ON TABLE userdocuments TO didyoureadme_user;
+GRANT ALL ON TABLE userdocuments TO didyoureadme_admin;
 
 
 --
--- Name: users; Type: ACL; Schema: public; Owner: -
+-- Name: users; Type: ACL; Schema: public; Owner: postgres
 --
 
 REVOKE ALL ON TABLE users FROM PUBLIC;
 REVOKE ALL ON TABLE users FROM postgres;
 GRANT ALL ON TABLE users TO postgres;
 GRANT ALL ON TABLE users TO didyoureadme_user;
+GRANT ALL ON TABLE users TO didyoureadme_admin;
 
 
 --
--- Name: users_id_seq; Type: ACL; Schema: public; Owner: -
+-- Name: users_id_seq; Type: ACL; Schema: public; Owner: postgres
 --
 
 REVOKE ALL ON SEQUENCE users_id_seq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE users_id_seq FROM postgres;
 GRANT ALL ON SEQUENCE users_id_seq TO postgres;
 GRANT ALL ON SEQUENCE users_id_seq TO didyoureadme_user;
+GRANT ALL ON SEQUENCE users_id_seq TO didyoureadme_admin;
 
 
 --
@@ -370,8 +403,7 @@ SET search_path = public, pg_catalog;
 -- Data for Name: globals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO globals VALUES (1, 'version_date', '201501281524');
-INSERT INTO globals VALUES (6, 'Admin mode', 'ca0e3137f40fb8f1a536ff64cc994c53');
+INSERT INTO globals VALUES ('version_date', '201605191906');
 
 
 --

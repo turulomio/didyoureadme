@@ -5,7 +5,7 @@ class Update:
     poner al final self.me.set_database_version_date(current date)
     
     To check if this class works fine, you must use a subversion_date 
-        Subversion_date      DBversion_date
+        Subversion_date      dbversion
         1702                None
     
     El sistema update sql ya tiene globals y  mete la versión de la base de datos del desarrollador, no obstante,
@@ -17,8 +17,19 @@ class Update:
     def __init__(self, mem):
         self.mem=mem
         
-        self.dbversion_date=self.get_database_version_date()     
-        if self.dbversion_date==None:
+        self.dbversion=self.get_database_version_date()     
+        self.lastcodeupdate=201604240810    
+        
+    def need_update(self):
+        """Returns if update must be done"""
+        if self.dbversion>self.lastcodeupdate:
+            print ("WARNING. DBVEERSION > LAST CODE UPDATE, PLEASE UPDATE LASTCODEUPDATE IN CLASS")
+        if self.dbversion==self.lastcodeupdate:
+            return False
+        return True
+
+    def run(self): 
+        if self.dbversion==None:
             cur=self.mem.con.cursor()
             cur.execute("CREATE TABLE globals (id_globals integer NOT NULL,  global text,  value text);")
             cur.execute("ALTER TABLE documents add COLUMN datetime_end timestamp with time zone default now() + interval '3 months' not null;")
@@ -26,7 +37,7 @@ class Update:
             cur.close()
             self.mem.con.commit()
             self.set_database_version_date(201501260851)
-        if self.dbversion_date<201501261046: #Documentos a base de datos
+        if self.dbversion<201501261046: #Documentos a base de datos
             qDebug ("Migrating old didyoureadme files")
             cur=self.mem.con.cursor()
             cur2=self.mem.con.cursor()
@@ -45,7 +56,7 @@ class Update:
             cur.close()
             self.mem.con.commit()
             self.set_database_version_date(201501261046)
-        if self.dbversion_date<201501261228: #Removes closed and update expiration to 3 months
+        if self.dbversion<201501261228: #Removes closed and update expiration to 3 months
             cur=self.mem.con.cursor()
             cur.execute("alter table documents rename datetime_end to expiration;")
             cur.execute("alter table documents drop column closed;")      
@@ -57,13 +68,13 @@ class Update:
             cur.close()
             self.mem.con.commit()
             self.set_database_version_date(201501261228)
-        if self.dbversion_date<201501261900: #Removes closed and update expiration to 3 months
+        if self.dbversion<201501261900: #Removes closed and update expiration to 3 months
             cur=self.mem.con.cursor()
             cur.execute("insert into globals (id_globals,global,value) values (%s,%s,%s);", (6,"Admin mode", None ))
             self.mem.con.commit()
             cur.close()
             self.set_database_version_date(201501261900)   
-        if self.dbversion_date<201501281348: #Removes closed and update expiration to 3 months
+        if self.dbversion<201501281348: #Removes closed and update expiration to 3 months
             cur=self.mem.con.cursor()
             cur.execute("""CREATE OR REPLACE FUNCTION lo_readall(oid) RETURNS bytea
 AS $_$
@@ -81,7 +92,7 @@ $_$ LANGUAGE sql STRICT;""")
             cur.close()
             self.mem.con.commit()
             self.set_database_version_date(201501281348)           
-        if self.dbversion_date<201501281350: #Removes closed and update expiration to 3 months
+        if self.dbversion<201501281350: #Removes closed and update expiration to 3 months
             cur=self.mem.con.cursor()
             cur2=self.mem.con.cursor()
             cur.execute("Select * from documents;")
@@ -92,12 +103,23 @@ $_$ LANGUAGE sql STRICT;""")
             cur2.close()
             self.mem.con.commit()
             self.set_database_version_date(201501281350)   
-        if self.dbversion_date<201501281524: #Removes closed and update expiration to 3 months
+        if self.dbversion<201501281524: #Removes closed and update expiration to 3 months
             cur=self.mem.con.cursor()
             cur.execute("alter table documents drop column file;")      #SHOURLD RUN vacuumlo -U postgres didyoreadme in a console
             cur.close()
             self.mem.con.commit()
             self.set_database_version_date(201501281524)   
+        if self.dbversion<201605191906:
+            cur=self.mem.con.cursor()
+            cur.execute("create role didyoureadme_admin")
+            cur.execute("grant all privileges on all tables in schema public to didyoureadme_admin;")      #SHOURLD RUN vacuumlo -U postgres didyoreadme in a console
+            cur.execute("grant all privileges on all sequences in schema public to didyoureadme_admin;")
+            cur.execute("delete from globals where id_globals=6")
+            cur.execute("ALTER TABLE globals DROP COLUMN id_globals")
+            cur.execute("ALTER TABLE globals ADD CONSTRAINT globals_pk PRIMARY KEY (global)")
+            cur.close()
+            self.mem.con.commit()
+            self.set_database_version_date(201605191906)   
             
 
         """AFTER EXECUTING I MUST RUN SQL UPDATE SCRIPT TO UPDATE FUTURE INSTALLATIONS
@@ -139,23 +161,23 @@ $_$ LANGUAGE sql STRICT;""")
             return None           
         
         #Comprueba el valor 
-        cur.execute("select value from globals where id_globals=1;")
+        cur.execute("select value from globals where global='version_date'")
         if cur.rowcount==0:
             cur.close()
             return None
         resultado=cur.fetchone()['value']
         cur.close()
-        self.dbversion_date=int(resultado)
-        return self.dbversion_date
+        self.dbversion=int(resultado)
+        return self.dbversion
         
     def set_database_version_date(self, valor):
         """Tiene el commit"""
-        qDebug ("Updating database from {} to {}".format(self.dbversion_date, valor))
+        qDebug ("Updating database from {} to {}".format(self.dbversion, valor))
         cur=self.mem.con.cursor()
-        if self.dbversion_date==None:
-            cur.execute("insert into globals (id_globals,global,value) values (%s,%s,%s);", (1,"version_date", valor ))
+        if self.dbversion==None:
+            cur.execute("insert into globals (global,value) values (%s,%s);", ("version_date", valor ))
         else:
-            cur.execute("update globals set global=%s, value=%s where id_globals=1;", ("version_date", valor ))
+            cur.execute("update globals set value=%s where global=%s;", (valor,"version_date" ))
         cur.close()        
-        self.dbversion_date=valor
+        self.dbversion=valor
         self.mem.con.commit()

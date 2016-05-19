@@ -179,7 +179,7 @@ class MyHTTPServer(socketserver.TCPServer):
         else:
             #"""Puede ser por muchos motivos, expirados, no existe, no encontrado...""", se trata en la request
             self.errors=self.errors+1
-            qDebug(QApplication.translate("DidYouReadMe", "Request has not been served correctly, so it is not registered"))
+            qDebug("Request has not been served correctly, so it is not registered")#Fallaba con QApplication.translate
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self,request, client_address, server, mem=None):
@@ -694,7 +694,74 @@ class TWebServer(QThread):
 
     def run(self):
         self.server.serve_forever()
-
+class SettingsDB:
+    def __init__(self, mem):
+        self.mem=mem
+    
+    def in_db(self, name):
+        """Returns true if globals is saved in database"""
+        cur=self.mem.con.cursor()
+        cur.execute("select value from globals where id_globals=%s", (self.id(name), ))
+        num=cur.rowcount
+        cur.close()
+        if num==0:
+            return False
+        else:
+            return True
+  
+    def value(self, name, default):
+        """Search in database if not use default"""            
+        cur=self.mem.con.cursor()
+        cur.execute("select value from globals where id_globals=%s", (self.id(name), ))
+        if cur.rowcount==0:
+            return default
+        else:
+            value=cur.fetchone()[0]
+            cur.close()
+            return value
+        
+    def setValue(self, name, value):
+        """Set the global value.
+        It doesn't makes a commit, you must do it manually
+        value can't be None
+        """
+        cur=self.mem.con.cursor()
+        if self.in_db(name)==False:
+            cur.execute("insert into globals (id_globals, global,value) values(%s,%s,%s)", (self.id(name),  name, value))     
+        else:
+            cur.execute("update globals set global=%s, value=%s where id_globals=%s", (name, value, self.id(name)))
+        cur.close()
+        self.mem.con.commit()
+        
+    def id(self,  name):
+        """Converts section and name to id of table globals"""
+        if name=="wdgIndexRange/spin":
+            return 7
+        elif name=="wdgIndexRange/invertir":
+            return 8
+        elif name=="wdgIndexRange/minimo":
+            return 9
+        elif name=="wdgLastCurrent/spin":
+            return 10
+        elif name=="mem/localcurrency":
+            return 11
+        elif name=="mem/localzone":
+            return 12
+        elif name=="mem/benchmarkid":
+            return 13
+        elif name=="mem/dividendwithholding":
+            return 14
+        elif name=="mem/taxcapitalappreciation":
+            return 15
+        elif name=="mem/taxcapitalappreciationbelow":
+            return 16
+        elif name=="mem/gainsyear":
+            return 17
+        elif name=="mem/favorites":
+            return 18
+        elif name=="mem/fillfromyear":
+            return 19
+        return None
 class TSend(QThread):
     def __init__(self, mem):
         QThread.__init__(self)
@@ -1314,13 +1381,23 @@ class Mem:
 
     def setQTranslator(self, qtranslator):
         self.qtranslator=qtranslator
-            
+
+    def hasDidyoureadmeRole(self):
+        if "didyoureadme_admin" in self.con.roles or "didyoureadme_user" in self.con.roles:
+            return True
+        return False
     def isAdminMode(self):
         if "didyoureadme_admin" in self.con.roles:
             return True
         return False
 
-
+def qmessagebox(text):
+    """Common message box"""
+    m=QMessageBox()
+    m.setWindowIcon(QIcon(":/didyoureadme.png"))
+    m.setIcon(QMessageBox.Information)
+    m.setText(text)
+    m.exec_()     
 
 def qdatetime(dt, localzone):
     """dt es un datetime con timezone

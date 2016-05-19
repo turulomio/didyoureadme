@@ -64,6 +64,10 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
     mem.con=access.con
     access.hide()
 
+    if mem.hasDidyoureadmeRole()==False:
+        qmessagebox(QApplication.translate("DidYouReadMe", "Database user hasn't a valid DidYouReadMe role"))
+        sys.exit(2)
+
     if mem.cfgfile.error==True:
         m=QMessageBox()
         m.setWindowIcon(QIcon(":/didyoureadme.png"))
@@ -71,6 +75,15 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         m.setText(QApplication.translate("DidYouReadMe","An error loading settings happened. You must check your settings are ok"))
         m.exec_()      
         
+    ##Update database
+    update=libdbupdates.Update(mem)
+    if update.need_update()==True:
+        if mem.isAdminMode():
+            update.run()
+        else:
+            qmessagebox(QApplication.translate("Core","DidYouReadMe needs to update its database schema. Please login with an admin role."))
+            sys.exit(3)
+            
     frmMain = frmMain(mem) 
     
     sys.exit(app.exec_())
