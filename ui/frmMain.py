@@ -421,6 +421,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.addAction(self.actionDocumentOpen)
         menu.addAction(self.actionDocumentReport)
                     
+                    
+        if self.chkDocumentsExpired.checkState()==Qt.Checked:#Si está en expirados no puedo añadir documento
+            self.actionDocumentNew.setEnabled(False)
+        else:
+            self.actionDocumentNew.setEnabled(True)
+                    
         if self.documents.selected==None:
             self.actionDocumentDelete.setEnabled(False)
             self.actionDocumentDeleteAdmin.setEnabled(False)
