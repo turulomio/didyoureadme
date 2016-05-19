@@ -431,6 +431,7 @@ class SetGroups(SetCommonsQListView):
         table.setHorizontalHeaderItem(1, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Users" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
+        table.applySettings()
         for i, p in enumerate(self.arr):
             table.setItem(i, 0, QTableWidgetItem(p.name))
             table.setItem(i, 1, QTableWidgetItem(p.members.string_of_names()))
@@ -574,6 +575,7 @@ class SetUsers(SetCommonsQListView):
         table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Sent" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
+        table.applySettings()
         for i, u in enumerate(self.arr):
             table.setItem(i, 0, qdatetime(u.datetime, self.mem.cfgfile.localzone))
             if u.post==None:
@@ -907,6 +909,7 @@ class SetDocuments(SetCommons):
         table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Title" )))    
         table.clearContents()
         table.setRowCount(len(self.arr))
+        table.applySettings()
         for i, d in enumerate(self.arr):
             table.setItem(i, 0, qdatetime(d.datetime, self.mem.cfgfile.localzone))
             table.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))

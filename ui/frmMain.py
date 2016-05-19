@@ -31,6 +31,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.users=None#Pointer
         self.documents=None#Pointer
         
+        self.tblDocuments.settings(self.mem, "frmMain", "tblDocuments")
+        self.tblUsers.settings(self.mem, "frmMain", "tblUsers")      
+        self.tblGroups.settings(self.mem, "frmMain", "tblGroups")
+
+        
         self.confirmclose=True
         
         self.setWindowTitle(self.tr("DidYouReadMe 2012-{} \xa9").format(version_date.year))
@@ -134,6 +139,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.users.qtablewidget(self.tblUsers)
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.documents.qtablewidget(self.tblDocuments)
+        
+        for table in [self.tblDocuments,  self.tblGroups, self.tblUsers]:
+            table.resizeRowsToContents()
+            table.resizeColumnsToContents()
+            
         self.updateStatusBar()
         qDebug(self.tr("Update tables took {}".format(datetime.datetime.now()-inicio)))
 

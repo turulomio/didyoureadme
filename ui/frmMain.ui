@@ -40,7 +40,7 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QTableWidget" name="tblGroups">
+         <widget class="myQTableWidget" name="tblGroups">
           <property name="contextMenuPolicy">
            <enum>Qt::CustomContextMenu</enum>
           </property>
@@ -88,7 +88,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTableWidget" name="tblUsers">
+           <widget class="myQTableWidget" name="tblUsers">
             <property name="contextMenuPolicy">
              <enum>Qt::CustomContextMenu</enum>
             </property>
@@ -161,7 +161,7 @@
            </layout>
           </item>
           <item>
-           <widget class="QTableWidget" name="tblDocuments">
+           <widget class="myQTableWidget" name="tblDocuments">
             <property name="contextMenuPolicy">
              <enum>Qt::CustomContextMenu</enum>
             </property>
@@ -229,7 +229,7 @@
      <x>0</x>
      <y>0</y>
      <width>699</width>
-     <height>21</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAyuda">
@@ -519,6 +519,11 @@
    <extends>QWidget</extends>
    <header location="global">wdgYearMonth</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>myQTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header location="global">myqtablewidget</header>
   </customwidget>
  </customwidgets>
  <resources>
