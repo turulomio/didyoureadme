@@ -596,27 +596,13 @@ class SetUsers(SetCommonsQListView):
                 post=""
             else:
                 post=u.post
-            table.setItem(i, 1, QTableWidgetItem(post))
-            table.setItem(i, 2, QTableWidgetItem(u.name))
-            table.setItem(i, 3, QTableWidgetItem(u.mail))
-            table.setItem(i, 4, QTableWidgetItem(str(u.read)))
-            table.item(i, 4).setTextAlignment(Qt.AlignHCenter)
-            table.setItem(i, 5, QTableWidgetItem(str(u.sent)))
-            table.item(i, 5).setTextAlignment(Qt.AlignHCenter)
+            table.setItem(i, 1, qleft(post))
+            table.setItem(i, 2, qleft(u.name))
+            table.setItem(i, 3, qleft(u.mail))
+            table.setItem(i, 4, qcenter(u.read))
+            table.setItem(i, 5, qcenter(u.sent))
         table.clearSelection()    
-        
-#        for i, u in enumerate(self.mem.users.arr):
-#            if (inactive==True and u.active==True) or (inactive==False and u.active==False):
-#                continue
-#            self.users.append(u)
-        
 
-    def updateTablesOnlyNums(self, table):
-        for i, u in enumerate(self.arr):
-            table.setItem(i, 4, QTableWidgetItem(str(u.read)))
-            table.item(i, 4).setTextAlignment(Qt.AlignHCenter)
-            table.setItem(i, 5, QTableWidgetItem(str(u.sent)))
-            table.item(i, 5).setTextAlignment(Qt.AlignHCenter)
 class User:
     def __init__(self, mem,  dt, post, name, mail, active=True, hash="hash no calculado",  id=None):
         self.mem=mem
@@ -964,14 +950,11 @@ class SetDocuments(SetCommons):
         table.applySettings()
         for i, d in enumerate(self.arr):
             table.setItem(i, 0, qdatetime(d.datetime, self.mem.localzone))
-            table.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
-            table.item(i, 1).setTextAlignment(Qt.AlignHCenter)
-            table.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
-            table.item(i, 2).setTextAlignment(Qt.AlignHCenter)
-            table.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
-            table.item(i, 3).setTextAlignment(Qt.AlignHCenter)
+            table.setItem(i, 1, qcenter(d.numplanned))
+            table.setItem(i, 2, qcenter(d.numsents))
+            table.setItem(i, 3, qcenter(d.numreads))
             table.setItem(i, 4, qdatetime(d.expiration, self.mem.localzone))
-            table.setItem(i, 5, QTableWidgetItem(d.name))
+            table.setItem(i, 5, qleft(d.name))
             if d.numreads==d.numplanned and d.numplanned>0:
                 for column in range( 1, 4):
                     table.item(i, column).setBackground(QColor(198, 205, 255))
@@ -1384,6 +1367,16 @@ def qdatetime(dt, localzone):
     if dt==None:
         a.setTextColor(QColor(0, 0, 255))
     a.setTextAlignment(Qt.AlignVCenter|Qt.AlignRight)
+    return a
+    
+    
+def qcenter(text):
+    a=QTableWidgetItem(str(text))
+    a.setTextAlignment(Qt.AlignVCenter|Qt.AlignCenter)
+    return a    
+def qleft(text):
+    a=QTableWidgetItem(str(text))
+    a.setTextAlignment(Qt.AlignVCenter|Qt.AlignLeft)
     return a
     
 def dt(date, hour, zonename):
