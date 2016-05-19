@@ -31,8 +31,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.documents=None#Pointer
         
         self.tblDocuments.settings(self.mem, "frmMain", "tblDocuments")
+        self.tblDocuments.setVerticalHeaderHeight(None)
         self.tblUsers.settings(self.mem, "frmMain", "tblUsers")      
+        self.tblUsers.setVerticalHeaderHeight(None)
         self.tblGroups.settings(self.mem, "frmMain", "tblGroups")
+        self.tblGroups.setVerticalHeaderHeight(None)
 
         
         self.confirmclose=True
@@ -80,10 +83,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tsend.shutdown()
         if self.tserver:
             self.tserver.server.shutdown()
-        self.tsend.wait()
+            self.tserver.wait()
         self.tsend.wait()
         self.mem.__del__() 
-        qDebug("DidYouReadMe correctly shutdown")
+        print("DidYouReadMe correctly shutdown")
         
         
     def updateStatusBar(self):

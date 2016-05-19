@@ -17,7 +17,7 @@ from frmAccess import *
 from libdidyoureadme import dirDocs, version,  dirTmp
 
 def qt_message_handler(mode, context, message):
-    s="{} {}\n".format(datetime.datetime.now(),  message)
+    s="{} {}\n".format(str(datetime.datetime.now()),  message)
     print(s[:-1])
     with open(dirDocs+"log.txt", "a") as f:
         f.write(s)
