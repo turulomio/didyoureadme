@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import sys
-import os
 import platform
 import datetime
 
@@ -15,6 +14,7 @@ from PyQt5.QtGui import *
 from frmMain import *
 from frmAccess import *
 from libdidyoureadme import dirDocs, version,  dirTmp
+import libdbupdates
 
 def qt_message_handler(mode, context, message):
     s="{} {}\n".format(str(datetime.datetime.now()),  message)
@@ -24,14 +24,8 @@ def qt_message_handler(mode, context, message):
         f.close()
 
 if __name__=='__main__':#Needed due to multiprocessing in windows load all process again and launch frmAccess twice
-    try:
-        os.makedirs(dirTmp)
-    except:
-        pass
-    try:
-        os.makedirs(dirDocs)
-    except:
-        pass
+    makedirs(dirTmp)
+    makedirs(dirDocs)
 
     QtCore.qInstallMessageHandler(qt_message_handler)
 
@@ -46,8 +40,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
 
     app.setQuitOnLastWindowClosed(True)
     mem.setQTranslator(QTranslator(app))
-    mem.languages.cambiar(mem.language.id)
-
+    
     access=frmAccess(mem)
     access.setLabel(QApplication.translate("DidYouReadMe","Please login to the DidYouReadMe database"))
     access.config_load()
@@ -76,6 +69,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         else:
             qmessagebox(QApplication.translate("Core","DidYouReadMe needs to update its database schema. Please login with an admin role."))
             sys.exit(3)
+    update.syncing_files()
             
     frmMain = frmMain(mem) 
     

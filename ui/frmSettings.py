@@ -10,7 +10,7 @@ class frmSettings(QDialog, Ui_frmSettings):
         QDialog.__init__(self, parent)
         self.mem=mem
         self.setupUi(self)
-        self.mem.languages.qcombobox(self.cmbLanguage, self.mem.languages.find(self.mem.language))
+        self.mem.languages.qcombobox(self.cmbLanguage, self.mem.languages.find(self.mem.language.id))
         self.txtWebServerIP.setText(self.mem.settings.value("webserver/ip", "127.0.0.1"))
         self.txtWebServerPort.setText(self.mem.settings.value("webserver/port", "8000"))
         self.txtSupport.setPlainText(self.mem.settings.value("smtp/support", "Please, contact system administrator"))

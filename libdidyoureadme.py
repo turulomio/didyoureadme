@@ -544,7 +544,8 @@ class SetLanguages(SetCommons):
             self.mem.qtranslator.load("i18n/didyoureadme_" + id + ".qm")
         else:
             self.mem.qtranslator.load("/usr/lib/didyoureadme/didyoureadme_" + id + ".qm")
-        qApp.installTranslator(self.mem.qtranslator);
+        qApp.installTranslator(self.mem.qtranslator)
+        print("Language changed to {}".format(id))
 
         
 class SetUsers(SetCommonsQListView):
@@ -1394,6 +1395,13 @@ def dt_changes_tz(dt,  tztarjet):
     tzt=pytz.timezone(tztarjet)
     tarjet=tzt.normalize(dt.astimezone(tzt))
     return tarjet
+
+
+def makedirs(dir):
+    try:
+        os.makedirs(dir)
+    except:
+        pass
 
 def now(localzone):
     return datetime.datetime.now(pytz.timezone(localzone))

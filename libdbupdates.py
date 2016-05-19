@@ -125,12 +125,11 @@ $_$ LANGUAGE sql STRICT;""")
         """AFTER EXECUTING I MUST RUN SQL UPDATE SCRIPT TO UPDATE FUTURE INSTALLATIONS
     
     OJO EN LOS REEMPLAZOS MASIVOS PORQUE UN ACTIVE DE PRODUCTS LUEGO PASA A LLAMARSE AUTOUPDATE PERO DEBERA MANTENERSSE EN SU MOMENTO TEMPORAL"""  
-        self.load_files_bytea()
         qDebug ("Database already updated")
         
-    def load_files_bytea(self):
+    def syncing_files(self):
         """THis function download all files from database to .didyoureadme/docs/  when needed"""
-        qDebug ("Regenerating files in .didyoureadme/docs")
+        qDebug ("Syncing files in .didyoureadme/docs")
         cur=self.mem.con.cursor()
         cur.execute("select id, datetime, title, comment, filename, hash, expiration  from documents;")
         for row in cur:                

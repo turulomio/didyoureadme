@@ -6,7 +6,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtPrintSupport import *
 from libdidyoureadme import *
-import libdbupdates
 
 from Ui_frmMain import *
 from frmAbout import *
@@ -23,8 +22,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.setupUi(self)      
         self.mem=mem          
 
-        ##Update database
-        libdbupdates.Update(self.mem)
         self.mem.data.load()
         
         self.users=None#Pointer
