@@ -10,50 +10,45 @@ class frmSettings(QDialog, Ui_frmSettings):
         QDialog.__init__(self, parent)
         self.mem=mem
         self.setupUi(self)
-        self.mem.languages.qcombobox(self.cmbLanguage, self.mem.languages.find(self.mem.cfgfile.language))
-        self.txtWebServerIP.setText(self.mem.cfgfile.webserver)
-        self.txtWebServerPort.setText(self.mem.cfgfile.webserverport)
-        self.txtSupport.setPlainText(self.mem.cfgfile.smtpsupport)
-        self.txtSMTPUser.setText(self.mem.cfgfile.smtpuser)
-        self.txtSMTPPwd.setText(self.mem.cfgfile.smtppwd)
-        self.txtSMTPServer.setText(self.mem.cfgfile.smtpserver)
-        self.txtSMTPPort.setText(self.mem.cfgfile.smtpport)
-        self.txtSMTPFrom.setText(self.mem.cfgfile.smtpfrom)
-        if self.mem.cfgfile.smtpTLS=="True":
+        self.mem.languages.qcombobox(self.cmbLanguage, self.mem.languages.find(self.mem.language))
+        self.txtWebServerIP.setText(self.mem.settings.value("webserver/ip", "127.0.0.1"))
+        self.txtWebServerPort.setText(self.mem.settings.value("webserver/port", "8000"))
+        self.txtSupport.setPlainText(self.mem.settings.value("smtp/support", "Please, contact system administrator"))
+        self.txtSMTPUser.setText(self.mem.settings.value("smtp/smtpuser", "smtpuser"))
+        self.txtSMTPPwd.setText(self.mem.settings.value("smtp/smtppwd", "*"))
+        self.txtSMTPServer.setText(self.mem.settings.value("smtp/smtpserver", "127.0.0.1"))
+        self.txtSMTPPort.setText(self.mem.settings.value("smtp/smtpport", "25"))
+        self.txtSMTPFrom.setText(self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com"))
+        if self.mem.settings.value("smtp/tls", "False")=="True":
             self.chkTLS.setCheckState(Qt.Checked)
-        if self.mem.cfgfile.autoupdate=="False":
-            self.chkAutoUpdate.setCheckState(Qt.Unchecked)
             
         ifaces = QNetworkInterface.allInterfaces()
         for iface in ifaces:
             for addr in iface.addressEntries():
                 self.cmbInterfaces.addItem("{0} - {1}".format(iface.humanReadableName(), addr.ip().toString() ), addr.ip().toString())
-        self.cmbInterfaces.setCurrentIndex(self.cmbInterfaces.findData(self.mem.cfgfile.webinterface))
+        self.cmbInterfaces.setCurrentIndex(self.cmbInterfaces.findData(self.mem.settings.value("webserver/interface", "127.0.0.1")))
         
 
     @pyqtSlot(str)      
     def on_cmbLanguage_currentIndexChanged(self, stri):
-        self.mem.languages.cambiar(self.cmbLanguage.itemData(self.cmbLanguage.currentIndex()))
+        self.mem.language=self.mem.languages.find_by_id(self.cmbLanguage.itemData(self.cmbLanguage.currentIndex()))
+        self.mem.settings.setValue("mem/language", self.mem.language.id)
+        self.mem.languages.cambiar(self.mem.language.id)
         self.retranslateUi(self)
         
     def on_buttonBox_accepted(self):
-        self.mem.cfgfile.webserver=self.txtWebServerIP.text()
-        self.mem.cfgfile.webserverport=self.txtWebServerPort.text()
-        self.mem.cfgfile.webinterface=self.cmbInterfaces.itemData(self.cmbInterfaces.currentIndex())
-        self.mem.cfgfile.smtpsupport=self.txtSupport.toPlainText()
-        self.mem.cfgfile.smtppwd=self.txtSMTPPwd.text()
-        self.mem.cfgfile.smtpserver=self.txtSMTPServer.text()
-        self.mem.cfgfile.smtpport=self.txtSMTPPort.text()
-        self.mem.cfgfile.smtpuser=self.txtSMTPUser.text()
-        self.mem.cfgfile.smtpfrom=self.txtSMTPFrom.text()
+        self.mem.settings.setValue("webserver/ip", self.txtWebServerIP.text())
+        self.mem.settings.setValue("webserver/port", self.txtWebServerPort.text())
+        self.mem.settings.setValue("webserver/interface", self.cmbInterfaces.itemData(self.cmbInterfaces.currentIndex()))
+        self.mem.settings.setValue("smtp/support",self.txtSupport.toPlainText())
+        self.mem.settings.setValue("smtp/smtppwd", self.txtSMTPPwd.text())
+        self.mem.settings.setValue("smtp/smtpserver",self.txtSMTPServer.text())
+        self.mem.settings.setValue("smtp/smtpport",self.txtSMTPPort.text())
+        self.mem.settings.setValue("smtp/smtpuser",self.txtSMTPUser.text())
+        self.mem.settings.setValue("smtp/smtpfrom",self.txtSMTPFrom.text())
         if self.chkTLS.checkState()==Qt.Checked:
-            self.mem.cfgfile.smtpTLS="True"
+            self.mem.settings.setValue("smtp/tls","True")
         else:
-            self.mem.cfgfile.smtpTLS="False"
-        if self.chkAutoUpdate.checkState()==Qt.Checked:
-            self.mem.cfgfile.autoupdate="True"
-        else:
-            self.mem.cfgfile.autoupdate="False"
-        self.mem.cfgfile.save()
+            self.mem.settings.setValue("smtp/tls","False")
         
         self.on_cmbLanguage_currentIndexChanged(self.cmbLanguage.currentText())#Debe hacerse al final para que no afecte valores

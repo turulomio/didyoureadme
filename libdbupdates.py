@@ -18,7 +18,7 @@ class Update:
         self.mem=mem
         
         self.dbversion=self.get_database_version_date()     
-        self.lastcodeupdate=201604240810    
+        self.lastcodeupdate=201605191906    
         
     def need_update(self):
         """Returns if update must be done"""

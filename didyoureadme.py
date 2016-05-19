@@ -46,7 +46,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
 
     app.setQuitOnLastWindowClosed(True)
     mem.setQTranslator(QTranslator(app))
-    mem.languages.cambiar(mem.cfgfile.language)
+    mem.languages.cambiar(mem.language.id)
 
     access=frmAccess(mem)
     access.setLabel(QApplication.translate("DidYouReadMe","Please login to the DidYouReadMe database"))
@@ -67,13 +67,6 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
     if mem.hasDidyoureadmeRole()==False:
         qmessagebox(QApplication.translate("DidYouReadMe", "Database user hasn't a valid DidYouReadMe role"))
         sys.exit(2)
-
-    if mem.cfgfile.error==True:
-        m=QMessageBox()
-        m.setWindowIcon(QIcon(":/didyoureadme.png"))
-        m.setIcon(QMessageBox.Information)
-        m.setText(QApplication.translate("DidYouReadMe","An error loading settings happened. You must check your settings are ok"))
-        m.exec_()      
         
     ##Update database
     update=libdbupdates.Update(mem)

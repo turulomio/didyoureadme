@@ -1,6 +1,5 @@
 import os
 import datetime
-import configparser
 import hashlib
 import platform
 import psycopg2
@@ -167,7 +166,7 @@ class MyHTTPServer(socketserver.TCPServer):
             cur=con.cursor()
             try:
                 ud=UserDocument(request.user, request.document, self.mem)
-                ud.readed( self.mem.cfgfile.localzone)
+                ud.readed( self.mem.localzone)
                 con.commit()
                 qDebug(QApplication.translate("DidYouReadMe","User {} downloaded document {}".format(request.user.mail, request.document.id)))
             except:
@@ -239,7 +238,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             
         path = self.translate_path(self.document.hash)  
 
-        if self.document.expiration<now(self.mem.cfgfile.localzone):
+        if self.document.expiration<now(self.mem.localzone):
             qDebug(QApplication.translate("DidYouReadMe", "Document {} has expired".format(self.document.id)))
             return self.ErrorPage(QApplication.translate("DidYouReadMe","Document '{}' of '{}' has expired".format(self.document.name, self.document.datetime)))
             
@@ -592,7 +591,7 @@ class SetUsers(SetCommonsQListView):
         table.setRowCount(len(self.arr))
         table.applySettings()
         for i, u in enumerate(self.arr):
-            table.setItem(i, 0, qdatetime(u.datetime, self.mem.cfgfile.localzone))
+            table.setItem(i, 0, qdatetime(u.datetime, self.mem.localzone))
             if u.post==None:
                 post=""
             else:
@@ -690,7 +689,7 @@ class TWebServer(QThread):
         self.mem=mem
         
         os.chdir(dirDocs)
-        self.server=MyHTTPServer((self.mem.cfgfile.webinterface, int(self.mem.cfgfile.webserverport)), MyHTTPRequestHandler, mem=self.mem)
+        self.server=MyHTTPServer((self.mem.settings.value("webserver/interface", "127.0.0.1"), int(self.mem.settings.value("webserver/port", "8000"))), MyHTTPRequestHandler, mem=self.mem)
 
     def run(self):
         self.server.serve_forever()
@@ -698,10 +697,10 @@ class SettingsDB:
     def __init__(self, mem):
         self.mem=mem
     
-    def in_db(self, name):
+    def exists(self, name):
         """Returns true if globals is saved in database"""
         cur=self.mem.con.cursor()
-        cur.execute("select value from globals where id_globals=%s", (self.id(name), ))
+        cur.execute("select value from globals where global=%s", (name, ))
         num=cur.rowcount
         cur.close()
         if num==0:
@@ -712,7 +711,7 @@ class SettingsDB:
     def value(self, name, default):
         """Search in database if not use default"""            
         cur=self.mem.con.cursor()
-        cur.execute("select value from globals where id_globals=%s", (self.id(name), ))
+        cur.execute("select value from globals where global=%s", (name, ))
         if cur.rowcount==0:
             return default
         else:
@@ -726,42 +725,13 @@ class SettingsDB:
         value can't be None
         """
         cur=self.mem.con.cursor()
-        if self.in_db(name)==False:
-            cur.execute("insert into globals (id_globals, global,value) values(%s,%s,%s)", (self.id(name),  name, value))     
+        if self.exists(name)==False:
+            cur.execute("insert into globals (global,value) values(%s,%s)", ( name, value))     
         else:
-            cur.execute("update globals set global=%s, value=%s where id_globals=%s", (name, value, self.id(name)))
+            cur.execute("update globals set value=%s where global=%s", ( value, name))
         cur.close()
         self.mem.con.commit()
-        
-    def id(self,  name):
-        """Converts section and name to id of table globals"""
-        if name=="wdgIndexRange/spin":
-            return 7
-        elif name=="wdgIndexRange/invertir":
-            return 8
-        elif name=="wdgIndexRange/minimo":
-            return 9
-        elif name=="wdgLastCurrent/spin":
-            return 10
-        elif name=="mem/localcurrency":
-            return 11
-        elif name=="mem/localzone":
-            return 12
-        elif name=="mem/benchmarkid":
-            return 13
-        elif name=="mem/dividendwithholding":
-            return 14
-        elif name=="mem/taxcapitalappreciation":
-            return 15
-        elif name=="mem/taxcapitalappreciationbelow":
-            return 16
-        elif name=="mem/gainsyear":
-            return 17
-        elif name=="mem/favorites":
-            return 18
-        elif name=="mem/fillfromyear":
-            return 19
-        return None
+
 class TSend(QThread):
     def __init__(self, mem):
         QThread.__init__(self)
@@ -793,7 +763,7 @@ class TSend(QThread):
                     qDebug ("Document {0} was sent to {1}".format(mail.document.id, mail.user.mail))
                     d=UserDocument(mail.user, mail.document, self.mem)
                     if d.sent==None:
-                        d.sent=datetime.datetime.now(pytz.timezone(self.mem.cfgfile.localzone))
+                        d.sent=datetime.datetime.now(pytz.timezone(self.mem.localzone))
                     d.save()
                     con.commit()
                     self.sent=self.sent+1
@@ -872,13 +842,13 @@ class Mail:
             elif noww.month==12:
                 return "Dec"
             
-        url="http://{0}:{1}/get/{2}l{3}/{4}".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.user.hash, self.document.hash, urllib.parse.quote(os.path.basename(self.document.filename.lower())))
+        url="http://{0}:{1}/get/{2}l{3}/{4}".format(self.mem.settings.value("webserver/ip", "127.0.0.1"), self.mem.settings.value("webserver/port", "8000"), self.user.hash, self.document.hash, urllib.parse.quote(os.path.basename(self.document.filename.lower())))
 
         comment=""
         if self.document.comment!="":
             comment=self.document.comment+"\n\n___________________________________________________________\n\n"
-        noww=now(self.mem.cfgfile.localzone)
-        s= ("From: "+self.mem.cfgfile.smtpfrom+"\n"+
+        noww=now(self.mem.localzone)
+        s= ("From: "+self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com")+"\n"+
         "To: "+self.user.mail+"\n"+
         "MIME-Version: 1.0\n"+
         "Subject: "+ self.document.name+"\n"+
@@ -890,29 +860,29 @@ class Mail:
         QApplication.translate("DidYouReadMe", "Don't answer and don't resend this mail.")+"\n\n"+
         QApplication.translate("DidYouReadMe", "When you click the next link, you will get the document associated to this mail and it will be registered as read:")+"\n\n"+
         url +"\n\n"+
-        self.mem.cfgfile.smtpsupport)
+        self.mem.settings.value("smtp/support", "Please, contact system administrator"))
         return s.encode('UTF-8')
     
     def send(self):      
-        if self.mem.cfgfile.smtpTLS=="True":
-            server = smtplib.SMTP(self.mem.cfgfile.smtpserver)
+        if self.mem.settings.value("smtp/tls", "False")=="True":
+            server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "127.0.0.1"))
             try:
                 server.ehlo()
                 server.starttls()
                 server.ehlo()
-                server.login(self.mem.cfgfile.smtpuser,self.mem.cfgfile.smtppwd)
-                server.sendmail(self.mem.cfgfile.smtpfrom, self.user.mail, self.message())
+                server.login(self.mem.settings.value("smtp/smtpuser", "smtpuser"), self.mem.settings.value("smtp/smtppwd", "*"))
+                server.sendmail(self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com"), self.user.mail, self.message())
                 self.sent=True        
             except:
                 self.sent=False
             finally:     
                 server.quit()
         else:  #ERA EL ANTIVIRUS
-            server = smtplib.SMTP(self.mem.cfgfile.smtpserver, 25)
+            server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "127.0.0.1"), 25)
             try:
-                server.login(self.mem.cfgfile.smtpuser,self.mem.cfgfile.smtppwd)
+                server.login(self.mem.settings.value("smtp/smtpuser", "smtpuser"),self.mem.settings.value("smtp/smtppwd", "*"))
                 server.helo()
-                server.sendmail(self.mem.cfgfile.smtpfrom, self.user.mail, self.message())
+                server.sendmail(self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com"), self.user.mail, self.message())
                 self.sent=True        
             except:
                 self.sent=False
@@ -993,14 +963,14 @@ class SetDocuments(SetCommons):
         table.setRowCount(len(self.arr))
         table.applySettings()
         for i, d in enumerate(self.arr):
-            table.setItem(i, 0, qdatetime(d.datetime, self.mem.cfgfile.localzone))
+            table.setItem(i, 0, qdatetime(d.datetime, self.mem.localzone))
             table.setItem(i, 1, QTableWidgetItem(str(d.numplanned)))
             table.item(i, 1).setTextAlignment(Qt.AlignHCenter)
             table.setItem(i, 2, QTableWidgetItem(str(d.numsents)))
             table.item(i, 2).setTextAlignment(Qt.AlignHCenter)
             table.setItem(i, 3, QTableWidgetItem(str(d.numreads)))
             table.item(i, 3).setTextAlignment(Qt.AlignHCenter)
-            table.setItem(i, 4, qdatetime(d.expiration, self.mem.cfgfile.localzone))
+            table.setItem(i, 4, qdatetime(d.expiration, self.mem.localzone))
             table.setItem(i, 5, QTableWidgetItem(d.name))
             if d.numreads==d.numplanned and d.numplanned>0:
                 for column in range( 1, 4):
@@ -1159,7 +1129,7 @@ class Document:
             return True
         
     def isExpired(self):
-        if self.expiration>now(self.mem.cfgfile.localzone):
+        if self.expiration>now(self.mem.localzone):
             return False
         return True
         
@@ -1273,95 +1243,93 @@ class UserDocument:
         self.numreads=self.numreads+1
         self.save()
         
-class ConfigFile:
-    def __init__(self, file):
-        self.error=False#Variable que es True cuando se produce un error
-        self.file=file
-        self.language="en"
-        self.localzone="Europe/Madrid"
-        self.database="didyoureadme"
-        self.port="5432"
-        self.user="Usuario"
-        self.server="127.0.0.1"
-        self.pwd="None"
-        self.lastupdate=datetime.date.today().toordinal()
-        self.smtpfrom="didyoureadme@donotanswer.com"
-        self.smtpserver="127.0.0.1"
-        self.smtpuser="UsuarioSMTP"
-        self.smtpsupport="Please contact system administrator if you have any problem"
-        self.smtppwd="pass"       
-        self.smtpport="25"
-        self.smtpTLS="False"
-        self.webserver="127.0.0.1"
-        self.webserverport="8000"
-        self.webinterface="127.0.0.1"
-        self.autoupdate="True"
-        
-        self.config=configparser.ConfigParser()
-        self.load()
-        
-    def load(self):
-        try:
-            self.config.read(self.file)
-            self.language=self.config.get("frmSettings", "language")
-            self.localzone=self.config.get("frmSettings", "localzone")
-            self.lastupdate=self.config.getint("frmMain", "lastupdate")
-            self.database=self.config.get("frmAccess", "database")
-            self.port=self.config.get("frmAccess", "port")
-            self.user=self.config.get("frmAccess", "user")
-            self.server=self.config.get("frmAccess", "server")        
-            self.smtpfrom=self.config.get("smtp", "from")
-            self.smtpserver=self.config.get("smtp", "smtpserver")
-            self.smtpport=self.config.get("smtp", "smtpport")
-            self.smtpuser=self.config.get("smtp", "smtpuser")
-            self.smtppwd=self.config.get("smtp", "smtppwd")
-            self.smtpsupport=self.config.get("smtp", "support")
-            self.smtpTLS=self.config.get("smtp", "tls")
-            self.webserver=self.config.get("webserver", "ip")
-            self.webserverport=self.config.get("webserver", "port")
-            self.webinterface=self.config.get("webserver", "interface")
-            self.autoupdate=self.config.get("frmSettings", "autoupdate")
-        except:
-            self.error=True
-        
-    def save(self):
-        if self.config.has_section("frmMain")==False:
-            self.config.add_section("frmMain")
-        if self.config.has_section("frmSettings")==False:
-            self.config.add_section("frmSettings")
-        if self.config.has_section("frmAccess")==False:
-            self.config.add_section("frmAccess")
-        if self.config.has_section("smtp")==False:
-            self.config.add_section("smtp")
-        if self.config.has_section("webserver")==False:
-            self.config.add_section("webserver")
-        self.config.set("frmAccess",  'database', self.database)
-        self.config.set("frmAccess",  'port', self.port)
-        self.config.set("frmAccess",  'user', self.user)
-        self.config.set("frmAccess",  'server', self.server)
-        self.config.set("frmSettings",  'language', self.language)
-        self.config.set("frmSettings",  'localzone', self.localzone)
-        self.config.set("frmSettings",  'autoupdate', self.autoupdate)
-        self.config.set("frmMain",  'lastupdate', str(self.lastupdate))
-        self.config.set("smtp", "from", self.smtpfrom)
-        self.config.set("smtp", "smtpserver", self.smtpserver)
-        self.config.set("smtp", "smtpport", self.smtpport)
-        self.config.set("smtp", "smtpuser", self.smtpuser)
-        self.config.set("smtp", "smtppwd", self.smtppwd)
-        self.config.set("smtp", "tls", self.smtpTLS)
-        self.config.set("smtp", "support", self.smtpsupport)
-        self.config.set("webserver", "ip", self.webserver)
-        self.config.set("webserver", "port", self.webserverport)
-        self.config.set("webserver", "interface", self.webinterface)
-        with open(self.file, 'w') as configfile:
-            self.config.write(configfile)
-            
+#class ConfigFile:
+#    def __init__(self, file):
+#        self.error=False#Variable que es True cuando se produce un error
+#        self.file=file
+#        self.language="en"
+#        self.localzone="Europe/Madrid"
+#        self.database="didyoureadme"
+#        self.port="5432"
+#        self.user="Usuario"
+#        self.server="127.0.0.1"
+#        self.pwd="None"
+#        self.lastupdate=datetime.date.today().toordinal()
+#        self.smtpfrom="didyoureadme@donotanswer.com"
+#        self.smtpserver="127.0.0.1"
+#        self.smtpuser="UsuarioSMTP"
+#        self.smtpsupport="Please contact system administrator if you have any problem"
+#        self.smtppwd="pass"       
+#        self.smtpport="25"
+#        self.smtpTLS="False"
+#        self.webserver="127.0.0.1"
+#        self.webserverport="8000"
+#        self.webinterface="127.0.0.1"
+#        self.autoupdate="True"
+#        
+#        self.config=configparser.ConfigParser()
+#        self.load()
+#        
+#    def load(self):
+#        try:
+#            self.config.read(self.file)
+#            self.language=self.config.get("frmSettings", "language")
+#            self.localzone=self.config.get("frmSettings", "localzone")
+#            self.lastupdate=self.config.getint("frmMain", "lastupdate")
+#            self.database=self.config.get("frmAccess", "database")
+#            self.port=self.config.get("frmAccess", "port")
+#            self.user=self.config.get("frmAccess", "user")
+#            self.server=self.config.get("frmAccess", "server")        
+#            self.smtpfrom=self.config.get("smtp", "from")
+#            self.smtpserver=self.config.get("smtp", "smtpserver")
+#            self.smtpport=self.config.get("smtp", "smtpport")
+#            self.smtpuser=self.config.get("smtp", "smtpuser")
+#            self.smtppwd=self.config.get("smtp", "smtppwd")
+#            self.smtpsupport=self.config.get("smtp", "support")
+#            self.smtpTLS=self.config.get("smtp", "tls")
+#            self.webserver=self.config.get("webserver", "ip")
+#            self.webserverport=self.config.get("webserver", "port")
+#            self.webinterface=self.config.get("webserver", "interface")
+#            self.autoupdate=self.config.get("frmSettings", "autoupdate")
+#        except:
+#            self.error=True
+#        
+#    def save(self):
+#        if self.config.has_section("frmMain")==False:
+#            self.config.add_section("frmMain")
+#        if self.config.has_section("frmSettings")==False:
+#            self.config.add_section("frmSettings")
+#        if self.config.has_section("frmAccess")==False:
+#            self.config.add_section("frmAccess")
+#        if self.config.has_section("smtp")==False:
+#            self.config.add_section("smtp")
+#        if self.config.has_section("webserver")==False:
+#            self.config.add_section("webserver")
+#        self.config.set("frmAccess",  'database', self.database)
+#        self.config.set("frmAccess",  'port', self.port)
+#        self.config.set("frmAccess",  'user', self.user)
+#        self.config.set("frmAccess",  'server', self.server)
+#        self.config.set("frmSettings",  'language', self.language)
+#        self.config.set("frmSettings",  'localzone', self.localzone)
+#        self.config.set("frmSettings",  'autoupdate', self.autoupdate)
+#        self.config.set("frmMain",  'lastupdate', str(self.lastupdate))
+#        self.config.set("smtp", "from", self.smtpfrom)
+#        self.config.set("smtp", "smtpserver", self.smtpserver)
+#        self.config.set("smtp", "smtpport", self.smtpport)
+#        self.config.set("smtp", "smtpuser", self.smtpuser)
+#        self.config.set("smtp", "smtppwd", self.smtppwd)
+#        self.config.set("smtp", "tls", self.smtpTLS)
+#        self.config.set("smtp", "support", self.smtpsupport)
+#        self.config.set("webserver", "ip", self.webserver)
+#        self.config.set("webserver", "port", self.webserverport)
+#        self.config.set("webserver", "interface", self.webinterface)
+#        with open(self.file, 'w') as configfile:
+#            self.config.write(configfile)
+#            
 class Mem:
     def __init__(self):     
         self.con=None
         self.settings=QSettings()
-        self.cfgfile=ConfigFile(os.path.expanduser("~/.didyoureadme/")+ "didyoureadme.cfg")
-        self.cfgfile.save()
         self.qtranslator=None
         self.countries=SetCountries(self)
         self.countries.load_all()
@@ -1369,6 +1337,7 @@ class Mem:
         self.languages.load_all()
         self.data=DBData(self)
         self.language=self.languages.find_by_id(self.settings.value("mem/language", "en"))
+        self.localzone=self.settings.value("mem/localzone", "Europe/Madrid")
         
     def __del__(self):
         if self.con:#Needed when reject frmAccess

@@ -81,7 +81,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 m.exec_()          
                 return            
             #Genera el documento
-            self.document=Document(self.mem).init__create( now(self.mem.cfgfile.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.toPlainText(),  dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone))
+            self.document=Document(self.mem).init__create( now(self.mem.localzone), self.txtTitle.text(), self.txtFilename.text(), self.txtComment.toPlainText(),  dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.localzone))
             self.document.save()
             
             #Genera el userdocument
@@ -93,7 +93,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             self.mem.data.documents_active.order_by_datetime()
             self.document.updateNums()
         else:
-            self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.cfgfile.localzone)
+            self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.localzone)
             self.document.save()
             if self.document.isExpired()==False:
                 self.mem.data.documents_inactive.remove(self.document)

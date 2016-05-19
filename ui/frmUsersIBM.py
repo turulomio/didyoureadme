@@ -28,7 +28,7 @@ class frmUsersIBM(QDialog, Ui_frmUsersIBM):
 
         
     def on_buttonBox_accepted(self):
-        self.user.datetime=now(self.mem.cfgfile.localzone)
+        self.user.datetime=now(self.mem.localzone)
         self.user.post=self.txtPost.text()
         self.user.name=self.txtName.text()
         self.user.mail=self.txtMail.text()

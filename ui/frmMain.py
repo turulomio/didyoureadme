@@ -72,7 +72,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
         self.on_chkUsersInactive_stateChanged(self.chkUsersInactive.checkState())
 
-        if datetime.date.today()-datetime.date.fromordinal(self.mem.cfgfile.lastupdate)>=datetime.timedelta(days=30):
+        if datetime.date.today()-datetime.date.fromordinal(int(self.mem.settings.value("frmMain/lastupdate","1")))>=datetime.timedelta(days=30):
             print ("Looking for updates")
             self.checkUpdates(False)
 
@@ -90,7 +90,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         status=""
         if self.tserver!=None:
             if self.tserver.isRunning()==True:
-                status=self.tr("Running Web server at {}:{} (Errors: {}/{}).".format(self.mem.cfgfile.webinterface, self.mem.cfgfile.webserverport, self.tserver.server.errors, self.tserver.server.served+self.tserver.server.errors))
+                status=self.tr("Running Web server at {}:{} (Errors: {}/{}).".format(self.mem.settings.value("webserver/interface", "127.0.0.1"), self.mem.settings.value("webserver/port", "8000"), self.tserver.server.errors, self.tserver.server.served+self.tserver.server.errors))
             else:
                 status=self.tr("Web server is down. Check configuration.")
         if self.tsend.isRunning()==True:
@@ -197,8 +197,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             m.setText(self.tr("There is a new DidYouReadMe version. You can download it from <a href='http://didyoureadme.sourceforge.net'>http://didyoureadme.sourceforge.net</a> or directly from <a href='https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-")+remoteversion+"/'>Sourceforge</a>")
             m.exec_()                 
 
-        self.mem.cfgfile.lastupdate=datetime.date.today().toordinal()
-        self.mem.cfgfile.save()
+        self.mem.settings.setValue("frmMain/lastupdate",datetime.date.today().toordinal())
 
                 
     @pyqtSlot(QEvent)   
@@ -261,12 +260,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         comment=comment.replace("\n", "<p>")
         
         s=("<center><h1>"+self.tr("DidYouReadMe Report")+"</h1>"+
-           self.tr("Generation time")+": {0}".format(str(now(self.mem.cfgfile.localzone))[:19]) +"</center>"+
+           self.tr("Generation time")+": {0}".format(str(now(self.mem.localzone))[:19]) +"</center>"+
            "<h2>"+self.tr("Document data")+"</h2>"+
            self.tr("Created")+": {0}".format(str(self.documents.selected.datetime)[:19])+ "<p>"+
            self.tr("name")+": {0}".format(self.documents.selected.name) + "<p>"+
            self.tr("Internal id")+": {0}".format(self.documents.selected.id) + "<p>"+
-           self.tr("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.cfgfile.webserver,  self.mem.cfgfile.webserverport, self.documents.selected.hash, urllib.parse.quote(os.path.basename(self.documents.selected.filename.lower())), os.path.basename(self.documents.selected.filename )) +
+           self.tr("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.settings.value("webserver/ip", "127.0.0.1"),  self.mem.settings.value("webserver/port", "8000"),  self.documents.selected.hash, urllib.parse.quote(os.path.basename(self.documents.selected.filename.lower())), os.path.basename(self.documents.selected.filename )) +
             self.tr("Comment")+": {0}".format(comment) +"<p>"+
            "<h2>"+self.tr("User reads")+"</h2>"+
            "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.tr("User"), self.tr("Sent"), self.tr("First read"), self.tr("Number of reads"))
@@ -305,7 +304,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 m.exec_()   
                 return
             else:
-                self.documents.selected.expiration=now(self.mem.cfgfile.localzone)
+                self.documents.selected.expiration=now(self.mem.localzone)
                 self.documents.selected.save()#Update changes expiration
                 self.mem.con.commit()
                 self.mem.data.documents_active.remove(self.documents.selected)    
@@ -411,7 +410,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.actionDocumentReport.setEnabled(False)
             self.actionDocumentOpen.setEnabled(False)
         else:
-            if (now(self.mem.cfgfile.localzone)-self.documents.selected.datetime)>datetime.timedelta(seconds=45):
+            if (now(self.mem.localzone)-self.documents.selected.datetime)>datetime.timedelta(seconds=45):
                 self.actionDocumentDelete.setEnabled(False)
             else:
                 self.actionDocumentDelete.setEnabled(True)
