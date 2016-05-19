@@ -5,7 +5,7 @@ MYHOST=${3:-127.0.0.1}
 DATABASE=${4:-didyoureadme}
 
 echo "Debe ejecutarse desde el directorio sql"
-pg_dump -s -U $MYUSER -h $MYHOST -p $MYPORT $DATABASE > didyoureadme.sql
+pg_dump -s -U $MYUSER -h $MYHOST -p $MYPORT $DATABASE --no-owner> didyoureadme.sql
 
 echo "COPY groups (id, name, members) FROM stdin;" >> didyoureadme.sql
 echo "1	Todos	\N" >> didyoureadme.sql

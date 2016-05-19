@@ -2,6 +2,7 @@
 import sys
 import os
 import platform
+import datetime
 
 if platform.system()=="Windows":
     sys.path.append("ui/")
@@ -31,8 +32,6 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         os.makedirs(dirDocs)
     except:
         pass
-
-
 
     QtCore.qInstallMessageHandler(qt_message_handler)
 
@@ -71,9 +70,6 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         m.setIcon(QMessageBox.Information)
         m.setText(QApplication.translate("DidYouReadMe","An error loading settings happened. You must check your settings are ok"))
         m.exec_()      
-
-    if "admin" in sys.argv:
-        mem.adminmodeinparameters=True
         
     frmMain = frmMain(mem) 
     

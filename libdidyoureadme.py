@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import *
 import http.server
 import socketserver
 
-version="20160519"
+version="20160519+"
 version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
@@ -36,6 +36,7 @@ class Connection(QObject):
         self._con=None
         self._active=False
         self.init=None
+        self.roles=None #Se carga al realizar la conexi´on
         
     def init__create(self, user, password, server, port, db):
         self.user=user
@@ -70,10 +71,11 @@ class Connection(QObject):
         """Returns un array with the results of the column"""
         cur=self._con.cursor()
         cur.execute(sql, arr)
+        result=[]
         for row in cur:
-            arr.append(row[0])
+            result.append(row[0])
         cur.close()
-        return arr
+        return result
         
     def commit(self):
         self._con.commit()
@@ -98,6 +100,7 @@ class Connection(QObject):
             return
         self._active=True
         self.init=datetime.datetime.now()
+        self.roles=self.getUserRoles()
 
         
     def newConnection(self):
@@ -125,6 +128,18 @@ class Connection(QObject):
         cur.close()
         return res
 
+    def getUserRoles(self):
+        """Returns a list with the roles of the connection user"""
+        if self.user=="postgres":
+            return ["didyoureadme_user", "didyoureadme_admin"]
+        cur=self.cursor()
+        #Saca el id del usuario actual
+        cur.execute("SELECT usesysid FROM pg_user WHERE usename = current_user")
+        userid=cur.fetchone()[0]
+        #Saca los grupos que empiezan con didyoureadme_ en los que est´e el usuario
+        return self.cursor_one_column("select groname from pg_group where %s=ANY(grolist) and groname like 'didyoureadme_%%'", (userid, ))
+        
+        
 class Backup:
     def __init__(self):
         pass
@@ -1277,13 +1292,9 @@ class ConfigFile:
 class Mem:
     def __init__(self):     
         self.con=None
-        self.adminmodeinparameters=False
-        self.adminmode=False#Autenticated adminmode
         self.settings=QSettings()
         self.cfgfile=ConfigFile(os.path.expanduser("~/.didyoureadme/")+ "didyoureadme.cfg")
         self.cfgfile.save()
-        self.pathlogmail=os.path.expanduser("~/.didyoureadme/mail.log")
-        self.pathlogupdate=os.path.expanduser("~/.didyoureadme/updatedata.log")
         self.qtranslator=None
         self.countries=SetCountries(self)
         self.countries.load_all()
@@ -1304,43 +1315,10 @@ class Mem:
     def setQTranslator(self, qtranslator):
         self.qtranslator=qtranslator
             
-    def set_admin_mode(self, pasw):
-        cur=self.con.cursor()
-        cur.execute("update globals set value=md5(%s) where id_globals=6;", (pasw, ))
-        cur.close()
-        
-    def check_admin_mode(self, pasw):
-        """Returns: 
-                - None: No admin password yet
-                - True: parameter pasw is ok
-                - False: parameter pasw is wrong"""
-        cur=self.con.cursor()
-        cur.execute("select value from globals where id_globals=6")
-        val=cur.fetchone()[0]
-        if val==None or val=="":
-            resultado=None
-        else:
-            cur.execute("select value=md5(%s) from globals where id_globals=6;", (pasw, ))
-            resultado=cur.fetchone()[0]
-        cur.close()
-        print (resultado,  "check_admin_mode")
-        return resultado
-        
-
-
-#    def connect(self):
-#        strmq="dbname='%s' port='%s' user='%s' host='%s' password='%s'" % (self.cfgfile.database,  self.cfgfile.port, self.cfgfile.user, self.cfgfile.server,  self.cfgfile.pwd)
-#        try:
-#            mq=psycopg2.extras.DictConnection(strmq)
-#            return mq
-#        except psycopg2.Error:
-#            m=QMessageBox()
-#            m.setText(QApplication.translate("DidYouReadMe","Connection error. Try again"))
-#            m.exec_()
-#            sys.exit()
-
-#    def disconnect(self,  mq):
-#        mq.close()
+    def isAdminMode(self):
+        if "didyoureadme_admin" in self.con.roles:
+            return True
+        return False
 
 
 

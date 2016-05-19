@@ -1,6 +1,5 @@
 import datetime
 import urllib.request
-import sys
 import shutil
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -63,33 +62,11 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tsend=TSend(self.mem)#Lanza TSend desde arranque
         self.tsend.start()
 
-        ##Admin mode
-        if self.mem.adminmodeinparameters:
-            m=QMessageBox()
-            m.setWindowIcon(QIcon(":/didyoureadme.png"))
-            m.setIcon(QMessageBox.Information)
-            input=QInputDialog.getText(self,  "DidYouReadMe",  self.tr("Please introduce Admin Mode password"), QLineEdit.Password)
-            res=self.mem.check_admin_mode(input[0])
-            if input[1]==True:
-                if res==None:
-                    self.setWindowTitle(self.tr("DidYouReadMe 2012-{0} \xa9 (Admin mode)").format(version_date.year))
-                    self.setWindowIcon(self.mem.qicon_admin())
-                    self.update()
-                    self.mem.set_admin_mode(input[0])
-                    self.mem.con.commit()
-                    m.setText(self.tr("You have set the admin mode password. Please login again"))
-                    m.exec_()
-                    sys.exit(2)
-                elif res==True:
-                    self.mem.adminmode=True
-                    self.setWindowTitle(self.tr("DidYouReadMe 2012-{0} \xa9 (Admin mode)").format(version_date.year))
-                    self.setWindowIcon(self.mem.qicon_admin())
-                    self.update()
-                    m.setText(self.tr("You are logged as an administrator"))
-                    m.exec_()   
-            if input[1]==False or res==False:     
-                    m.setText(self.tr("Bad 'Admin mode' password. You are logged as a normal user"))
-                    m.exec_()   
+        ##Admin mode. Data base user must have didyoureadme_admin role
+        if self.mem.isAdminMode()==True:
+            self.setWindowTitle(self.tr("DidYouReadMe 2012-{0} \xa9 (Admin mode)").format(version_date.year))
+            self.setWindowIcon(self.mem.qicon_admin())
+            self.update()
 
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
@@ -413,7 +390,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu=QMenu()
         menu.addAction(self.actionDocumentNew)    
         menu.addAction(self.actionDocumentDelete)
-        if self.mem.adminmode==True:
+        if self.mem.isAdminMode()==True:
             menu.addAction(self.actionDocumentDeleteAdmin)
         menu.addSeparator()
         menu.addAction(self.actionDocumentExpire)
