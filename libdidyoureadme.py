@@ -226,7 +226,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         if self.document.expiration<now(self.mem.cfgfile.localzone):
             qDebug(QApplication.translate("DidYouReadMe", "Document {} has expired".format(self.document.id)))
-            return self.ErrorPage(QApplication.translate("DidYouReadMe","This document has expired"))
+            return self.ErrorPage(QApplication.translate("DidYouReadMe","Document '{}' of {} has expired".format(self.document.name, self.document.datetime)))
             
         ctype = self.guess_type(path)
 
