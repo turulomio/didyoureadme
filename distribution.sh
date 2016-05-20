@@ -13,7 +13,7 @@ mkdir -p $DIRBINLINUX
 echo "Este script crea el fichero $FILE para ser subido a sourceforge"
 echo "En Linux hay que tener instalado cx_freeze"
 
-rm $CWD/dist/didyoureadme-*
+rm $CWD/build/didyoureadme-*
 
 #GENERA SRC LINUX
 make compile
@@ -44,6 +44,7 @@ cp 	sql/didyoureadme.sql \
 
 cp 	ui/frm* \
 	ui/wdg* \
+	ui/my* \
 	$DIRSRCLINUX/ui
 
 cp	images/*.png \
@@ -54,16 +55,7 @@ cp	images/*.png \
 
 echo "  * Comprimiendo codigo fuente linux..."
 cd $DIR/src.linux
-tar cvz  -f $CWD/dist/didyoureadme-src-linux-$VERSION.tar.gz * -C $DIR/src.linux > /dev/null
+tar cvz  -f $CWD/build/didyoureadme-src-linux-$VERSION.tar.gz * -C $DIR/src.linux > /dev/null
 cd $CWD
 ####### binaries linux
-DESTDIR=$DIRBINLINUX make all
-sed -i -e 's:so="src.linux":so="bin.linux":' $DIRBINLINUX/bin/didyoureadme
-cxfreeze $DIRBINLINUX/bin/didyoureadme --include-path=$DIRBINLINUX/lib/didyoureadme/ --target-dir=$DIRBINLINUX/dist/didyoureadme
-echo "Execute didyoureadme" > $DIRBINLINUX/dist/README.txt
-cp $DIRBINLINUX/share/didyoureadme/*.qm $DIRBINLINUX/dist/didyoureadme
-cp $DIRBINLINUX/bin/didyoureadme-backup $DIRBINLINUX/dist/didyoureadme
-echo "  * Comprimiendo binario linux..."
-cd $DIRBINLINUX/dist
-tar cvz  -f $CWD/dist/didyoureadme-bin-linux-$VERSION.tar.gz * -C $DIRBINLINUX/dist > /dev/null
-cd $CWD
+python3 setup.py build
