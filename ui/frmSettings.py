@@ -45,7 +45,7 @@ class frmSettings(QDialog, Ui_frmSettings):
         self.mem.settings.setValue("smtp/smtpserver",self.txtSMTPServer.text())
         self.mem.settings.setValue("smtp/smtpport",self.txtSMTPPort.text())
         self.mem.settings.setValue("smtp/smtpuser",self.txtSMTPUser.text())
-        self.mem.settings.setValue("smtp/smtpfrom",self.txtSMTPFrom.text())
+        self.mem.settings.setValue("smtp/from",self.txtSMTPFrom.text())
         if self.chkTLS.checkState()==Qt.Checked:
             self.mem.settings.setValue("smtp/tls","True")
         else:
