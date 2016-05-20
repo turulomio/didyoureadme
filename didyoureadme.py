@@ -51,6 +51,9 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         qmessagebox(QApplication.translate("DidYouReadMe", "Database user hasn't a valid DidYouReadMe role"))
         sys.exit(2)
         
+    if abs((mem.con.server_datetime()-now(mem.localzone)).total_seconds())>60:#
+        mem.log("SERVER DATETIME AND SYSTEM DATETIME IS BIGGER THAN 60 SECONDS. MAILS CAN BE DELAYED")
+        
     ##Update database
     update=libdbupdates.Update(mem)
     if update.need_update()==True:

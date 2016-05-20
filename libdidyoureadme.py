@@ -139,7 +139,9 @@ class Connection(QObject):
         #Saca los grupos que empiezan con didyoureadme_ en los que est´e el usuario
         return self.cursor_one_column("select groname from pg_group where %s=ANY(grolist) and groname like 'didyoureadme_%%'", (userid, ))
         
-        
+    def server_datetime(self):
+        return self.cursor_one_row("SELECT NOW()")[0]
+
 class Backup:
     def __init__(self):
         pass
