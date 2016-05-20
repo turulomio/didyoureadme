@@ -55,7 +55,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tserver=TWebServer(self.mem)
             self.tserver.start()
         except:
-            qDebug(self.tr("Web server failed to start"))
+            self.mem.log(self.tr("Web server failed to start"))
             self.tserver=None
             pass
             
@@ -82,8 +82,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tserver.server.shutdown()
             self.tserver.wait()
         self.tsend.wait()
+        self.mem.log("DidYouReadMe correctly shutdown")
         self.mem.__del__() 
-        print("DidYouReadMe correctly shutdown")
         
         
     def updateStatusBar(self):
@@ -122,7 +122,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             table.resizeColumnsToContents()
             
         self.updateStatusBar()
-        qDebug(self.tr("Update tables took {}".format(datetime.datetime.now()-inicio)))
+        self.mem.log(self.tr("Update tables took {}".format(datetime.datetime.now()-inicio)))
 
     @pyqtSlot()      
     def on_wym_changed(self):
@@ -231,7 +231,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             
         file=dirTmp+os.path.basename(self.documents.selected.filename)
         shutil.copyfile(dirDocs+self.documents.selected.hash, file)
-        qDebug(self.tr("Opening document {} from {}".format(self.documents.selected.id, file)))
+        self.mem.log(self.tr("Opening document {} from {}".format(self.documents.selected.id, file)))
         
         self.openWithDefaultApp(file)
             
@@ -281,7 +281,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         doc.setHtml(s)
         printer=QPrinter()
         file=dirTmp+"{0} DidYouReadMe document.pdf".format(str(self.documents.selected.datetime)[:16]).replace(":", "").replace("-", "")
-        qDebug(self.tr("Document {} report was generated in {}".format(self.documents.selected.id, file)))
+        self.mem.log(self.tr("Document {} report was generated in {}".format(self.documents.selected.id, file)))
         printer.setOutputFileName(file)
         printer.setOutputFormat(QPrinter.PdfFormat);
         doc.print(printer)

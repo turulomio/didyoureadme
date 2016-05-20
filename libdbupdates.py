@@ -38,19 +38,19 @@ class Update:
             self.mem.con.commit()
             self.set_database_version_date(201501260851)
         if self.dbversion<201501261046: #Documentos a base de datos
-            qDebug ("Migrating old didyoureadme files")
+            self.mem.log("Migrating old didyoureadme files")
             cur=self.mem.con.cursor()
             cur2=self.mem.con.cursor()
-            qDebug ("THIS MUST BE DONE IN THE DATABASE SERVER")
+            self.mem.log("THIS MUST BE DONE IN THE DATABASE SERVER")
             cur.execute("select * from documents;")
             for row in cur:
                 if os.path.exists(dirDocs+row['hash'])==False:
-                    qDebug ("No existe y no se puede cargar la base de datos" + row['hash'])
+                    self.mem.log("No existe y no se puede cargar la base de datos" + row['hash'])
                     continue
                 if row['file']==None:
                     os.system("cp {} /tmp".format(dirDocs+row['hash']))
                     cur2.execute("update documents set file=lo_import(%s) where id=%s", ("/tmp/"+row['hash'], row['id']))
-                    qDebug ("Insertando en database para oid vacio "+  row['hash'])
+                    self.mem.log("Insertando en database para oid vacio "+  row['hash'])
                     os.system("rm /tmp/{}".format(row['hash']))
             cur2.close()
             cur.close()
@@ -125,11 +125,11 @@ $_$ LANGUAGE sql STRICT;""")
         """AFTER EXECUTING I MUST RUN SQL UPDATE SCRIPT TO UPDATE FUTURE INSTALLATIONS
     
     OJO EN LOS REEMPLAZOS MASIVOS PORQUE UN ACTIVE DE PRODUCTS LUEGO PASA A LLAMARSE AUTOUPDATE PERO DEBERA MANTENERSSE EN SU MOMENTO TEMPORAL"""  
-        qDebug ("Database already updated")
+        self.mem.log("Database already updated")
         
     def syncing_files(self):
         """THis function download all files from database to .didyoureadme/docs/  when needed"""
-        qDebug ("Syncing files in .didyoureadme/docs")
+        self.mem.log("Syncing files in .didyoureadme/docs")
         cur=self.mem.con.cursor()
         cur.execute("select id, datetime, title, comment, filename, hash, expiration  from documents;")
         for row in cur:                
@@ -140,11 +140,11 @@ $_$ LANGUAGE sql STRICT;""")
             if d.isExpired():
                 if os.path.exists(dirDocs+d.hash)==True:
                     d.unlink()
-                    qDebug ("Removing expired document: {}".format(dirDocs+d.hash))
+                    self.mem.log("Removing expired document: {}".format(dirDocs+d.hash))
             else:#Not expired
                 if os.path.exists(dirDocs+d.hash)==False:
                     d.bytea_to_file(dirDocs+d.hash)
-                    qDebug ("Adding document: {}".format(dirDocs+d.hash))
+                    self.mem.log("Adding document: {}".format(dirDocs+d.hash))
         cur.close()
         
    
@@ -171,7 +171,7 @@ $_$ LANGUAGE sql STRICT;""")
         
     def set_database_version_date(self, valor):
         """Tiene el commit"""
-        qDebug ("Updating database from {} to {}".format(self.dbversion, valor))
+        self.mem.log("Updating database from {} to {}".format(self.dbversion, valor))
         cur=self.mem.con.cursor()
         if self.dbversion==None:
             cur.execute("insert into globals (global,value) values (%s,%s);", ("version_date", valor ))

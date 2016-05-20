@@ -1,6 +1,7 @@
 import os
 import datetime
 import hashlib
+import multiprocessing
 import platform
 import psycopg2
 import psycopg2.extras
@@ -168,17 +169,17 @@ class MyHTTPServer(socketserver.TCPServer):
                 ud=UserDocument(request.user, request.document, self.mem)
                 ud.readed( self.mem.localzone)
                 con.commit()
-                qDebug(QApplication.translate("DidYouReadMe","User {} downloaded document {}".format(request.user.mail, request.document.id)))
+                self.mem.log(QApplication.translate("DidYouReadMe","User {} downloaded document {}".format(request.user.mail, request.document.id)))
             except:
                 self.errors=self.errors+1
-                qDebug(QApplication.translate("DidYouReadMe", "Error registering in database"))    
+                self.mem.log(QApplication.translate("DidYouReadMe", "Error registering in database"))    
             cur.close()  
             con.disconnect()
             self.served=self.served+1
         else:
             #"""Puede ser por muchos motivos, expirados, no existe, no encontrado...""", se trata en la request
             self.errors=self.errors+1
-            qDebug("Request has not been served correctly, so it is not registered")#Fallaba con QApplication.translate
+            self.mem.log("Request has not been served correctly, so it is not registered")#Fallaba con QApplication.translate
 
 class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self,request, client_address, server, mem=None):
@@ -220,7 +221,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         Tras muchos dolores de cabeza no consigo nada
         Funciona bien lanzando con eric
         Pero al pasar por freeze falla en esta función
-        He usado qdebug para verlo
+        He usado log para verlo
         Se produce cuando es compilado sin consola con Win32 en la base del setup. Si se pone base="Console" funciona
         """
         #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
@@ -233,13 +234,13 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         except:
             self.document=None
             self.user=None
-            qDebug(QApplication.translate("DidYouReadMe","Error parsing path"))
+            self.mem.log(QApplication.translate("DidYouReadMe","Error parsing path"))
             return self.ErrorPage(QApplication.translate("DidYouReadMe","Error parsing path"))
             
         path = self.translate_path(self.document.hash)  
 
         if self.document.expiration<now(self.mem.localzone):
-            qDebug(QApplication.translate("DidYouReadMe", "Document {} has expired".format(self.document.id)))
+            self.mem.log(QApplication.translate("DidYouReadMe", "Document {} has expired".format(self.document.id)))
             return self.ErrorPage(QApplication.translate("DidYouReadMe","Document '{}' of '{}' has expired".format(self.document.name, self.document.datetime)))
             
         ctype = self.guess_type(path)
@@ -248,7 +249,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         try:
             f = open(path, 'rb')
         except OSError:
-            qDebug(QApplication.translate("DidYouReadMe", "File {} not found".format(path)))
+            self.mem.log(QApplication.translate("DidYouReadMe", "File {} not found".format(path)))
             return self.ErrorPage(QApplication.translate("DidYouReadMe","File not found"))
             
         try:
@@ -261,7 +262,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.request_served=True
             return f
         except:
-            qDebug("Sending page raised an error")
+            self.mem.log("Sending page raised an error")
             f.close()
             raise
             
@@ -558,7 +559,7 @@ class SetUsers(SetCommonsQListView):
         for u in self.arr:
             if u.hash==hash:
                 return u
-        qDebug("User {} not found".format(hash))
+        self.mem.log("User {} not found".format(hash))
         return None
         
     def load(self, sql):
@@ -747,7 +748,7 @@ class TSend(QThread):
                 mail.send()
                 
                 if mail.sent==True:
-                    qDebug ("Document {0} was sent to {1}".format(mail.document.id, mail.user.mail))
+                    self.mem.log("Document {0} was sent to {1}".format(mail.document.id, mail.user.mail))
                     d=UserDocument(mail.user, mail.document, self.mem)
                     if d.sent==None:
                         d.sent=datetime.datetime.now(pytz.timezone(self.mem.localzone))
@@ -756,7 +757,7 @@ class TSend(QThread):
                     self.sent=self.sent+1
                 else:
                     self.errors=self.errors+1  
-                    qDebug(QApplication.translate("DidYouReadMe","Error sending message {} to {}").format(mail.document.id, mail.user.mail))  
+                    self.mem.log(QApplication.translate("DidYouReadMe","Error sending message {} to {}").format(mail.document.id, mail.user.mail))  
                 self.sleep(2) 
             cur.close()
             con.disconnect()
@@ -852,7 +853,7 @@ class Mail:
     
     def send(self):      
         if self.mem.settings.value("smtp/tls", "False")=="True":
-            server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "127.0.0.1"))
+            server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"))
             try:
                 server.ehlo()
                 server.starttls()
@@ -865,7 +866,7 @@ class Mail:
             finally:     
                 server.quit()
         else:  #ERA EL ANTIVIRUS
-            server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "127.0.0.1"), 25)
+            server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"), 25)
             try:
                 server.login(self.mem.settings.value("smtp/smtpuser", "smtpuser"),self.mem.settings.value("smtp/smtppwd", "*"))
                 server.helo()
@@ -1044,7 +1045,7 @@ class DBData:
         self.documents_active=SetDocuments(self.mem)
         self.documents_active.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration>now() order by datetime")
         self.documents_inactive=SetDocuments(self.mem)#Carga solo los de un mes y un año.
-        qDebug(QApplication.translate("DidYouReadMe","Loading data from database took {}".format(datetime.datetime.now()-inicio)))
+        self.mem.log(QApplication.translate("DidYouReadMe","Loading data from database took {}".format(datetime.datetime.now()-inicio)))
 
     def users_all(self):
         return self.users_active.union(self.users_inactive, self.mem)
@@ -1090,7 +1091,7 @@ class Document:
             cur.close()
             return self
         elif cur.rowcount>1:
-            qDebug("There are several documents with the same hash")
+            self.mem.log("There are several documents with the same hash")
             cur.close()
             return None
         else:
@@ -1226,90 +1227,7 @@ class UserDocument:
             self.read=datetime.datetime.now(pytz.timezone(localzone))
         self.numreads=self.numreads+1
         self.save()
-        
-#class ConfigFile:
-#    def __init__(self, file):
-#        self.error=False#Variable que es True cuando se produce un error
-#        self.file=file
-#        self.language="en"
-#        self.localzone="Europe/Madrid"
-#        self.database="didyoureadme"
-#        self.port="5432"
-#        self.user="Usuario"
-#        self.server="127.0.0.1"
-#        self.pwd="None"
-#        self.lastupdate=datetime.date.today().toordinal()
-#        self.smtpfrom="didyoureadme@donotanswer.com"
-#        self.smtpserver="127.0.0.1"
-#        self.smtpuser="UsuarioSMTP"
-#        self.smtpsupport="Please contact system administrator if you have any problem"
-#        self.smtppwd="pass"       
-#        self.smtpport="25"
-#        self.smtpTLS="False"
-#        self.webserver="127.0.0.1"
-#        self.webserverport="8000"
-#        self.webinterface="127.0.0.1"
-#        self.autoupdate="True"
-#        
-#        self.config=configparser.ConfigParser()
-#        self.load()
-#        
-#    def load(self):
-#        try:
-#            self.config.read(self.file)
-#            self.language=self.config.get("frmSettings", "language")
-#            self.localzone=self.config.get("frmSettings", "localzone")
-#            self.lastupdate=self.config.getint("frmMain", "lastupdate")
-#            self.database=self.config.get("frmAccess", "database")
-#            self.port=self.config.get("frmAccess", "port")
-#            self.user=self.config.get("frmAccess", "user")
-#            self.server=self.config.get("frmAccess", "server")        
-#            self.smtpfrom=self.config.get("smtp", "from")
-#            self.smtpserver=self.config.get("smtp", "smtpserver")
-#            self.smtpport=self.config.get("smtp", "smtpport")
-#            self.smtpuser=self.config.get("smtp", "smtpuser")
-#            self.smtppwd=self.config.get("smtp", "smtppwd")
-#            self.smtpsupport=self.config.get("smtp", "support")
-#            self.smtpTLS=self.config.get("smtp", "tls")
-#            self.webserver=self.config.get("webserver", "ip")
-#            self.webserverport=self.config.get("webserver", "port")
-#            self.webinterface=self.config.get("webserver", "interface")
-#            self.autoupdate=self.config.get("frmSettings", "autoupdate")
-#        except:
-#            self.error=True
-#        
-#    def save(self):
-#        if self.config.has_section("frmMain")==False:
-#            self.config.add_section("frmMain")
-#        if self.config.has_section("frmSettings")==False:
-#            self.config.add_section("frmSettings")
-#        if self.config.has_section("frmAccess")==False:
-#            self.config.add_section("frmAccess")
-#        if self.config.has_section("smtp")==False:
-#            self.config.add_section("smtp")
-#        if self.config.has_section("webserver")==False:
-#            self.config.add_section("webserver")
-#        self.config.set("frmAccess",  'database', self.database)
-#        self.config.set("frmAccess",  'port', self.port)
-#        self.config.set("frmAccess",  'user', self.user)
-#        self.config.set("frmAccess",  'server', self.server)
-#        self.config.set("frmSettings",  'language', self.language)
-#        self.config.set("frmSettings",  'localzone', self.localzone)
-#        self.config.set("frmSettings",  'autoupdate', self.autoupdate)
-#        self.config.set("frmMain",  'lastupdate', str(self.lastupdate))
-#        self.config.set("smtp", "from", self.smtpfrom)
-#        self.config.set("smtp", "smtpserver", self.smtpserver)
-#        self.config.set("smtp", "smtpport", self.smtpport)
-#        self.config.set("smtp", "smtpuser", self.smtpuser)
-#        self.config.set("smtp", "smtppwd", self.smtppwd)
-#        self.config.set("smtp", "tls", self.smtpTLS)
-#        self.config.set("smtp", "support", self.smtpsupport)
-#        self.config.set("webserver", "ip", self.webserver)
-#        self.config.set("webserver", "port", self.webserverport)
-#        self.config.set("webserver", "interface", self.webinterface)
-#        with open(self.file, 'w') as configfile:
-#            self.config.write(configfile)
-#            
+
 class Mem:
     def __init__(self):     
         self.con=None
@@ -1322,10 +1240,19 @@ class Mem:
         self.data=DBData(self)
         self.language=self.languages.find_by_id(self.settings.value("mem/language", "en"))
         self.localzone=self.settings.value("mem/localzone", "Europe/Madrid")
+        self.lock_log=multiprocessing.Lock()
         
     def __del__(self):
         if self.con:#Needed when reject frmAccess
             self.con.disconnect()
+            
+    def log(self, message):
+        s="{} {}\n".format(str(datetime.datetime.now()),  message)
+        print(s[:-1])
+        with self.lock_log:
+            f=open(dirDocs+"log.txt", "a")
+            f.write(s)
+            f.close()
                 
     def qicon_admin(self):
         icon = QIcon()
@@ -1421,3 +1348,6 @@ def b2c(booleano):
         return Qt.Checked
     else:
         return Qt.Unchecked     
+        
+        
+

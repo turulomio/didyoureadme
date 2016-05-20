@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys
 import platform
-import datetime
+
 
 if platform.system()=="Windows":
     sys.path.append("ui/")
@@ -16,27 +16,17 @@ from frmAccess import *
 from libdidyoureadme import dirDocs, version,  dirTmp
 import libdbupdates
 
-def qt_message_handler(mode, context, message):
-    s="{} {}\n".format(str(datetime.datetime.now()),  message)
-    print(s[:-1])
-    with open(dirDocs+"log.txt", "a") as f:
-        f.write(s)
-        f.close()
-
 if __name__=='__main__':#Needed due to multiprocessing in windows load all process again and launch frmAccess twice
     makedirs(dirTmp)
     makedirs(dirDocs)
-
-    QtCore.qInstallMessageHandler(qt_message_handler)
-
 
     app = QApplication(sys.argv)
     app.setOrganizationName("Mariano Muñoz ©")
     app.setOrganizationDomain("turulomio.users.sourceforge.net")
     app.setApplicationName("DidYouReadMe")
 
-    qDebug(QApplication.translate("DidYouReadMe", "Iniciando Didyoureadme-{}".format(version)))
     mem=Mem()
+    mem.log(QApplication.translate("DidYouReadMe", "Iniciando Didyoureadme-{}".format(version)))
 
     app.setQuitOnLastWindowClosed(True)
     mem.setQTranslator(QTranslator(app))

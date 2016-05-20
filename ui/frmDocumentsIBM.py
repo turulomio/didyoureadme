@@ -100,7 +100,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 self.mem.data.documents_active.append(self.document)        
                 self.mem.data.documents_active.order_by_datetime()
         self.mem.con.commit()
-        qDebug(self.tr("Document {} added to the system".format(self.document.id)))
+        self.mem.log(self.tr("Document {} added to the system".format(self.document.id)))
         self.done(0)
 
     def on_cmdFile_released(self):

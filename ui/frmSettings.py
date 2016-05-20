@@ -16,7 +16,7 @@ class frmSettings(QDialog, Ui_frmSettings):
         self.txtSupport.setPlainText(self.mem.settings.value("smtp/support", "Please, contact system administrator"))
         self.txtSMTPUser.setText(self.mem.settings.value("smtp/smtpuser", "smtpuser"))
         self.txtSMTPPwd.setText(self.mem.settings.value("smtp/smtppwd", "*"))
-        self.txtSMTPServer.setText(self.mem.settings.value("smtp/smtpserver", "127.0.0.1"))
+        self.txtSMTPServer.setText(self.mem.settings.value("smtp/smtpserver", "smtpserver"))
         self.txtSMTPPort.setText(self.mem.settings.value("smtp/smtpport", "25"))
         self.txtSMTPFrom.setText(self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com"))
         if self.mem.settings.value("smtp/tls", "False")=="True":
