@@ -139,6 +139,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         fr.open()
         
     @pyqtSlot()      
+    def on_actionSendAgain_triggered(self):
+        self.documents.selected.send_again()
+        
+        
+        
+    @pyqtSlot()      
     def on_actionSettings_triggered(self):
         f=frmSettings(self.mem,   self)
         f.exec_()
@@ -394,6 +400,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.addSeparator()
         menu.addAction(self.actionDocumentExpire)
         menu.addSeparator()
+        menu.addAction(self.actionSendAgain)
+        menu.addSeparator()
         menu.addAction(self.actionDocumentOpen)
         menu.addAction(self.actionDocumentReport)
                     
@@ -409,6 +417,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.actionDocumentExpire.setEnabled(False)
             self.actionDocumentReport.setEnabled(False)
             self.actionDocumentOpen.setEnabled(False)
+            self.actionSendAgain.setEnabled(False)
         else:
             if (now(self.mem.localzone)-self.documents.selected.datetime)>datetime.timedelta(seconds=45):
                 self.actionDocumentDelete.setEnabled(False)
@@ -424,6 +433,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.actionDocumentReport.setEnabled(True)
             self.actionDocumentOpen.setEnabled(True)
             self.actionDocumentExpire.setEnabled(True)    
+            self.actionSendAgain.setEnabled(True)
             
         menu.exec_(self.tblDocuments.mapToGlobal(pos))
 

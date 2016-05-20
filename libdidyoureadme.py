@@ -1130,6 +1130,24 @@ class Document:
         cur.close()
         self.unlink()
         
+    def send_again(self):
+        """Send document to all userdocuments even if allready have been send"""
+        cur=self.mem.con.cursor()
+        cur.execute("select id_users from userdocuments where id_documents=%s", (self.id, ))
+        for row in cur:
+            u=self.mem.data.users_active.find(row['id_users'])
+            mail=Mail(self, u, self.mem)
+            mail.send()            
+            if mail.sent==True:
+                self.mem.log("Document {0} was sent again to {1}".format(mail.document.id, mail.user.mail))
+                d=UserDocument(mail.user, mail.document, self.mem)
+                if d.sent==None:
+                    d.sent=datetime.datetime.now(pytz.timezone(self.mem.localzone))
+                    d.save()
+                    con.commit()
+            else:
+                self.mem.log(QApplication.translate("DidYouReadMe","Error sending again message {} to {}").format(mail.document.id, mail.user.mail))  
+        cur.close()
         
     def unlink(self):
         """Physical deletion of the document"""

@@ -512,6 +512,18 @@
     <string>Delete document by administrator</string>
    </property>
   </action>
+  <action name="actionSendAgain">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/star.png</normaloff>:/star.png</iconset>
+   </property>
+   <property name="text">
+    <string>Send document again</string>
+   </property>
+   <property name="toolTip">
+    <string>Send document again</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
