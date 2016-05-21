@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="es" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="es">
 <context>
     <name>Core</name>
     <message>
@@ -213,7 +214,7 @@
     <message>
         <location filename="../libdidyoureadme.py" line="1150"/>
         <source>Error sending again message {} to {}</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al enviar otra vez el mensaje {} a {}</translation>
     </message>
 </context>
 <context>
@@ -260,7 +261,7 @@
     </message>
     <message>
         <location filename="../ui/frmAbout.py" line="23"/>
-        <source>This app has been developed by Mariano Mu&#xc3;&#xb1;oz.&lt;p&gt;</source>
+        <source>This app has been developed by Mariano MuÃ±oz.&lt;p&gt;</source>
         <translation>Esta aplicación ha sido desarrollada por Mariano Muñoz.&lt;p&gt;</translation>
     </message>
 </context>
@@ -305,7 +306,7 @@
 <context>
     <name>frmDocumentsIBM</name>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="89"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="90"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -325,32 +326,32 @@
         <translation>No he podido encontrar el documento</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="93"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="94"/>
         <source>Add document</source>
         <translation>Añadir documento</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="85"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="86"/>
         <source>Document title</source>
         <translation>Título del documento</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="86"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="87"/>
         <source>Groups to send</source>
         <translation>Grupos a los que enviar</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="87"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="88"/>
         <source>Users to send</source>
         <translation>Usuarios a los que enviar</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="88"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="89"/>
         <source>Document to send</source>
         <translation>Documento a enviar</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="90"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="91"/>
         <source>Add a comment</source>
         <translation>Añade un comentario</translation>
     </message>
@@ -370,12 +371,12 @@
         <translation>No ha seleccionado ningún documento. Por favor, seleccione uno.</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="91"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="92"/>
         <source>Document expiration</source>
         <translation>Expiración del documento</translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmDocumentsIBM.py" line="92"/>
+        <location filename="../ui/Ui_frmDocumentsIBM.py" line="93"/>
         <source>dd/MM/yyyy</source>
         <translation>dd/MM/yyyy</translation>
     </message>
@@ -831,7 +832,7 @@ You can deactivate him.</source>
     </message>
     <message>
         <location filename="../ui/frmMain.py" line="40"/>
-        <source>DidYouReadMe 2012-{} &#xa9;</source>
+        <source>DidYouReadMe 2012-{} ©</source>
         <translation>DidYouReadMe 2012-{} ©</translation>
     </message>
     <message>
@@ -866,7 +867,7 @@ You can deactivate him.</source>
     </message>
     <message>
         <location filename="../ui/frmMain.py" line="69"/>
-        <source>DidYouReadMe 2012-{0} &#xa9; (Admin mode)</source>
+        <source>DidYouReadMe 2012-{0} © (Admin mode)</source>
         <translation>DidYouReadMe 2012-{0} © (Modo administrador)</translation>
     </message>
     <message>
@@ -877,27 +878,27 @@ You can deactivate him.</source>
     <message>
         <location filename="../ui/Ui_frmMain.py" line="339"/>
         <source>Send document again</source>
-        <translation type="unfinished"></translation>
+        <translation>Reenviar el documento</translation>
     </message>
     <message>
         <location filename="../ui/Ui_frmMain.py" line="279"/>
         <source>List options</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista de opciones</translation>
     </message>
     <message>
         <location filename="../ui/Ui_frmMain.py" line="280"/>
         <source>Show expired documents from selected year</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar los documentos expirados del año seleccionado</translation>
     </message>
     <message>
         <location filename="../ui/Ui_frmMain.py" line="281"/>
         <source>Show expired documents from selected year and month</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar los documentos expirados del año y mes  seleccionado</translation>
     </message>
     <message>
         <location filename="../ui/frmMain.py" line="456"/>
         <source>Group has {} members</source>
-        <translation type="unfinished"></translation>
+        <translation>El grupo tiene {} miembros</translation>
     </message>
 </context>
 <context>
@@ -1001,7 +1002,9 @@ p, li { white-space: pre-wrap; }
         <source>Port 25 is used to be the normal SMTP port.
 If you use SSL, 465.
 If you use TLS 587</source>
-        <translation type="unfinished"></translation>
+        <translation>El puerto 25 suele ser el puerto SMTP habitual.
+Si usas SSL, el 465.
+Si usas TLS, el 587</translation>
     </message>
 </context>
 <context>
@@ -1047,47 +1050,47 @@ If you use TLS 587</source>
     <message>
         <location filename="../ui/wdgYear.ui" line="36"/>
         <source>Select a year</source>
-        <translation type="unfinished">Selecciona un año</translation>
+        <translation>Selecciona un año</translation>
     </message>
     <message>
         <location filename="../ui/wdgYear.ui" line="26"/>
         <source>Previous year</source>
-        <translation type="unfinished"></translation>
+        <translation>Año anterior</translation>
     </message>
     <message>
         <location filename="../ui/wdgYear.ui" line="29"/>
         <source>&lt;</source>
-        <translation type="unfinished">&lt;</translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../ui/wdgYear.ui" line="43"/>
         <source>Next year</source>
-        <translation type="unfinished"></translation>
+        <translation>Año siguiente</translation>
     </message>
     <message>
         <location filename="../ui/wdgYear.ui" line="46"/>
         <source>&gt;</source>
-        <translation type="unfinished">&gt;</translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../ui/wdgYear.ui" line="60"/>
         <source>Current year</source>
-        <translation type="unfinished"></translation>
+        <translation>Año actual</translation>
     </message>
     <message>
         <location filename="../ui/wdgYear.ui" line="63"/>
         <source>Current Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Año actual</translation>
     </message>
     <message>
         <location filename="../ui/wdgYear.py" line="46"/>
         <source>I can&apos;t show the next year</source>
-        <translation type="unfinished"></translation>
+        <translation>No puedo mostrar el siguiente año</translation>
     </message>
     <message>
         <location filename="../ui/wdgYear.py" line="57"/>
         <source>I can&apos;t show the previous year</source>
-        <translation type="unfinished"></translation>
+        <translation>No puedo mostrar el año anterior</translation>
     </message>
 </context>
 <context>
