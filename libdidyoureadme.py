@@ -16,7 +16,7 @@ import http.server
 import socketserver
 
 version="20160520"
-version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
+version_date=datetime.date(int(version[0:4]),int(version[4:6]), int(version[6:8]))
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/").replace("\\", "/")
@@ -854,9 +854,10 @@ class Mail:
         return s.encode('UTF-8')
     
     def send(self):      
+        server=None#server creation could fail
         if self.mem.settings.value("smtp/tls", "False")=="True":
             try:
-                server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"), int(self.mem.settings.value("smtp/smtpport", "465")))
+                server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"), int(self.mem.settings.value("smtp/smtpport", "25")))
                 server.ehlo()
                 server.starttls()
                 server.ehlo()
@@ -866,8 +867,9 @@ class Mail:
             except:
                 self.sent=False
                 self.mem.log("Mail failed from {}:{} and user {}/{}".format(self.mem.settings.value("smtp/smtpserver", "smtpserver"), self.mem.settings.value("smtp/smtpport", "25"), self.mem.settings.value("smtp/smtpuser", "smtpuser"), self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com")))
-            finally:     
-                server.quit()
+            finally:   
+                if server:
+                    server.quit()
         else:  #ERA EL ANTIVIRUS
             try:
                 server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"), int(self.mem.settings.value("smtp/smtpport", "25")))
@@ -879,7 +881,8 @@ class Mail:
                 self.sent=False                
                 self.mem.log("Mail failed from {}:{} and user {}/{}".format(self.mem.settings.value("smtp/smtpserver", "smtpserver"), self.mem.settings.value("smtp/smtpport", "25"), self.mem.settings.value("smtp/smtpuser", "smtpuser"), self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com")))
             finally:     
-                server.quit()
+                if server:
+                    server.quit()
         return self.sent
 
 

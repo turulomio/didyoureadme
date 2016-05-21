@@ -82,7 +82,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.tserver.server.shutdown()
             self.tserver.wait()
         self.tsend.wait()
-        self.mem.log("DidYouReadMe correctly shutdown")
         self.mem.__del__() 
         
         
@@ -213,6 +212,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         else:
             reply=QMessageBox.Yes
         if reply == QMessageBox.Yes:
+            self.mem.log("DidYouReadMe is closing now...")
             self.__del__()
             event.accept()
         else:

@@ -103,7 +103,7 @@
    <item>
     <widget class="QTabWidget" name="tab">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabGenerales">
       <attribute name="title">
@@ -293,7 +293,13 @@ p, li { white-space: pre-wrap; }
           <widget class="QLineEdit" name="txtSMTPFrom"/>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="txtSMTPPort"/>
+          <widget class="QLineEdit" name="txtSMTPPort">
+           <property name="toolTip">
+            <string>Port 25 is used to be the normal SMTP port.
+If you use SSL, 465.
+If you use TLS 587</string>
+           </property>
+          </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="sMTPPortLabel">
