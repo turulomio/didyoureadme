@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../images/didyoureadme.qrc">
-    <normaloff>:/didyoureadme.png</normaloff>:/didyoureadme.png</iconset>
+    <normaloff>:/document.png</normaloff>:/document.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
@@ -127,6 +127,10 @@
       <widget class="QPushButton" name="cmd">
        <property name="text">
         <string>Add document</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../images/didyoureadme.qrc">
+         <normaloff>:/document.png</normaloff>:/document.png</iconset>
        </property>
       </widget>
      </item>

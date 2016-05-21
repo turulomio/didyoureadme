@@ -1,5 +1,10 @@
 <RCC>
   <qresource>
+    <file>expired.png</file>
+    <file>document.png</file>
+    <file>group.png</file>
+    <file>mail.png</file>
+    <file>user.png</file>
     <file>admin.png</file>
     <file>editar.png</file>
     <file>add.png</file>

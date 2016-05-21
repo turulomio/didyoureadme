@@ -10,6 +10,10 @@
     <height>279</height>
    </rect>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../images/didyoureadme.qrc">
+    <normaloff>:/group.png</normaloff>:/group.png</iconset>
+  </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
@@ -73,6 +77,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images/didyoureadme.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -17,6 +17,7 @@ SOURCES         = libdbupdates.py \
                   ui/Ui_frmSettings.py \
                   ui/frmAccess.py \
                   ui/Ui_frmAccess.py \
+                  ui/wdgYear.py \
                   ui/wdgYearMonth.py \
                   ui/Ui_wdgYearMonth.py
 
@@ -28,7 +29,7 @@ FORMS           = ui/frmAbout.ui \
                   ui/frmDocumentsIBM.ui \
                   ui/frmUsersIBM.ui \
                   ui/frmSettings.ui \
+                  ui/wdgYear.ui \
                   ui/wdgYearMonth.ui
 
-
-TRANSLATIONS    = i18n/didyoureadme_es.ts  
+TRANSLATIONS    = i18n/didyoureadme_es.ts

@@ -44,7 +44,9 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.statusBar.addWidget(self.lblStatus)
         self.statusBar.addWidget(self.lblStatusMail)        
         
-        self.wym.hide()
+        self.grp.hide()
+        self.wy.initiate(2011, datetime.date.today().year, datetime.date.today().year)
+        self.wy.changed.connect(self.on_wy_changed)
         self.wym.initiate(2011,  datetime.date.today().year, datetime.date.today().year, datetime.date.today().month)
         self.wym.changed.connect(self.on_wym_changed)
                         
@@ -125,6 +127,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     @pyqtSlot()      
     def on_wym_changed(self):
+        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        
+    @pyqtSlot()      
+    def on_wy_changed(self):
         self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
 
     @pyqtSlot()      
@@ -442,8 +448,12 @@ class frmMain(QMainWindow, Ui_frmMain):#
         for i in self.tblDocuments.selectedItems():
             if i.column()==0:#only once per row
                 self.documents.selected=self.documents.arr[i.row()]
-#        print (self.documents.selected)
-        
+            
+    def on_tblGroups_cellDoubleClicked(self, row, column):
+        if self.mem.data.groups.selected==None:
+            return
+        qmessagebox(self.tr("Group has {} members".format(self.mem.data.groups.selected.members.length())))
+
     def on_tblGroups_customContextMenuRequested(self,  pos):
         menu=QMenu()
         menu.addAction(self.actionGroupNew)    
@@ -467,7 +477,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         for i in self.tblGroups.selectedItems():
             if i.column()==0:#only once per row
                 self.mem.data.groups.selected=self.mem.data.groups.arr[i.row()]
-#        print (self.mem.data.groups.selected)
 
     def on_tblUsers_customContextMenuRequested(self,  pos):
         menu=QMenu()
@@ -545,12 +554,23 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_chkDocumentsExpired_stateChanged(self, state):
         if state==Qt.Unchecked:        
             self.documents=self.mem.data.documents_active
-            self.documents.qtablewidget(self.tblDocuments)
-            self.wym.hide()
+            self.grp.hide()
         else:
             self.mem.data.documents_inactive=SetDocuments(self.mem)
-            self.mem.data.documents_inactive.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
+            if self.radYear.isChecked()==True:
+                self.mem.data.documents_inactive.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} order by datetime;".format(self.wy.year))
+            else:
+                self.mem.data.documents_inactive.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
             self.documents=self.mem.data.documents_inactive
-            self.documents.qtablewidget(self.tblDocuments)
-            self.wym.show()
+            self.grp.show()
             
+        self.documents.qtablewidget(self.tblDocuments)
+
+    def on_radYear_toggled(self, toggle):
+        if toggle==True:
+            self.wym.setEnabled(False)
+            self.wy.setEnabled(True)
+        else:
+            self.wym.setEnabled(True)
+            self.wy.setEnabled(False)
+        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())

@@ -7,6 +7,7 @@ call c:\Python34\Lib\site-packages\PyQt5\pyuic5.bat ui/frmAccess.ui -o ui/Ui_frm
 call c:\Python34\Lib\site-packages\PyQt5\pyuic5.bat ui/frmDocumentsIBM.ui -o ui/Ui_frmDocumentsIBM.py
 call c:\Python34\Lib\site-packages\PyQt5\pyuic5.bat ui/frmGroupsIBM.ui -o ui/Ui_frmGroupsIBM.py
 call c:\Python34\Lib\site-packages\PyQt5\pyuic5.bat ui/frmUsersIBM.ui -o ui/Ui_frmUsersIBM.py
+call c:\Python34\Lib\site-packages\PyQt5\pyuic5.bat ui/wdgYear.ui -o ui/Ui_wdgYear.py
 call c:\Python34\Lib\site-packages\PyQt5\pyuic5.bat ui/wdgYearMonth.ui -o ui/Ui_wdgYearMonth.py
 call c:\Python34\Lib\site-packages\PyQt5\pyrcc5.exe  images/didyoureadme.qrc -o images/didyoureadme_rc.py
 call c:\Python34\Lib\site-packages\PyQt5\pylupdate5.exe -noobsolete didyoureadme.pro

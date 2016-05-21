@@ -451,6 +451,7 @@ class SetGroups(SetCommonsQListView):
         table.applySettings()
         for i, p in enumerate(self.arr):
             table.setItem(i, 0, QTableWidgetItem(p.name))
+            table.item(i, 0).setIcon(QIcon(":/group.png"))
             table.setItem(i, 1, QTableWidgetItem(p.members.string_of_names()))
         table.clearSelection() 
 
@@ -470,23 +471,6 @@ class SetGroups(SetCommonsQListView):
             self.append( Group(self.mem, row['name'], members, row['id']))        
         cur.close()
 
-
-        
-#    def qlistview(self, list, selected):
-#        """selected lista de group a seleccionar"""
-#        self.order_by_name()
-#        model=QStandardItemModel (len(self.arr), 1); # 3 rows, 1 col
-#        for i,  g in enumerate(self.arr):
-#            item = QStandardItem(g.name)
-#            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled);
-#            if g in selected:
-#                item.setData(Qt.Checked, Qt.CheckStateRole)
-#            else:
-#                item.setData(Qt.Unchecked, Qt.CheckStateRole); #para el role check
-#            item.setData(g.id, Qt.UserRole) # Para el role usuario
-#            model.setItem(i, 0, item);
-#        list.setModel(model)
-        
         
 class Group:
     def __init__(self, mem,   name, members,  id=None):
@@ -602,6 +586,7 @@ class SetUsers(SetCommonsQListView):
                 post=u.post
             table.setItem(i, 1, qleft(post))
             table.setItem(i, 2, qleft(u.name))
+            table.item(i, 2).setIcon(QIcon(":/user.png"))
             table.setItem(i, 3, qleft(u.mail))
             table.setItem(i, 4, qcenter(u.read))
             table.setItem(i, 5, qcenter(u.sent))
@@ -963,7 +948,11 @@ class SetDocuments(SetCommons):
             table.setItem(i, 2, qcenter(d.numsents))
             table.setItem(i, 3, qcenter(d.numreads))
             table.setItem(i, 4, qdatetime(d.expiration, self.mem.localzone))
+            if d.isExpired():
+                table.item(i, 4).setIcon(QIcon(":/expired.png"))
             table.setItem(i, 5, qleft(d.name))
+            table.item(i, 5).setIcon(QIcon(":/document.png"))
+            
             if d.numreads==d.numplanned and d.numplanned>0:
                 for column in range( 1, 4):
                     table.item(i, column).setBackground(QColor(198, 205, 255))

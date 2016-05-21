@@ -19,6 +19,7 @@ compile:
 	pyuic5 ui/frmGroupsIBM.ui > ui/Ui_frmGroupsIBM.py &
 	pyuic5 ui/frmUsersIBM.ui > ui/Ui_frmUsersIBM.py &
 	pyuic5 ui/wdgYearMonth.ui > ui/Ui_wdgYearMonth.py &
+	pyuic5 ui/wdgYear.ui > ui/Ui_wdgYear.py &
 	pyrcc5 images/didyoureadme.qrc > images/didyoureadme_rc.py &
 	sleep 1
 	wait
