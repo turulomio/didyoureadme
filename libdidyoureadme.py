@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import *
 import http.server
 import socketserver
 
-version="20160519+"
+version="20160520"
 version_date=datetime.date(int(version[0:4]),int(version[5:6]), int(version[7:8]))
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
@@ -855,8 +855,8 @@ class Mail:
     
     def send(self):      
         if self.mem.settings.value("smtp/tls", "False")=="True":
-            server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"))
             try:
+                server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"), int(self.mem.settings.value("smtp/smtpport", "465")))
                 server.ehlo()
                 server.starttls()
                 server.ehlo()
@@ -865,17 +865,19 @@ class Mail:
                 self.sent=True        
             except:
                 self.sent=False
+                self.mem.log("Mail failed from {}:{} and user {}/{}".format(self.mem.settings.value("smtp/smtpserver", "smtpserver"), self.mem.settings.value("smtp/smtpport", "25"), self.mem.settings.value("smtp/smtpuser", "smtpuser"), self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com")))
             finally:     
                 server.quit()
         else:  #ERA EL ANTIVIRUS
-            server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"), 25)
             try:
+                server = smtplib.SMTP(self.mem.settings.value("smtp/smtpserver", "smtpserver"), int(self.mem.settings.value("smtp/smtpport", "25")))
                 server.login(self.mem.settings.value("smtp/smtpuser", "smtpuser"),self.mem.settings.value("smtp/smtppwd", "*"))
                 server.helo()
                 server.sendmail(self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com"), self.user.mail, self.message())
                 self.sent=True        
             except:
-                self.sent=False
+                self.sent=False                
+                self.mem.log("Mail failed from {}:{} and user {}/{}".format(self.mem.settings.value("smtp/smtpserver", "smtpserver"), self.mem.settings.value("smtp/smtpport", "25"), self.mem.settings.value("smtp/smtpuser", "smtpuser"), self.mem.settings.value("smtp/from", "didyoureadme@donotanswer.com")))
             finally:     
                 server.quit()
         return self.sent
