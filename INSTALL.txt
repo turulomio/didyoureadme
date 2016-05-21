@@ -2,7 +2,7 @@ Depends
 =======
 
 DidYouReadMe has the following dependences:
-  - PyQt4
+  - PyQt5
   - python3
   - psycopg
   - pytz
@@ -30,10 +30,12 @@ Create a postgresql database:
 
 Run didyoureadme and configure settings
 
+You must grant didyoureadme_user or didyoureadme_admin to your database user
+If you use postgres user, DidYouReadMe gives him both roles
 
-Problemas con la instalación
-============================
-La instalación depende del contenido de la base de datos, es importante a veces ver los logs
-Tuve problemas con la hora del servidor que estaba mal y por eso no salian los correos
-Tuve problemas con el antivirus, que me capaba los mensajes salientes y no podía poner excepción, tuve que desinstalarlo.
-También puede pasar con el firewall
+
+Recomendations
+==============
+- If you have problems with data base, you should see database posmaster.log file
+- Sever time and Client time must be updated
+- Antivirus and Firewall could avoid web server comunications and mail sends
