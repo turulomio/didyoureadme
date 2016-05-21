@@ -1,3 +1,8 @@
+20160521
+========
+- Windows versions
+- A lot of changes
+
 20150128
 ========
 - Added expiration for documents

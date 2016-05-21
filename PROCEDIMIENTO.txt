@@ -7,6 +7,7 @@ Nueva release
 4) Crear los 2 ficheros (con distribution.sh que pone la version automatico) y subirlo a sourceforge
 4) Colocar las versiones preferidas en linux src
 5) Subir al subversion y comprobar que queda subversion +1
+5) Actualizar subversion, Crear las versiones de 32 y 64 bits de Windows (con distribuion.bat) y subirlo a sourceforge
 6) Crear un nuevo ebuild con la nueva versión
 8) Subirlo al subversion del portage
 9) Modificar la pagina web
