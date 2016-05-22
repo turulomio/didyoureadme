@@ -9,8 +9,9 @@ class frmSettings(QDialog, Ui_frmSettings):
     def __init__(self, mem, parent = None, name = None, modal = False):
         QDialog.__init__(self, parent)
         self.mem=mem
+        self.parent=parent
         self.setupUi(self)
-        self.mem.languages.qcombobox(self.cmbLanguage, self.mem.languages.find(self.mem.language.id))
+        self.mem.languages.qcombobox(self.cmbLanguage, self.mem.language)
         self.txtWebServerIP.setText(self.mem.settings.value("webserver/ip", "127.0.0.1"))
         self.txtWebServerPort.setText(self.mem.settings.value("webserver/port", "8000"))
         self.txtSupport.setPlainText(self.mem.settings.value("smtp/support", "Please, contact system administrator"))
@@ -35,6 +36,7 @@ class frmSettings(QDialog, Ui_frmSettings):
         self.mem.settings.setValue("mem/language", self.mem.language.id)
         self.mem.languages.cambiar(self.mem.language.id)
         self.retranslateUi(self)
+        self.parent.retranslateUi(self.parent)
         
     def on_buttonBox_accepted(self):
         self.mem.settings.setValue("webserver/ip", self.txtWebServerIP.text())

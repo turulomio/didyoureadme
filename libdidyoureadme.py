@@ -586,7 +586,10 @@ class SetUsers(SetCommonsQListView):
                 post=u.post
             table.setItem(i, 1, qleft(post))
             table.setItem(i, 2, qleft(u.name))
-            table.item(i, 2).setIcon(QIcon(":/user.png"))
+            if u.active==True:
+                table.item(i, 2).setIcon(QIcon(":/user.png"))
+            else:
+                table.item(i, 2).setIcon(QIcon(":/alerta.png"))
             table.setItem(i, 3, qleft(u.mail))
             table.setItem(i, 4, qcenter(u.read))
             table.setItem(i, 5, qcenter(u.sent))

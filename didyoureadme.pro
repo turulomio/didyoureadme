@@ -32,4 +32,7 @@ FORMS           = ui/frmAbout.ui \
                   ui/wdgYear.ui \
                   ui/wdgYearMonth.ui
 
-TRANSLATIONS    = i18n/didyoureadme_es.ts
+TRANSLATIONS    = i18n/didyoureadme_es.ts \
+                            i18n/didyoureadme_fr.ts \
+                            i18n/didyoureadme_ro.ts \
+                            i18n/didyoureadme_ru.ts

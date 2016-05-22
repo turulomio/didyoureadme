@@ -17,7 +17,6 @@ class frmAccess(QDialog, Ui_frmAccess):
         self.setTitle(self.tr("DidYouReadMe - Access"))
         self.con=Connection()#Pointer to connection
 
-
     def setPixmap(self, qpixmap):
         icon = QtGui.QIcon()
         icon.addPixmap(qpixmap, QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -47,15 +46,15 @@ class frmAccess(QDialog, Ui_frmAccess):
         self.mem.settings.setValue("frmAccess/port",  self.txtPort.text())
         self.mem.settings.setValue("frmAccess/user" ,  self.txtUser.text())
         self.mem.settings.setValue("frmAccess/server", self.txtServer.text())   
-        self.mem.settings.setValue("mem/language", self.cmbLanguages.itemData(self.cmbLanguages.currentIndex()))
-        self.mem.language=self.mem.languages.find_by_id(self.cmbLanguages.itemData(self.cmbLanguages.currentIndex()))
 
     @pyqtSlot(str)      
     def on_cmbLanguages_currentIndexChanged(self, stri):
         self.mem.language=self.mem.languages.find_by_id(self.cmbLanguages.itemData(self.cmbLanguages.currentIndex()))
         self.mem.settings.setValue("mem/language", self.mem.language.id)
         self.mem.languages.cambiar(self.mem.language.id)
+        #REtranslate
         self.retranslateUi(self)
+        self.setLabel(QApplication.translate("DidYouReadMe", self.lbl.text()))#Doesn't work
 
     def make_connection(self):
         """Función que realiza la conexión devolviendo true o false con el éxito"""

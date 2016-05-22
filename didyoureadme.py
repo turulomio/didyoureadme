@@ -30,6 +30,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
 
     app.setQuitOnLastWindowClosed(True)
     mem.setQTranslator(QTranslator(app))
+    print(mem.language)
     
     access=frmAccess(mem)
     access.setLabel(QApplication.translate("DidYouReadMe","Please login to the DidYouReadMe database"))

@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>alerta.png</file>
     <file>expired.png</file>
     <file>document.png</file>
     <file>group.png</file>

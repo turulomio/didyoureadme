@@ -105,6 +105,10 @@
         <number>0</number>
        </property>
        <widget class="QWidget" name="tabGLParchis">
+        <attribute name="icon">
+         <iconset resource="../images/didyoureadme.qrc">
+          <normaloff>:/group.png</normaloff>:/group.png</iconset>
+        </attribute>
         <attribute name="title">
          <string>Credits</string>
         </attribute>
@@ -119,6 +123,10 @@
         </layout>
        </widget>
        <widget class="QWidget" name="tabLicense">
+        <attribute name="icon">
+         <iconset resource="../images/didyoureadme.qrc">
+          <normaloff>:/didyoureadme.png</normaloff>:/didyoureadme.png</iconset>
+        </attribute>
         <attribute name="title">
          <string>License</string>
         </attribute>
