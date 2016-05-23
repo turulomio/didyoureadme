@@ -2,6 +2,13 @@
 import sys
 import platform
 
+"""
+    Curiosidades:
+    - En algunas imagenes al cargarlas me sal´ia Libpng warning: iCCP: known incorrect sRGB profile.
+      para evitarlo use imagemagic con el comando : convert document.png -strip document.png  y se solucion´o el problema
+"""
+
+
 
 if platform.system()=="Windows":
     sys.path.append("ui/")
