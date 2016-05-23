@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import *
 import http.server
 import socketserver
 
-version="20160521"
+version="20160523"
 version_date=datetime.date(int(version[0:4]),int(version[4:6]), int(version[6:8]))
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
@@ -163,6 +163,9 @@ class MyHTTPServer(socketserver.TCPServer):
         """Finish one request by instantiating RequestHandlerClass."""
         request=self.RequestHandlerClass(request, client_address, self, self.mem)
         
+        if request.path in ["/favicon.ico",  "/expired.png", "/didyoureadme.png" ]:#Imagenes del servidor
+            return 
+        
         if request.request_served==True:
             #Actualiza la base de datos
             con=self.mem.con.newConnection()
@@ -193,20 +196,65 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.request_served=False
         http.server.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
         
+    def Resource(self, resource):
+        """Serve Qt resources"""
+        stream = QFile(resource)
+        stream.open(QFile.ReadOnly)
+        buffer=stream.readAll()
+        stream.close()
+        f = io.BytesIO()
+        f.write(buffer)
+        f.seek(0)
+        self.send_response(200)
+        self.send_header("Content-type", "application/octet-stream")
+        self.send_header("Content-Length", str(len(buffer)))
+        self.end_headers()
+        return f
+                
+    def Expired(self, document):
+        s="""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>"""+ QApplication.translate("DidYouReadMe","Didyoureadme - Expired document")+"""</title>
+</head>
+<body>
+    <h1><center>"""+ QApplication.translate("DidYouReadMe","Document '{}' of '{}' has expired".format(self.document.name, self.document.datetime)) +"""</center></h1>
+<center>
+    <img src="/expired.png" width="200"/><p>
+    """+QApplication.translate("DidYouReadMe","Document you're trying to read has expired")+"""<p>
+    """+QApplication.translate("DidYouReadMe", "Please talk with DidYouReadMe administrator")+"""<p>
+</center>
+</body>
+</html>"""
+        encoded=s.encode("UTF-8", 'surrogateescape')
+        f = io.BytesIO()
+        f.write(encoded)
+        f.seek(0)
+        self.send_response(200)
+        self.send_header("Content-type", "text/html; charset=UTF-8")
+        self.send_header("Content-Length", str(len(encoded)))
+        self.end_headers()
+        return f
+        
+        
     def ErrorPage(self, text):
         """To avoid listing"""
         s="""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset={0}">
-    <title>DidYouReadMe error page</title>
+    <title>"""+ QApplication.translate("DidYouReadMe","Didyoureadme - Error page")+"""</title>
 </head>
 <body>
-    <h1>{0}</h1>
-    {1}<p>
-    {2}
+    <h1><center>"""+ text +"""</center></h1>
+<center>
+    <img src="/didyoureadme.png" width="120"/><p>
+    """+QApplication.translate("DidYouReadMe","There has been a problem with your request")+"""<p>
+    """+QApplication.translate("DidYouReadMe", "Please talk with DidYouReadMe administrator")+"""<p>
+</center>
 </body>
-</html>""".format(text, QApplication.translate("DidYouReadMe", "There has been a problem with your request...") , QApplication.translate("DidYouReadMe", "Please talk with DidYouReadMe administrator."))
+</html>"""
         encoded=s.encode("UTF-8", 'surrogateescape')
         f = io.BytesIO()
         f.write(encoded)
@@ -226,6 +274,13 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         He usado log para verlo
         Se produce cuando es compilado sin consola con Win32 en la base del setup. Si se pone base="Console" funciona
         """
+        if self.path=="/favicon.ico":
+            return self.Resource(':/didyoureadme.ico')       
+        elif self.path=="/expired.png":
+            return self.Resource(':/expired.png')
+        elif self.path=="/didyoureadme.png":
+            return self.Resource(':/didyoureadme.png')
+        
         #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
         try:
             (userhash, documenthash)=self.path.split("/")[2].split("l")
@@ -243,7 +298,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         if self.document.expiration<now(self.mem.localzone):
             self.mem.log(QApplication.translate("DidYouReadMe", "Document {} has expired".format(self.document.id)))
-            return self.ErrorPage(QApplication.translate("DidYouReadMe","Document '{}' of '{}' has expired".format(self.document.name, self.document.datetime)))
+            return self.Expired(self.document)
             
         ctype = self.guess_type(path)
 
@@ -1143,7 +1198,7 @@ class Document:
                 if d.sent==None:
                     d.sent=datetime.datetime.now(pytz.timezone(self.mem.localzone))
                     d.save()
-                    con.commit()
+                    self.mem.con.commit()
             else:
                 self.mem.log(QApplication.translate("DidYouReadMe","Error sending again message {} to {}").format(mail.document.id, mail.user.mail))  
         cur.close()

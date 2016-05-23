@@ -1,6 +1,7 @@
 XXXXXXXX
 ========
 - Added more images
+- Improved web page output
 
 20160521
 ========
