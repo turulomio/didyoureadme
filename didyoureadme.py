@@ -61,7 +61,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         if mem.isAdminMode():
             update.run()
         else:
-            qmessagebox(QApplication.translate("Core","DidYouReadMe needs to update its database schema. Please login with an admin role."))
+            qmessagebox(QApplication.translate("DidYouReadMe","DidYouReadMe needs to update its database schema. Please login with an admin role."))
             sys.exit(3)
     update.syncing_files()
             
