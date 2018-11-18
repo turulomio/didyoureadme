@@ -113,7 +113,7 @@ class Procedure(Command):
         print("""
 Nueva versión:
   * Cambiar la versión y la fecha en version.py
-  * Modificar el Changelog en README
+  * Escribir el Changelog en CHANGELOG.mc
   * python setup.py doc
   * linguist
   * python setup.py doc
@@ -121,7 +121,7 @@ Nueva versión:
   * python setup.py doxygen
   * git commit -a -m 'didyoureadme-version'
   * git push
-  * Hacer un nuevo tag en GitHub
+  * Hacer un nuevo tag en GitHub y copiar el CHANGELOG de la vsersión
   * python setup.py sdist upload -r pypi
   * Crea un nuevo ebuild de Gentoo con la nueva versión
   * Subelo al repositorio del portage
