@@ -15,9 +15,6 @@ from PyQt5.QtWidgets import *
 import http.server
 import socketserver
 
-version="20160523"
-version_date=datetime.date(int(version[0:4]),int(version[4:6]), int(version[6:8]))
-
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/").replace("\\", "/")
 

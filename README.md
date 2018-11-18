@@ -48,6 +48,7 @@ To create DidYouReadmeDatabase
 Create a postgresql database:
 
 `createdb -U postgres didyoureadme`
+
 `psql -U postgres didyoureadme < sql/didyoureadme.sql`
 
 Run didyoureadme and configure settings

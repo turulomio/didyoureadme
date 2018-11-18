@@ -1,7 +1,7 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from Ui_frmHelp import *
+from didyoureadme.ui.Ui_frmHelp import *
 
 class frmHelp(QDialog, Ui_frmHelp):
     def __init__(self, parent = None, name = None, modal = False):

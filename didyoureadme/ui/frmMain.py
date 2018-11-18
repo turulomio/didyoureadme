@@ -5,15 +5,16 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtPrintSupport import *
-from libdidyoureadme import *
+from didyoureadme.libdidyoureadme import *
+from didyoureadme.version import __version__, __versiondate__
 
-from Ui_frmMain import *
-from frmAbout import *
-from frmSettings import *
-from frmHelp import *
-from frmDocumentsIBM import *
-from frmGroupsIBM import *
-from frmUsersIBM import *
+from didyoureadme.ui.Ui_frmMain import *
+from didyoureadme.ui.frmAbout import *
+from didyoureadme.ui.frmSettings import *
+from didyoureadme.ui.frmHelp import *
+from didyoureadme.ui.frmDocumentsIBM import *
+from didyoureadme.ui.frmGroupsIBM import *
+from didyoureadme.ui.frmUsersIBM import *
 
 
 class frmMain(QMainWindow, Ui_frmMain):#    
@@ -37,7 +38,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         self.confirmclose=True
         
-        self.setWindowTitle(self.tr("DidYouReadMe 2012-{} \xa9").format(version_date.year))
+        self.setWindowTitle(self.tr("DidYouReadMe 2012-{} \xa9").format(__versiondate__.year))
         
         self.lblStatus=QLabel()
         self.lblStatusMail=QLabel()
@@ -66,7 +67,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
         ##Admin mode. Data base user must have didyoureadme_admin role
         if self.mem.isAdminMode()==True:
-            self.setWindowTitle(self.tr("DidYouReadMe 2012-{0} \xa9 (Admin mode)").format(version_date.year))
+            self.setWindowTitle(self.tr("DidYouReadMe 2012-{0} \xa9 (Admin mode)").format(__versiondate__.year))
             self.setWindowIcon(self.mem.qicon_admin())
             self.update()
 
@@ -193,7 +194,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if remoteversion==None:
             return
                 
-        if remoteversion==version.replace("+", ""):#Quita el más de desarrollo 
+        if remoteversion==__version__.replace("+", ""):#Quita el más de desarrollo 
             if showdialogwhennoupdates==True:
                 m=QMessageBox()
                 m.setWindowIcon(QIcon(":/didyoureadme.png"))

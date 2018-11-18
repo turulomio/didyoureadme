@@ -1,4 +1,4 @@
-from libdidyoureadme import *
+from didyoureadme.libdidyoureadme import *
 class Update:
     """DB update system
     Cuando vaya a crear una nueva modificación pondre otro if con menor que current date para uqe se ejecute solo una vez al final, tendra que 

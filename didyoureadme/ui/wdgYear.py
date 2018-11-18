@@ -2,7 +2,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import datetime
-from Ui_wdgYear import *
+from didyoureadme.ui.Ui_wdgYear import *
 
 class wdgYear(QWidget, Ui_wdgYear):
     changed=pyqtSignal()

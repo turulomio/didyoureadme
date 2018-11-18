@@ -1,8 +1,8 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from Ui_frmUsersIBM import *
-from libdidyoureadme import *
+from didyoureadme.ui.Ui_frmUsersIBM import *
+from didyoureadme.libdidyoureadme import *
 
 class frmUsersIBM(QDialog, Ui_frmUsersIBM):
     def __init__(self, mem, user=None,  parent = None, name = None, modal = False):

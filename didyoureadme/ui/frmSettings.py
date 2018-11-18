@@ -3,7 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtNetwork import *
 
-from Ui_frmSettings import *
+from didyoureadme.ui.Ui_frmSettings import *
 
 class frmSettings(QDialog, Ui_frmSettings):
     def __init__(self, mem, parent = None, name = None, modal = False):

@@ -2,8 +2,8 @@ import os
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from Ui_frmDocumentsIBM import *
-from libdidyoureadme import *
+from didyoureadme.ui.Ui_frmDocumentsIBM import *
+from didyoureadme.libdidyoureadme import *
 
 class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
     def __init__(self, mem, document=None, parent = None, name = None, modal = False):

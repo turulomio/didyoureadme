@@ -1,7 +1,7 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from libdidyoureadme import *
+from didyoureadme.libdidyoureadme import *
 
 class myQTableWidget(QTableWidget):
     def __init__(self, parent):

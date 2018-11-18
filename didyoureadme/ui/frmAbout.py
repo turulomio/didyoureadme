@@ -1,9 +1,9 @@
-import libdidyoureadme
+from didyoureadme.version import __versiondate__
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from Ui_frmAbout import *
+from didyoureadme.ui.Ui_frmAbout import *
 
 
 class frmAbout(QDialog, Ui_frmAbout):
@@ -19,7 +19,7 @@ class frmAbout(QDialog, Ui_frmAbout):
         if name:
             self.setObjectName(name)
         self.setupUi(self)
-        self.lblVersion.setText(self.tr("version {0}").format(libdidyoureadme.version_date))
+        self.lblVersion.setText(self.tr("version {0}").format(__versiondate__))
         self.textBrowser.setHtml(
             self.tr("Web page is at <a href=\"http://didyoureadme.sourceforge.net\">http://didyoureadme.sourceforge.net</a><p> <p>")+
             self.tr("This app has been developed by Mariano Muñoz.<p>")+

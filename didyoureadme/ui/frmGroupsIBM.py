@@ -1,7 +1,7 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from Ui_frmGroupsIBM import *
-from libdidyoureadme import *
+from didyoureadme.ui.Ui_frmGroupsIBM import *
+from didyoureadme.libdidyoureadme import *
 from PyQt5.QtWidgets import *
 
 class frmGroupsIBM(QDialog, Ui_frmGroupsIBM):

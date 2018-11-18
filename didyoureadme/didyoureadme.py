@@ -18,10 +18,11 @@ else:
     
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from frmMain import *
-from frmAccess import *
-from libdidyoureadme import dirDocs, version,  dirTmp
-import libdbupdates
+from didyoureadme.ui.frmMain import *
+from didyoureadme.ui.frmAccess import *
+from didyoureadme.libdidyoureadme import dirDocs, dirTmp
+from didyoureadme.version import __version__
+import didyoureadme.libdbupdates
 
 if __name__=='__main__':#Needed due to multiprocessing in windows load all process again and launch frmAccess twice
     makedirs(dirTmp)
@@ -33,7 +34,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
     app.setApplicationName("DidYouReadMe")
 
     mem=Mem()
-    mem.log(QApplication.translate("DidYouReadMe", "Iniciando Didyoureadme-{}".format(version)))
+    mem.log(QApplication.translate("DidYouReadMe", "Iniciando Didyoureadme-{}".format(__version__)))
 
     app.setQuitOnLastWindowClosed(True)
     mem.setQTranslator(QTranslator(app))
@@ -63,7 +64,7 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
         mem.log("SERVER DATETIME AND SYSTEM DATETIME IS BIGGER THAN 60 SECONDS. MAILS CAN BE DELAYED")
         
     ##Update database
-    update=libdbupdates.Update(mem)
+    update=didyoureadme.libdbupdates.Update(mem)
     if update.need_update()==True:
         if mem.isAdminMode():
             update.run()
