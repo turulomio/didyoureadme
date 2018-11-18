@@ -1,8 +1,8 @@
-/*! \mainpage Xulpymoney
+/*! \mainpage DidYouReadMe
 
 Introduction
 ============
-Xulpymoney is an opensource personal and financial accounting system
+System to control who and when a group reads a document send by mail. It uses postgresql to store information .
 
 Development
 ===========
@@ -10,8 +10,8 @@ Development
 
 Github
 ======
-This project is hosted in <a href="https://github.com/Turulomio/xulpymoney/">Github</a>, so you can use the next services:
+This project is hosted in <a href="https://github.com/Turulomio/didyoureadme/">Github</a>, so you can use the next services:
 
-- <a href="https://github.com/Turulomio/xulpymoney/issues" target="_blank">Issues</a>
+- <a href="https://github.com/Turulomio/didyoureadme/issues" target="_blank">Issues</a>
 
 */

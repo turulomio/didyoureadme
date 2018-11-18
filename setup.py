@@ -67,14 +67,7 @@ class Compile(Command):
         for filename in os.listdir("didyoureadme/ui/"):
              if filename.startswith("Ui_"):
                  os.system("sed -i -e 's/didyoureadme_rc/didyoureadme.images.didyoureadme_rc/' didyoureadme/ui/{}".format(filename))
-                 os.system("sed -i -e 's/from canvaschart/from didyoureadme.ui.canvaschart/' didyoureadme/ui/{}".format(filename))
-                 os.system("sed -i -e 's/from myqlineedit/from didyoureadme.ui.myqlineedit/' didyoureadme/ui/{}".format(filename))
                  os.system("sed -i -e 's/from myqtablewidget/from didyoureadme.ui.myqtablewidget/' didyoureadme/ui/{}".format(filename))
-                 os.system("sed -i -e 's/from didyoureadme.ui.myqlineedit/from didyoureadme.ui.myqlineedit/' didyoureadme/ui/{}".format(filename))
-                 os.system("sed -i -e 's/from wdgTwoCurrencyLineEdit/from didyoureadme.ui.wdgTwoCurrencyLineEdit/' didyoureadme/ui/{}".format(filename))
-                 os.system("sed -i -e 's/from wdgCurrencyConversion/from didyoureadme.ui.wdgCurrencyConversion/' didyoureadme/ui/{}".format(filename))
-                 os.system("sed -i -e 's/from wdgProductSelector/from didyoureadme.ui.wdgProductSelector/' didyoureadme/ui/{}".format(filename))
-                 os.system("sed -i -e 's/from wdgDatetime/from didyoureadme.ui.wdgDatetime/' didyoureadme/ui/{}".format(filename))
                  os.system("sed -i -e 's/from wdgYear/from didyoureadme.ui.wdgYear/' didyoureadme/ui/{}".format(filename))
 
 class Uninstall(Command):
@@ -153,12 +146,6 @@ class Doc(Command):
         os.system("lrelease -qt5 didyoureadme.pro")
     ########################################################################
 
-#app=QCoreApplication(sys.argv)
-
-#app.setOrganizationName("didyoureadme")
-#app.setOrganizationDomain("didyoureadme.sourceforge.net")
-#app.setApplicationName("didyoureadme")
-#translator=QTranslator()
 with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
@@ -179,43 +166,31 @@ with open('didyoureadme/version.py', encoding='utf-8') as f:
 
 setup(name='didyoureadme',
     version=__version__,
-    description='Home and financial accounting system',
+    description='System to control who and when a group reads a document send by mail. It uses postgresql to store information',
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=['Development Status :: 4 - Beta',
               'Intended Audience :: End Users/Desktop',
-              'Topic :: Office/Business :: Financial :: Accounting',
               'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
               'Programming Language :: Python :: 3',
              ], 
-    keywords='financial home accounting system',
+    keywords='mail read when who',
     url='https://github.com/Turulomio/didyoureadme',
     author='Turulomio',
     author_email='turulomio@yahoo.es',
     license='GPL-3',
     packages=['didyoureadme'],
-    entry_points = {'console_scripts': ['didyoureadme_init=didyoureadme.didyoureadme_init:main',
-                                        'didyoureadme_bolsamadrid_client=didyoureadme.sources.bolsamadrid_client:main',
-                                        'didyoureadme_google_client=didyoureadme.sources.google_client:main',
-                                        'didyoureadme_infobolsa_client=didyoureadme.sources.infobolsa_client:main',
-                                        'didyoureadme_morningstar_client=didyoureadme.sources.morningstar_client:main',
-                                        'didyoureadme_quefondos_client=didyoureadme.sources.quefondos_client:main',
-                                        'didyoureadme_run_client=didyoureadme.sources.run_client:main',
-                                        'didyoureadme_yahoo_client=didyoureadme.sources.yahoo_client:main',
+    entry_points = {'console_scripts': [
                                        ],
                     'gui_scripts': ['didyoureadme=didyoureadme.didyoureadme:main',
-                                       ],
+                                   ],
                 },
     install_requires= [ 'setuptools',
                         'psycopg2', 
                         'pytz',
-                        'officegenerator', 
-                        'colorama', 
-                        'python-stdnum',
-                        'PyQtChart;platform_system=="Windows"',
                         'PyQt5;platform_system=="Windows"',
                         'pywin32;platform_system=="Windows"',
-                        ], #PyQt5 and PyQtChart doesn't have egg-info in Gentoo, so I remove it to install it with ebuild without making 2 installations. Should be added manually when using pip to install
+                        ], #PyQt5 doesn't have egg-info in Gentoo, so I remove it to install it with ebuild without making 2 installations. Should be added manually when using pip to install
     data_files=data_files,
     cmdclass={
                         'doxygen': Doxygen,

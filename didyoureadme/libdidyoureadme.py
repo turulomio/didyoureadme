@@ -2,7 +2,6 @@ import os
 import datetime
 import hashlib
 import multiprocessing
-import platform
 import psycopg2
 import psycopg2.extras
 import pytz
@@ -14,6 +13,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import http.server
 import socketserver
+import pkg_resources
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/").replace("\\", "/")
@@ -578,11 +578,10 @@ class SetLanguages(SetCommons):
         if selected!=None:
                 combo.setCurrentIndex(combo.findData(selected.id))
 
-    def cambiar(self, id):  
-        if platform.system()=="Windows":
-            self.mem.qtranslator.load("i18n/didyoureadme_" + id + ".qm")
-        else:
-            self.mem.qtranslator.load("/usr/lib/didyoureadme/didyoureadme_" + id + ".qm")
+    def cambiar(self, id):    
+        filename=pkg_resources.resource_filename("didyoureadme","i18n/didyoureadme_{}.qm".format(id))
+        print(os.getcwd(), filename, os.path.exists(filename))
+        self.mem.qtranslator.load(filename)
         qApp.installTranslator(self.mem.qtranslator)
         print("Language changed to {}".format(id))
 

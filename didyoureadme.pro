@@ -33,6 +33,6 @@ FORMS           = didyoureadme/ui/frmAbout.ui \
                   didyoureadme/ui/wdgYearMonth.ui
 
 TRANSLATIONS    = didyoureadme/i18n/didyoureadme_es.ts \
-                            didyoureadme/i18n/didyoureadme_fr.ts \
-                            didyoureadme/i18n/didyoureadme_ro.ts \
-                            didyoureadme/i18n/didyoureadme_ru.ts
+                  didyoureadme/i18n/didyoureadme_fr.ts \
+                  didyoureadme/i18n/didyoureadme_ro.ts \
+                  didyoureadme/i18n/didyoureadme_ru.ts

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+import argparse
 import sys
 import platform
 
@@ -8,23 +8,16 @@ import platform
       para evitarlo use imagemagic con el comando : convert document.png -strip document.png  y se solucion´o el problema
 """
 
-
-
-if platform.system()=="Windows":
-    sys.path.append("ui/")
-    sys.path.append("images/")
-else:
-    sys.path.append("/usr/lib/didyoureadme")
-    
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from didyoureadme.ui.frmMain import *
-from didyoureadme.ui.frmAccess import *
-from didyoureadme.libdidyoureadme import dirDocs, dirTmp
-from didyoureadme.version import __version__
+from PyQt5.QtCore import QTranslator
+from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
+from PyQt5.QtGui import QIcon
+from didyoureadme.ui.frmMain import frmMain
+from didyoureadme.ui.frmAccess import frmAccess
+from didyoureadme.libdidyoureadme import dirDocs, dirTmp, makedirs, Mem, qmessagebox,  now
+from didyoureadme.version import __version__, __versiondate__
 import didyoureadme.libdbupdates
 
-if __name__=='__main__':#Needed due to multiprocessing in windows load all process again and launch frmAccess twice
+def main():
     makedirs(dirTmp)
     makedirs(dirDocs)
 
@@ -33,13 +26,36 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
     app.setOrganizationDomain("turulomio.users.sourceforge.net")
     app.setApplicationName("DidYouReadMe")
 
+
+    parser=argparse.ArgumentParser(
+             prog='didyoureadme', 
+             description=app.translate("Core",'System to control who and when a group reads a document send by mail. It uses postgresql to store information'),
+             epilog=app.translate("Core","Developed by Mariano Muñoz 2015-{}".format(__versiondate__.year)),
+             formatter_class=argparse.RawTextHelpFormatter
+         )
+    if platform.system()=="Windows":
+             parser.add_argument('--shortcuts-create', help="Create shortcuts for Windows", action='store_true', default=False)
+             parser.add_argument('--shortcuts-remove', help="Remove shortcuts for Windows", action='store_true', default=False)
+
+    args=parser.parse_args()        
+
+    if platform.system()=="Windows":
+             if args.shortcuts_create:
+                     from xulpymoney.shortcuts import create
+                     create()
+                     sys.exit(0)
+             if args.shortcuts_remove:
+                     from xulpymoney.shortcuts import remove
+                     remove()
+                     sys.exit(0)
+
     mem=Mem()
     mem.log(QApplication.translate("DidYouReadMe", "Iniciando Didyoureadme-{}".format(__version__)))
 
     app.setQuitOnLastWindowClosed(True)
     mem.setQTranslator(QTranslator(app))
     print(mem.language)
-    
+
     access=frmAccess(mem)
     access.setLabel(QApplication.translate("DidYouReadMe","Please login to the DidYouReadMe database"))
     access.config_load()
@@ -73,7 +89,8 @@ if __name__=='__main__':#Needed due to multiprocessing in windows load all proce
             sys.exit(3)
     update.syncing_files()
             
-    frmMain = frmMain(mem) 
+    frmmain = frmMain(mem) 
+    frmmain.show()
     
     sys.exit(app.exec_())
 
