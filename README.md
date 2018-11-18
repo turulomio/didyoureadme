@@ -46,8 +46,9 @@ Just execute it
 To create DidYouReadmeDatabase
 ==============================
 Create a postgresql database:
-  # createdb -U postgres didyoureadme
-  # psql -U postgres didyoureadme < sql/didyoureadme.sql
+
+`createdb -U postgres didyoureadme`
+`psql -U postgres didyoureadme < sql/didyoureadme.sql`
 
 Run didyoureadme and configure settings
 
@@ -133,7 +134,6 @@ XXXXXXXX
 - Open documents and reports have been improved
 - You can add several lines in document comment
 - The title of the document is now mandatory
-
 
 20130108
 --------
