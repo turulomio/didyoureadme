@@ -1,0 +1,5 @@
+include LICENSE.txt README.md didyoureadme.desktop didyoureadme.pro *.py doc/Doxyfile doc/index.doc doc/didyoureadme*
+recursive-include didyoureadme i18n *.ts *.qm *.png *.jpg *.gif didyoureadme.qrc *.py *.ico
+recursive-include sql *
+prune __pycache__
+global-exclude *.pyc 

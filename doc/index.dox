@@ -1,0 +1,17 @@
+/*! \mainpage DidYouReadMe
+
+Introduction
+============
+System to control who and when a group reads a document send by mail. It uses postgresql to store information .
+
+Development
+===========
+- Turulomio (Idea y development)
+
+Github
+======
+This project is hosted in <a href="https://github.com/Turulomio/didyoureadme/">Github</a>, so you can use the next services:
+
+- <a href="https://github.com/Turulomio/didyoureadme/issues" target="_blank">Issues</a>
+
+*/
