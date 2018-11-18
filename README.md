@@ -80,10 +80,12 @@ Turulomio. Idea and Spanish translation
 Changelog
 =========
 
-XXXXXXXX
+20181118
 --------
 - Added more images
 - Improved web page output
+- Migrated to GitHub
+- Migrated to setuptools. Now DidYouReadMe is a package
 
 20160521
 --------
