@@ -8,47 +8,45 @@ import platform
       para evitarlo use imagemagic con el comando : convert document.png -strip document.png  y se solucion´o el problema
 """
 
-from PyQt5.QtCore import QTranslator
-from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
-from PyQt5.QtGui import QIcon
 from didyoureadme.ui.frmMain import frmMain
 from didyoureadme.ui.frmAccess import frmAccess
 from didyoureadme.libdidyoureadme import dirDocs, dirTmp, makedirs, Mem, qmessagebox,  now
 from didyoureadme.version import __version__, __versiondate__
 import didyoureadme.libdbupdates
 
-def main():
+def main(parameters=None):
     makedirs(dirTmp)
     makedirs(dirDocs)
 
-    app = QApplication(sys.argv)
-    app.setOrganizationName("Mariano Muñoz ©")
-    app.setOrganizationDomain("turulomio.users.sourceforge.net")
-    app.setApplicationName("DidYouReadMe")
-
-
     parser=argparse.ArgumentParser(
              prog='didyoureadme', 
-             description=app.translate("Core",'System to control who and when a group reads a document send by mail. It uses postgresql to store information'),
-             epilog=app.translate("Core","Developed by Mariano Muñoz 2015-{}".format(__versiondate__.year)),
+             description='System to control who and when a group reads a document send by mail. It uses postgresql to store information',
+             epilog="Developed by Mariano Muñoz 2015-{}".format(__versiondate__.year),
              formatter_class=argparse.RawTextHelpFormatter
          )
     if platform.system()=="Windows":
              parser.add_argument('--shortcuts-create', help="Create shortcuts for Windows", action='store_true', default=False)
              parser.add_argument('--shortcuts-remove', help="Remove shortcuts for Windows", action='store_true', default=False)
 
-    args=parser.parse_args()        
+    args=parser.parse_args(parameters)
 
     if platform.system()=="Windows":
              if args.shortcuts_create:
-                     from xulpymoney.shortcuts import create
+                     from didyoureadme.shortcuts import create
                      create()
                      sys.exit(0)
              if args.shortcuts_remove:
-                     from xulpymoney.shortcuts import remove
+                     from didyoureadme.shortcuts import remove
                      remove()
                      sys.exit(0)
-
+    #To avoid problemes with argpare and UI
+    from PyQt5.QtCore import QTranslator
+    from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
+    from PyQt5.QtGui import QIcon    
+    app = QApplication(sys.argv)
+    app.setOrganizationName("Mariano Muñoz ©")
+    app.setOrganizationDomain("turulomio.users.sourceforge.net")
+    app.setApplicationName("DidYouReadMe")
     mem=Mem()
     mem.log(QApplication.translate("DidYouReadMe", "Iniciando Didyoureadme-{}".format(__version__)))
 

@@ -13,17 +13,17 @@ def create():
       shell.IID_IShellLink
     )
 
-    icon=pkg_resources.resource_filename("xulpymoney","images/xulpymoney.ico")
-    shortcut.SetPath (r'xulpymoney.exe')
+    icon=pkg_resources.resource_filename("didyoureadme","images/didyoureadme.ico")
+    shortcut.SetPath (r'didyoureadme.exe')
     shortcut.SetDescription ("Personal and financial accounting system")
     shortcut.SetIconLocation (icon, 0)
      
     desktop_path = shell.SHGetFolderPath (0, shellcon.CSIDL_DESKTOP, 0, 0)
     persist_file = shortcut.QueryInterface (pythoncom.IID_IPersistFile)
-    persist_file.Save (os.path.join (desktop_path, "Xulpymoney.lnk"), 0)
+    persist_file.Save (os.path.join (desktop_path, "DidYouReadMe.lnk"), 0)
 
 
 def remove():
     desktop_path = shell.SHGetFolderPath (0, shellcon.CSIDL_DESKTOP, 0, 0)
-    os.remove(os.path.join (desktop_path, "Xulpymoney.lnk"))
+    os.remove(os.path.join (desktop_path, "DidYouReadMe.lnk"))
 
