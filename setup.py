@@ -1,3 +1,4 @@
+## @package Setup script
 from setuptools import setup, Command
 import os
 import platform
@@ -146,18 +147,31 @@ class Doc(Command):
         os.system("lrelease -qt5 didyoureadme.pro")
     ########################################################################
 
+#description
 with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
+#data_files
 if platform.system()=="Linux":
     data_files=[
-    ('/usr/share/pixmaps/', ['didyoureadme/images/didyoureadme.png']), 
-    ('/usr/share/applications/', ['didyoureadme.desktop']), 
-               ]
+        ('/usr/share/pixmaps/', ['didyoureadme/images/didyoureadme.png']), 
+        ('/usr/share/applications/', ['didyoureadme.desktop']), 
+    ]
 else:
     data_files=[]
 
-## Version of officegenerator captured from commons to avoid problems with package dependencies
+#entry_points
+entry_points={
+    'gui_scripts': [
+        'didyoureadme=didyoureadme.didyoureadme:main',
+    ]
+}
+if platform.system()=="Windows":
+    entry_points['console_scripts']=[
+        'didyoureadme_shortcuts=didyoureadme.shortcuts:create',
+    ]
+
+#version
 __version__= None
 with open('didyoureadme/version.py', encoding='utf-8') as f:
     for line in f.readlines():
@@ -169,36 +183,35 @@ setup(name='didyoureadme',
     description='System to control who and when a group reads a document send by mail. It uses postgresql to store information',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    classifiers=['Development Status :: 4 - Beta',
-              'Intended Audience :: End Users/Desktop',
-              'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-              'Programming Language :: Python :: 3',
-             ], 
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: End Users/Desktop',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Programming Language :: Python :: 3',
+    ], 
     keywords='mail read when who',
     url='https://github.com/Turulomio/didyoureadme',
     author='Turulomio',
     author_email='turulomio@yahoo.es',
     license='GPL-3',
     packages=['didyoureadme'],
-    entry_points = {'gui_scripts': ['didyoureadme=didyoureadme.didyoureadme:main',
-                                   ],
-                },
-    install_requires= [ 'setuptools',
-                        'psycopg2', 
-                        'pytz',
-                        'PyQt5;platform_system=="Windows"',
-                        'pywin32;platform_system=="Windows"',
-                        ], #PyQt5 doesn't have egg-info in Gentoo, so I remove it to install it with ebuild without making 2 installations. Should be added manually when using pip to install
+    entry_points = entry_points,
+    install_requires= [ 
+        'setuptools',
+        'psycopg2', 
+        'pytz',
+        'PyQt5;platform_system=="Windows"',
+        'pywin32;platform_system=="Windows"',
+    ], #PyQt5 doesn't have egg-info in Gentoo, so I remove it to install it with ebuild without making 2 installations. Should be added manually when using pip to install
     data_files=data_files,
     cmdclass={
-                        'doxygen': Doxygen,
-                        'doc': Doc,
-                        'uninstall':Uninstall, 
-                        'compile': Compile, 
-                        'procedure': Procedure,
-                        'pyinstaller': PyInstaller,
-                     },
+        'doxygen': Doxygen,
+        'doc': Doc,
+        'uninstall':Uninstall, 
+        'compile': Compile, 
+        'procedure': Procedure,
+        'pyinstaller': PyInstaller,
+     },
     zip_safe=False,
     include_package_data=True
-    )
-
+)

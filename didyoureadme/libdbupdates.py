@@ -1,3 +1,5 @@
+## @namespace didyoureadme.libdbupdates
+## @brief Database update library
 from didyoureadme.libdidyoureadme import *
 class Update:
     """DB update system

@@ -1,3 +1,5 @@
+## @namespace didyoureadme.libdidyoureadme
+## @brief Didyoureadme core library
 import os
 import datetime
 import hashlib
@@ -8,12 +10,15 @@ import pytz
 import smtplib 
 import urllib.parse
 import io
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+import sys
+
+from PyQt5.QtCore import QTranslator, QObject, QFile, Qt, QSettings, QThread
+from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem
+from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel, QColor, QPixmap
 import http.server
 import socketserver
 import pkg_resources
+from didyoureadme.version import __version__
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
 dirDocs=os.path.expanduser("~/.didyoureadme/docs/").replace("\\", "/")
@@ -586,12 +591,15 @@ class SetLanguages(SetCommons):
         if selected!=None:
                 combo.setCurrentIndex(combo.findData(selected.id))
 
+    ## Changes language
     def cambiar(self, id):    
         filename=pkg_resources.resource_filename("didyoureadme","i18n/didyoureadme_{}.qm".format(id))
-        print(os.getcwd(), filename, os.path.exists(filename))
         self.mem.qtranslator.load(filename)
-        qApp.installTranslator(self.mem.qtranslator)
-        print("Language changed to {}".format(id))
+        self.mem.app.installTranslator(self.mem.qtranslator)
+        if os.path.exists(filename):
+            self.mem.log("Language changed to {}".format(id))
+        elif id!="en":
+            self.mem.log("I couldn't change to {} with {}".format(id, filename))
 
 
 class SetUsers(SetCommonsQListView):
@@ -801,7 +809,7 @@ class Statistics(QObject):
         table.item(3, 0).setIcon(QIcon(":/mail.png"))
         table.setItem(3, 1, qright(mails))
 
-        opened=self.mem.con.cursor_one_field("select count(*) from documents")
+        opened=self.mem.con.cursor_one_field("select sum(numreads) from userdocuments")
         if opened==None:
             opened=0
         table.setItem(4, 0, qleft(self.tr("Number of times documents have been opened")))
@@ -1195,7 +1203,7 @@ class Document:
             return None
         else:
             cur.close()
-            qDegug("I couldn't create document from hash {}".format(hash ))
+            self.mem.log("I couldn't create document from hash {}".format(hash ))
             return None
 
     def __repr__(self):
@@ -1345,11 +1353,22 @@ class UserDocument:
         self.numreads=self.numreads+1
         self.save()
 
-class Mem:
-    def __init__(self):     
+class Mem(QObject):
+    def __init__(self): 
+        QObject.__init__(self)
+        makedirs(dirTmp)
+        makedirs(dirDocs)
+      
+        #To avoid problemes with argpare and UI
+        self.app = QApplication(sys.argv)
+        self.app.setOrganizationName("DidYouReadMe")
+        self.app.setOrganizationDomain("DidYouReadMe")
+        self.app.setApplicationName("DidYouReadMe")
+        self.qtranslator=QTranslator(self.app)
+
+        self.app.setQuitOnLastWindowClosed(True)
         self.con=None
         self.settings=QSettings()
-        self.qtranslator=None
         self.countries=SetCountries(self)
         self.countries.load_all()
         self.languages=SetLanguages(self)
@@ -1358,6 +1377,7 @@ class Mem:
         self.language=self.languages.find_by_id(self.settings.value("mem/language", "en"))
         self.localzone=self.settings.value("mem/localzone", "Europe/Madrid")
         self.lock_log=multiprocessing.Lock()
+        self.log(self.tr("Iniciando Didyoureadme-{}".format(__version__)))
 
     def __del__(self):
         if self.con:#Needed when reject frmAccess
@@ -1375,9 +1395,6 @@ class Mem:
         icon = QIcon()
         icon.addPixmap(QPixmap(":/admin.png"), QIcon.Normal, QIcon.Off)
         return icon
-
-    def setQTranslator(self, qtranslator):
-        self.qtranslator=qtranslator
 
     def hasDidyoureadmeRole(self):
         if "didyoureadme_admin" in self.con.roles or "didyoureadme_user" in self.con.roles:

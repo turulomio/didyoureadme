@@ -1,7 +1,7 @@
-import argparse
 import sys
-import platform
 
+from PyQt5.QtWidgets import QMessageBox, QDialog
+from PyQt5.QtGui import QIcon
 """
     Curiosidades:
     - En algunas imagenes al cargarlas me sal´ia Libpng warning: iCCP: known incorrect sRGB profile.
@@ -10,52 +10,15 @@ import platform
 
 from didyoureadme.ui.frmMain import frmMain
 from didyoureadme.ui.frmAccess import frmAccess
-from didyoureadme.libdidyoureadme import dirDocs, dirTmp, makedirs, Mem, qmessagebox,  now
-from didyoureadme.version import __version__, __versiondate__
+from didyoureadme.libdidyoureadme import Mem, qmessagebox,  now
 import didyoureadme.libdbupdates
 
 def main(parameters=None):
-    makedirs(dirTmp)
-    makedirs(dirDocs)
 
-    parser=argparse.ArgumentParser(
-             prog='didyoureadme', 
-             description='System to control who and when a group reads a document send by mail. It uses postgresql to store information',
-             epilog="Developed by Mariano Muñoz 2015-{}".format(__versiondate__.year),
-             formatter_class=argparse.RawTextHelpFormatter
-         )
-    if platform.system()=="Windows":
-             parser.add_argument('--shortcuts-create', help="Create shortcuts for Windows", action='store_true', default=False)
-             parser.add_argument('--shortcuts-remove', help="Remove shortcuts for Windows", action='store_true', default=False)
-
-    args=parser.parse_args(parameters)
-
-    if platform.system()=="Windows":
-             if args.shortcuts_create:
-                     from didyoureadme.shortcuts import create
-                     create()
-                     sys.exit(0)
-             if args.shortcuts_remove:
-                     from didyoureadme.shortcuts import remove
-                     remove()
-                     sys.exit(0)
-    #To avoid problemes with argpare and UI
-    from PyQt5.QtCore import QTranslator
-    from PyQt5.QtWidgets import QApplication, QDialog, QMessageBox
-    from PyQt5.QtGui import QIcon    
-    app = QApplication(sys.argv)
-    app.setOrganizationName("Mariano Muñoz ©")
-    app.setOrganizationDomain("turulomio.users.sourceforge.net")
-    app.setApplicationName("DidYouReadMe")
     mem=Mem()
-    mem.log(QApplication.translate("DidYouReadMe", "Iniciando Didyoureadme-{}".format(__version__)))
-
-    app.setQuitOnLastWindowClosed(True)
-    mem.setQTranslator(QTranslator(app))
-    print(mem.language)
 
     access=frmAccess(mem)
-    access.setLabel(QApplication.translate("DidYouReadMe","Please login to the DidYouReadMe database"))
+    access.setLabel(mem.tr("Please login to the DidYouReadMe database"))
     access.config_load()
     access.exec_()
 
@@ -63,7 +26,7 @@ def main(parameters=None):
         m=QMessageBox()
         m.setWindowIcon(QIcon(":/didyoureadme.png"))
         m.setIcon(QMessageBox.Information)
-        m.setText(QApplication.translate("DidYouReadMe","Error conecting to {} database in {} server").format(access.con.db, access.con.server))
+        m.setText(mem.tr("Error conecting to {} database in {} server").format(access.con.db, access.con.server))
         m.exec_()   
         sys.exit(1)
     access.config_save()
@@ -71,7 +34,7 @@ def main(parameters=None):
     access.hide()
 
     if mem.hasDidyoureadmeRole()==False:
-        qmessagebox(QApplication.translate("DidYouReadMe", "Database user hasn't a valid DidYouReadMe role"))
+        qmessagebox(mem.tr( "Database user hasn't a valid DidYouReadMe role"))
         sys.exit(2)
         
     if abs((mem.con.server_datetime()-now(mem.localzone)).total_seconds())>60:#
@@ -83,12 +46,12 @@ def main(parameters=None):
         if mem.isAdminMode():
             update.run()
         else:
-            qmessagebox(QApplication.translate("DidYouReadMe","DidYouReadMe needs to update its database schema. Please login with an admin role."))
+            qmessagebox(mem.tr("DidYouReadMe needs to update its database schema. Please login with an admin role."))
             sys.exit(3)
     update.syncing_files()
             
     frmmain = frmMain(mem) 
     frmmain.show()
     
-    sys.exit(app.exec_())
+    sys.exit(mem.app.exec_())
 
