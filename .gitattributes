@@ -1,0 +1,4 @@
+*.ui binary
+*.ts binary
+*.qm binary
+didyoureadme_rc.py binary

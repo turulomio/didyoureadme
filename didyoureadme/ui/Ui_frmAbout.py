@@ -48,8 +48,23 @@ class Ui_frmAbout(object):
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.tab = QtWidgets.QTabWidget(frmAbout)
-        self.tab.setObjectName("tab")
+        self.tabStatistics = QtWidgets.QTabWidget(frmAbout)
+        self.tabStatistics.setObjectName("tabStatistics")
+        self.tab_2 = QtWidgets.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.tab_2)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.tblStatistics = myQTableWidget(self.tab_2)
+        self.tblStatistics.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.tblStatistics.setAlternatingRowColors(True)
+        self.tblStatistics.setObjectName("tblStatistics")
+        self.tblStatistics.setColumnCount(0)
+        self.tblStatistics.setRowCount(0)
+        self.tblStatistics.verticalHeader().setVisible(False)
+        self.verticalLayout_2.addWidget(self.tblStatistics)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/statistics.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.tabStatistics.addTab(self.tab_2, icon1, "")
         self.tabGLParchis = QtWidgets.QWidget()
         self.tabGLParchis.setObjectName("tabGLParchis")
         self.hboxlayout = QtWidgets.QHBoxLayout(self.tabGLParchis)
@@ -58,9 +73,9 @@ class Ui_frmAbout(object):
         self.textBrowser.setOpenExternalLinks(True)
         self.textBrowser.setObjectName("textBrowser")
         self.hboxlayout.addWidget(self.textBrowser)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/group.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.tab.addTab(self.tabGLParchis, icon1, "")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/group.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.tabStatistics.addTab(self.tabGLParchis, icon2, "")
         self.tabLicense = QtWidgets.QWidget()
         self.tabLicense.setObjectName("tabLicense")
         self.vboxlayout = QtWidgets.QVBoxLayout(self.tabLicense)
@@ -71,7 +86,7 @@ class Ui_frmAbout(object):
         self.txtLicense.setHtml("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Sans Serif\'; font-size:9pt; font-weight:600;\">GNU GENERAL PUBLIC LICENSE</span></p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Sans Serif\'; font-size:9pt;\">Version 3, 29 June 2007 </span></p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Sans Serif\'; font-size:9pt;\">Copyright © 2007 Free Software Foundation, Inc. &lt;</span><a href=\"http://fsf.org/\"><span style=\" font-family:\'Sans Serif\'; font-size:9pt; text-decoration: underline; color:#0057ae;\">http://fsf.org/</span></a><span style=\" font-family:\'Sans Serif\'; font-size:9pt;\">&gt;</span></p>\n"
@@ -213,19 +228,21 @@ class Ui_frmAbout(object):
         self.txtLicense.setAcceptRichText(True)
         self.txtLicense.setObjectName("txtLicense")
         self.vboxlayout.addWidget(self.txtLicense)
-        self.tab.addTab(self.tabLicense, icon, "")
-        self.verticalLayout.addWidget(self.tab)
+        self.tabStatistics.addTab(self.tabLicense, icon, "")
+        self.verticalLayout.addWidget(self.tabStatistics)
         self.horizontalLayout_2.addLayout(self.verticalLayout)
 
         self.retranslateUi(frmAbout)
-        self.tab.setCurrentIndex(0)
+        self.tabStatistics.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmAbout)
 
     def retranslateUi(self, frmAbout):
         _translate = QtCore.QCoreApplication.translate
         frmAbout.setWindowTitle(_translate("frmAbout", "About DidYouReadMe"))
         self.lblApp.setText(_translate("frmAbout", "DidYouReadMe"))
-        self.tab.setTabText(self.tab.indexOf(self.tabGLParchis), _translate("frmAbout", "Credits"))
-        self.tab.setTabText(self.tab.indexOf(self.tabLicense), _translate("frmAbout", "License"))
+        self.tabStatistics.setTabText(self.tabStatistics.indexOf(self.tab_2), _translate("frmAbout", "Statistics"))
+        self.tabStatistics.setTabText(self.tabStatistics.indexOf(self.tabGLParchis), _translate("frmAbout", "Credits"))
+        self.tabStatistics.setTabText(self.tabStatistics.indexOf(self.tabLicense), _translate("frmAbout", "License"))
 
+from didyoureadme.ui.myqtablewidget import myQTableWidget
 import didyoureadme.images.didyoureadme_rc

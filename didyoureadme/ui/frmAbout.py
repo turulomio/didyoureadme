@@ -1,13 +1,10 @@
-from didyoureadme.version import __versiondate__
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
-from didyoureadme.ui.Ui_frmAbout import *
-
+from didyoureadme.version import __version__
+from PyQt5.QtWidgets import QDialog
+from didyoureadme.ui.Ui_frmAbout import Ui_frmAbout
+from didyoureadme.libdidyoureadme import Statistics
 
 class frmAbout(QDialog, Ui_frmAbout):
-    def __init__(self, parent = None, name = None, modal = False):
+    def __init__(self, mem, parent = None):
         """
         Constructor
         
@@ -16,14 +13,17 @@ class frmAbout(QDialog, Ui_frmAbout):
         @param modal Flag indicating a modal dialog. (boolean)
         """
         QDialog.__init__(self, parent)
-        if name:
-            self.setObjectName(name)
+        self.mem=mem
         self.setupUi(self)
-        self.lblVersion.setText(self.tr("version {0}").format(__versiondate__))
+        self.lblVersion.setText(self.tr("version {}").format(__version__))
         self.textBrowser.setHtml(
-            self.tr("Web page is at <a href=\"http://didyoureadme.sourceforge.net\">http://didyoureadme.sourceforge.net</a><p> <p>")+
-            self.tr("This app has been developed by Mariano Muñoz.<p>")+
+            self.tr("""Web page is at <a href="https://github.com/Turulomio/didyoureadme">GitHub</a><p> <p>""")+
+            self.tr("This app has been developed by Mariano Mu\\xf1oz.<p>")+
             self.tr("It has been translated by:")+
-            "<ul><li>Mariano Muñoz</li></ul><p>\n"+
+            "<ul><li>Mariano Mu\\xf1oz</li></ul><p>\n"+
             self.tr("to the following languages<p>")+
             "<ul><li>English</li><li>Espa\xf1ol</li></ul><p>")
+        #Table
+        self.tblStatistics.settings(self.mem, "frmAbout", "tblStatistics")
+        s=Statistics(self.mem)
+        s.qtablewidget(self.tblStatistics)

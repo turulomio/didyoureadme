@@ -1,20 +1,22 @@
 import datetime
 import urllib.request
 import shutil
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtPrintSupport import *
-from didyoureadme.libdidyoureadme import *
+import os
+import platform
+from PyQt5.QtCore import pyqtSlot, Qt, QUrl, QProcess, QEvent
+from PyQt5.QtGui import QIcon, QDesktopServices, QTextDocument
+from PyQt5.QtWidgets import QMainWindow, QLabel, QDialog, QMessageBox, QApplication,  QMenu
+from PyQt5.QtPrintSupport import QPrinter
+from didyoureadme.libdidyoureadme import TWebServer, TSend, dirDocs, dirTmp, now, SetDocuments, qmessagebox
 from didyoureadme.version import __version__, __versiondate__
 
-from didyoureadme.ui.Ui_frmMain import *
-from didyoureadme.ui.frmAbout import *
-from didyoureadme.ui.frmSettings import *
-from didyoureadme.ui.frmHelp import *
-from didyoureadme.ui.frmDocumentsIBM import *
-from didyoureadme.ui.frmGroupsIBM import *
-from didyoureadme.ui.frmUsersIBM import *
+from didyoureadme.ui.Ui_frmMain import Ui_frmMain
+from didyoureadme.ui.frmAbout import frmAbout
+from didyoureadme.ui.frmSettings import frmSettings
+from didyoureadme.ui.frmHelp import frmHelp
+from didyoureadme.ui.frmDocumentsIBM import frmDocumentsIBM
+from didyoureadme.ui.frmGroupsIBM import frmGroupsIBM
+from didyoureadme.ui.frmUsersIBM import frmUsersIBM
 
 
 class frmMain(QMainWindow, Ui_frmMain):#    
@@ -136,13 +138,13 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     @pyqtSlot()      
     def on_actionAbout_triggered(self):
-        fr=frmAbout(self,"frmabout")
-        fr.open()
+        fr=frmAbout(self.mem)
+        fr.exec_()
                 
     @pyqtSlot()      
     def on_actionHelp_triggered(self):
         fr=frmHelp(self,"frmHelp")
-        fr.open()
+        fr.exec_()
         
     @pyqtSlot()      
     def on_actionSendAgain_triggered(self):

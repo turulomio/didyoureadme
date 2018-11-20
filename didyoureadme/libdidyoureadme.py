@@ -24,7 +24,7 @@ class Connection(QObject):
     COPIADA DE didyoureadme NO EDITAR"""
     def __init__(self):
         QObject.__init__(self)
-        
+
         self.user=None
         self.password=None
         self.server=None
@@ -34,7 +34,7 @@ class Connection(QObject):
         self._active=False
         self.init=None
         self.roles=None #Se carga al realizar la conexi´on
-        
+
     def init__create(self, user, password, server, port, db):
         self.user=user
         self.password=password
@@ -47,15 +47,15 @@ class Connection(QObject):
     def cursor(self):
         return self._con.cursor()
 
-        
-    
+
+
     def mogrify(self, sql, arr):
         """Mogrify text"""
         cur=self._con.cursor()
         s=cur.mogrify(sql, arr)
         cur.close()
         return  s
-        
+
     def cursor_one_row(self, sql, arr=[]):
         """Returns only one row"""
         cur=self._con.cursor()
@@ -63,7 +63,15 @@ class Connection(QObject):
         row=cur.fetchone()
         cur.close()
         return row        
-        
+
+    ## Returns only one field
+    def cursor_one_field(self, sql, arr=[]):
+        cur=self._con.cursor()
+        cur.execute(sql, arr)
+        row=cur.fetchone()[0]
+        cur.close()
+        return row 
+
     def cursor_one_column(self, sql, arr=[]):
         """Returns un array with the results of the column"""
         cur=self._con.cursor()
@@ -73,17 +81,17 @@ class Connection(QObject):
             result.append(row[0])
         cur.close()
         return result
-        
+
     def commit(self):
         self._con.commit()
-        
+
     def rollback(self):
         self._con.rollback()
-        
-        
+
+
     def connection_string(self):
         return "dbname='{}' port='{}' user='{}' host='{}' password='{}'".format(self.db, self.port, self.user, self.server, self.password)
-        
+
     def connect(self, connection_string=None):
         """Used in code to connect using last self.strcon"""
         if connection_string==None:
@@ -99,21 +107,21 @@ class Connection(QObject):
         self.init=datetime.datetime.now()
         self.roles=self.getUserRoles()
 
-        
+
     def newConnection(self):
         """Return a new connection object, with the same connection string"""
         new=Connection()
         new.connect(self.connection_string())
         return new
-        
+
     def disconnect(self):
         self._active=False
         self._con.close()
-        
+
     def is_active(self):
         return self._active
-        
-        
+
+
     def is_superuser(self):
         """Checks if the user has superuser role"""
         res=False
@@ -135,7 +143,7 @@ class Connection(QObject):
         userid=cur.fetchone()[0]
         #Saca los grupos que empiezan con didyoureadme_ en los que est´e el usuario
         return self.cursor_one_column("select groname from pg_group where %s=ANY(grolist) and groname like 'didyoureadme_%%'", (userid, ))
-        
+
     def server_datetime(self):
         return self.cursor_one_row("SELECT NOW()")[0]
 
@@ -144,10 +152,10 @@ class Backup:
         pass
     def save(self):
         pass
-            
-            
-            
-            
+
+
+
+
 class MyHTTPServer(socketserver.TCPServer):
     """Clase usada para pasar el objeto mem, al servidor y a sus request"""
     def __init__(self, server_address, RequestHandlerClass, bind_and_activate=True, mem=None):
@@ -159,10 +167,10 @@ class MyHTTPServer(socketserver.TCPServer):
     def finish_request(self, request, client_address):
         """Finish one request by instantiating RequestHandlerClass."""
         request=self.RequestHandlerClass(request, client_address, self, self.mem)
-        
+
         if request.path in ["/favicon.ico",  "/expired.png", "/didyoureadme.png" ]:#Imagenes del servidor
             return 
-        
+
         if request.request_served==True:
             #Actualiza la base de datos
             con=self.mem.con.newConnection()
@@ -192,7 +200,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.document=None
         self.request_served=False
         http.server.SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
-        
+
     def Resource(self, resource):
         """Serve Qt resources"""
         stream = QFile(resource)
@@ -207,7 +215,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(buffer)))
         self.end_headers()
         return f
-                
+
     def Expired(self, document):
         s="""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -233,8 +241,8 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(encoded)))
         self.end_headers()
         return f
-        
-        
+
+
     def ErrorPage(self, text):
         """To avoid listing"""
         s="""<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -261,10 +269,10 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(encoded)))
         self.end_headers()
         return f
-        
+
     def send_head(self):
         """Overriden
-        
+
         Tras muchos dolores de cabeza no consigo nada
         Funciona bien lanzando con eric
         Pero al pasar por freeze falla en esta función
@@ -277,7 +285,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             return self.Resource(':/expired.png')
         elif self.path=="/didyoureadme.png":
             return self.Resource(':/didyoureadme.png')
-        
+
         #self.path is /get/hash1l68f2e2cd140e4c2e2fd94eb51376f3730d15108a4689de1a918a6526b0d7ee37/aldea.odt
         try:
             (userhash, documenthash)=self.path.split("/")[2].split("l")
@@ -290,13 +298,13 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.user=None
             self.mem.log(QApplication.translate("DidYouReadMe","Error parsing path"))
             return self.ErrorPage(QApplication.translate("DidYouReadMe","Error parsing path"))
-            
+
         path = self.translate_path(self.document.hash)  
 
         if self.document.expiration<now(self.mem.localzone):
             self.mem.log(QApplication.translate("DidYouReadMe", "Document {} has expired".format(self.document.id)))
             return self.Expired(self.document)
-            
+
         ctype = self.guess_type(path)
 
         f=None
@@ -305,7 +313,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         except OSError:
             self.mem.log(QApplication.translate("DidYouReadMe", "File {} not found".format(path)))
             return self.ErrorPage(QApplication.translate("DidYouReadMe","File not found"))
-            
+
         try:
             self.send_response(200)
             self.send_header("Content-type", ctype)
@@ -319,7 +327,7 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.mem.log("Sending page raised an error")
             f.close()
             raise
-            
+
 
 
 
@@ -331,26 +339,26 @@ class SetCommons:
         self.id=None
         self.name=None
         self.selected=None#Used to select a item in the set. Usefull in tables. Its a item
-    
+
     def arr_position(self, id):
         """Returns arr position of the id, useful to select items with unittests"""
         for i, a in enumerate(self.arr):
             if a.id==id:
                 return i
         return None
-            
+
 
     def append(self,  obj):
         self.arr.append(obj)
         self.dic_arr[str(obj.id)]=obj
-        
+
     def remove(self, obj):
         self.arr.remove(obj)
         del self.dic_arr[str(obj.id)]
-        
+
     def length(self):
         return len(self.arr)
-        
+
     def find(self, id,  log=False):
         """Finds by id"""
         try:
@@ -368,7 +376,7 @@ class SetCommons:
             if log:
                 print ("SetCommons ({}) fails finding {}".format(self.__class__.__name__, id))
             return None
-            
+
     def find_by_arr(self, id,  log=False):
         """log permite localizar errores en find. Ojo hay veces que hay find fallidos buscados como en UNION
                 inicio=datetime.datetime.now()
@@ -387,7 +395,7 @@ class SetCommons:
         if log:
             print ("SetCommons ({}) fails finding  by arr {}".format(self.__class__.__name__, id))
         return None
-                
+
     def order_by_id(self):
         """Orders the Set using self.arr"""
         try:
@@ -395,7 +403,7 @@ class SetCommons:
             return True
         except:
             return False
-        
+
     def order_by_name(self):
         """Orders the Set using self.arr"""
         try:
@@ -415,14 +423,14 @@ class SetCommons:
 
         if selected!=None:
             combo.setCurrentIndex(combo.findData(selected.id))
-                
+
     def clean(self):
         """Deletes all items"""
         self.arr=[]
         self.dic_arr={}
 #        for a in self.arr:
 #            self.remove(a)
-                
+
     def clone(self,  *initparams):
         """Returns other Set object, with items referenced, ojo con las formas de las instancias
         initparams son los parametros de iniciación de la clase"""
@@ -430,7 +438,7 @@ class SetCommons:
         for a in self.arr:
             result.append(a)
         return result
-        
+
     def union(self,  set,  *initparams):
         """Returns a new set, with the union comparing id
         initparams son los parametros de iniciación de la clse"""        
@@ -441,11 +449,11 @@ class SetCommons:
             if resultado.find(p.id, False)==None:
                 resultado.append(p)
         return resultado
-        
+
 class SetCommonsQListView(SetCommons):
     def __init__(self):
         SetCommons.__init__(self)
-        
+
     def qlistview(self, list, selected):
         """Shows a list with the items of arr,
         selected lista de group a seleccionar"""
@@ -461,7 +469,7 @@ class SetCommonsQListView(SetCommons):
             item.setData(g.id, Qt.UserRole) # Para el role usuario
             model.setItem(i, 0, item);
         list.setModel(model)
-        
+
     def qlistview_getselected(self, list, *initparams):
         """Returns a new set, with the selected in the list
         initparams son los parametros de iniciación de la clse"""        
@@ -471,16 +479,16 @@ class SetCommonsQListView(SetCommons):
                 id=list.model().index(i, 0).data(Qt.UserRole)
                 resultado.append(self.find(id))   
         return resultado
-        
+
 
 class SetGroups(SetCommonsQListView):
     def __init__(self, mem):
         SetCommonsQListView.__init__(self)
         self.mem=mem
-        
+
     def quit_user_from_all_groups(self, user):
         """Se quita un usuario de todos los grupos tanto lógicamente como físicamente"""
-        
+
         todelete=None#Se usa para no borrar en iteracion
         for g in self.arr:
             for u in g.members.arr:
@@ -490,8 +498,8 @@ class SetGroups(SetCommonsQListView):
                 g.members.remove(user)
                 g.save()# Para no grabar en bd salvoi que encuente se pone aquí
                 todelete=None
-                    
-           
+
+
     def qtablewidget(self, table):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
@@ -523,7 +531,7 @@ class SetGroups(SetCommonsQListView):
             self.append( Group(self.mem, row['name'], members, row['id']))        
         cur.close()
 
-        
+
 class Group:
     def __init__(self, mem,   name, members,  id=None):
         """members es un SetUsers"""
@@ -531,13 +539,13 @@ class Group:
         self.name=name
         self.id=id
         self.mem=mem
-        
+
     def delete(self):
         #Borra de la base de datos
         cur=self.mem.con.cursor()
         cur.execute("delete from groups where id=%s", (self.id, ))
         cur.close()
-        
+
     def save(self):
         def members2pg():
             if self.members.length()==0:
@@ -546,7 +554,7 @@ class Group:
             for m in self.members.arr:
                 resultado=resultado + str(m.id)+", "
             return "ARRAY["+resultado[:-2]+"]"
-            
+
         cur=self.mem.con.cursor()
         if self.id==None:
             #Crea registro en base de datos
@@ -556,13 +564,13 @@ class Group:
             #Modifica registro en base de datos
             cur.execute("update groups set name=%s, members="+members2pg()+" where id=%s",(self.name, self.id ))
         cur.close()
-            
+
 
 class SetLanguages(SetCommons):
     def __init__(self, mem):
         SetCommons.__init__(self)
         self.mem=mem
-        
+
     def load_all(self):
         self.append(Language(self.mem, "en","English" ))
         self.append(Language(self.mem, "es","Español" ))
@@ -585,12 +593,12 @@ class SetLanguages(SetCommons):
         qApp.installTranslator(self.mem.qtranslator)
         print("Language changed to {}".format(id))
 
-        
+
 class SetUsers(SetCommonsQListView):
     def __init__(self, mem):
         SetCommonsQListView.__init__(self)
         self.mem=mem
-    
+
 
     def user_from_hash(self, hash):
         for u in self.arr:
@@ -598,15 +606,15 @@ class SetUsers(SetCommonsQListView):
                 return u
         self.mem.log("User {} not found".format(hash))
         return None
-        
+
     def load(self, sql):
         cur=self.mem.con.cursor()
         cur.execute(sql)
         for row in cur:
             self.append(User(self.mem, row['datetime'],  row['post'], row['name'], row['mail'], row['active'], row['hash'],  row['id']))
         cur.close()
-            
-            
+
+
     def string_of_names(self):
         "String of names sorted"
         self.order_by_name()
@@ -615,7 +623,7 @@ class SetUsers(SetCommonsQListView):
             users=users+u.name+"\n"
         return users[:-1]
 
-           
+
     def qtablewidget(self, table):
         """Section es donde guardar en el config file, coincide con el nombre del formulario en el que está la table
         Devuelve sumatorios"""
@@ -661,13 +669,13 @@ class User:
 
     def __repr__(self):
         return "{0} ({1})".format(self.name, self.id)
-                
-                
+
+
     def isDeletable(self):
         for g in self.mem.data.groups.arr:
             if g.members.find(self.id)!=None and g.id!=1:
                 return False
-        
+
         cur=self.mem.con.cursor()
         cur.execute("select count(*) from userdocuments where id_users=%s", (self.id, ))
         num=cur.fetchone()[0]
@@ -675,17 +683,17 @@ class User:
         if num>0:
             return False
         return True
-        
+
     def delete(self):
         cur=self.mem.con.cursor()
         cur.execute("delete from users where id=%s", (self.id, ))
         cur.close()
-        
+
     def calculateHash(self):
         if self.id==None:
             return None
         return hashlib.sha256(("u."+str(self.id)+str(self.datetime)).encode('utf-8')).hexdigest()
-    
+
     def save(self):
         cur=self.mem.con.cursor()        
         if self.id==None:
@@ -716,7 +724,7 @@ class TWebServer(QThread):
     def __init__(self, mem):
         QThread.__init__(self)
         self.mem=mem
-        
+
         os.chdir(dirDocs)
         self.server=MyHTTPServer((self.mem.settings.value("webserver/interface", "127.0.0.1"), int(self.mem.settings.value("webserver/port", "8000"))), MyHTTPRequestHandler, mem=self.mem)
 
@@ -725,7 +733,7 @@ class TWebServer(QThread):
 class SettingsDB:
     def __init__(self, mem):
         self.mem=mem
-    
+
     def exists(self, name):
         """Returns true if globals is saved in database"""
         cur=self.mem.con.cursor()
@@ -736,7 +744,7 @@ class SettingsDB:
             return False
         else:
             return True
-  
+
     def value(self, name, default):
         """Search in database if not use default"""            
         cur=self.mem.con.cursor()
@@ -747,7 +755,7 @@ class SettingsDB:
             value=cur.fetchone()[0]
             cur.close()
             return value
-        
+
     def setValue(self, name, value):
         """Set the global value.
         It doesn't makes a commit, you must do it manually
@@ -761,6 +769,47 @@ class SettingsDB:
         cur.close()
         self.mem.con.commit()
 
+## Class to calculate Didyoureadme statistics
+class Statistics(QObject):
+    def __init__(self, mem):
+        QObject.__init__(self)
+        self.mem=mem
+
+    def qtablewidget(self, table):
+        table.setColumnCount(2)
+        table.setHorizontalHeaderItem(0, QTableWidgetItem(self.tr("Concept")))
+        table.setHorizontalHeaderItem(1, QTableWidgetItem(self.tr("Value")))
+        table.clearContents()
+        table.setRowCount(5)
+        table.applySettings()
+
+        table.setItem(0, 0, qleft(self.tr("Number of groups")))
+        table.item(0, 0).setIcon(QIcon(":/group.png"))
+        table.setItem(0, 1, qright(self.mem.data.groups.length()))
+
+        table.setItem(1, 0, qleft(self.tr("Number of users")))
+        table.item(1, 0).setIcon(QIcon(":/user.png"))
+        table.setItem(1, 1, qright(self.mem.data.users_all().length()))
+
+        docs=self.mem.con.cursor_one_field("select count(*) from documents")
+        table.setItem(2, 0, qleft(self.tr("Number of documents")))
+        table.item(2, 0).setIcon(QIcon(":/document.png"))
+        table.setItem(2, 1, qright(docs))
+
+        mails=self.mem.con.cursor_one_field("select count(*) from userdocuments where sent is not null; ")
+        table.setItem(3, 0, qleft(self.tr("Number of mails sent")))
+        table.item(3, 0).setIcon(QIcon(":/mail.png"))
+        table.setItem(3, 1, qright(mails))
+
+        opened=self.mem.con.cursor_one_field("select count(*) from documents")
+        if opened==None:
+            opened=0
+        table.setItem(4, 0, qleft(self.tr("Number of times documents have been opened")))
+        table.item(4, 0).setIcon(QIcon(":/star.png"))
+        table.setItem(4, 1, qright(opened))
+
+        table.clearSelection() 
+
 class TSend(QThread):
     def __init__(self, mem):
         QThread.__init__(self)
@@ -769,10 +818,10 @@ class TSend(QThread):
         self.sent=0
         self.stop_request=False
         self.interval=30#segundos
-        
+
     def setInterval(self, interval):
         self.interval=interval
-        
+
     def shutdown(self):
         self.stop_request=True
 
@@ -787,7 +836,7 @@ class TSend(QThread):
                 u=self.mem.data.users_active.find(row['id_users'])
                 mail=Mail(doc, u, self.mem)
                 mail.send()
-                
+
                 if mail.sent==True:
                     self.mem.log("Document {0} was sent to {1}".format(mail.document.id, mail.user.mail))
                     d=UserDocument(mail.user, mail.document, self.mem)
@@ -813,7 +862,7 @@ class Language:
     def __init__(self, mem, id, name):
         self.id=id
         self.name=name
-    
+
 
 class Mail:
     def __init__(self, document, user,  mem):
@@ -843,7 +892,7 @@ class Mail:
                 return "Sat"
             if noww.isoweekday()==7:
                 return "Sun"
-                
+
         def month(noww):
             """Se hace esta función para que no haya problemas con la localización de %b"""
             if noww.month==1:
@@ -870,7 +919,7 @@ class Mail:
                 return "Nov"
             elif noww.month==12:
                 return "Dec"
-            
+
         url="http://{0}:{1}/get/{2}l{3}/{4}".format(self.mem.settings.value("webserver/ip", "127.0.0.1"), self.mem.settings.value("webserver/port", "8000"), self.user.hash, self.document.hash, urllib.parse.quote(os.path.basename(self.document.filename.lower())))
 
         comment=""
@@ -891,7 +940,7 @@ class Mail:
         url +"\n\n"+
         self.mem.settings.value("smtp/support", "Please, contact system administrator"))
         return s.encode('UTF-8')
-    
+
     def send(self):      
         server=None#server creation could fail
         if self.mem.settings.value("smtp/tls", "False")=="True":
@@ -930,7 +979,7 @@ class SetCountries(SetCommons):
     def __init__(self, mem):
         SetCommons.__init__(self)
         self.mem=mem   
-        
+
     def load_all(self):
         self.append(Country().init__create("es",QApplication.translate("DidYouReadMe","Spain")))
         self.append(Country().init__create("be",QApplication.translate("DidYouReadMe","Belgium")))
@@ -971,7 +1020,7 @@ class SetDocuments(SetCommons):
     def __init__(self, mem):
         SetCommons.__init__(self)
         self.mem=mem #solo se usa para conexion, los datos se guardan en arr
-                
+
     def load(self, sql):
         """Carga según el sql pasado debe ser un select * from documents ...."""
         cur=self.mem.con.cursor()
@@ -1006,7 +1055,7 @@ class SetDocuments(SetCommons):
                 table.item(i, 4).setIcon(QIcon(":/expired.png"))
             table.setItem(i, 5, qleft(d.name))
             table.item(i, 5).setIcon(QIcon(":/document.png"))
-            
+
             if d.numreads==d.numplanned and d.numplanned>0:
                 for column in range( 1, 4):
                     table.item(i, column).setBackground(QColor(198, 205, 255))
@@ -1031,17 +1080,17 @@ class Country:
     def __init__(self):
         self.id=None
         self.name=None
-        
+
     def init__create(self, id, name):
         self.id=id
         self.name=name
         return self
-            
+
     def qicon(self):
         icon=QIcon()
         icon.addPixmap(self.qpixmap(), QIcon.Normal, QIcon.Off)    
         return icon 
-        
+
     def qpixmap(self):
         if self.id=="be":
             return QPixmap(":/belgium.gif")
@@ -1077,8 +1126,8 @@ class Country:
             return QPixmap(":/rusia.png")
         else:
             return QPixmap(":/star.gif")
-            
-        
+
+
 class DBData:
     def __init__(self, mem):
         self.mem=mem
@@ -1099,7 +1148,7 @@ class DBData:
 
     def users_all(self):
         return self.users_active.union(self.users_inactive, self.mem)
-            
+
     def users_set(self, active):
         """Function to point to list if is active or not"""
         if active==True:
@@ -1112,13 +1161,13 @@ class DBData:
             return self.documents_active
         else:
             return self.documents_inactive    
-    
+
 
 
 class Document:
     def __init__(self, mem):
         self.mem=mem
-        
+
     def init__create(self,  dt, name, filename, comment, expiration,   hash='Not calculated',  id=None):
         self.id=id
         self.datetime=dt
@@ -1131,7 +1180,7 @@ class Document:
         self.numplanned=0
         self.expiration=expiration
         return self
-        
+
     def init__from_hash(self, hash):
         cur=self.mem.con.cursor()
         cur.execute("select  id, datetime, title, comment, filename, hash, expiration  from documents where hash=%s", (hash, ))
@@ -1148,10 +1197,10 @@ class Document:
             cur.close()
             qDegug("I couldn't create document from hash {}".format(hash ))
             return None
-        
+
     def __repr__(self):
         return "{0} ({1})".format(self.name, self.id)
-        
+
     def hasPendingMails(self):
         """Returns a boolean, if the document has pending mails searching in database"""
         cur=self.mem.con.cursor()
@@ -1162,12 +1211,12 @@ class Document:
             return False
         else:
             return True
-        
+
     def isExpired(self):
         if self.expiration>now(self.mem.localzone):
             return False
         return True
-        
+
     def calculateHash(self):
         """Se mete el datetime porque sino se podría adivinar el ocmunicado"""
         return hashlib.sha256(("d."+str(self.id)+str(self.datetime)).encode('utf-8')).hexdigest()
@@ -1179,7 +1228,7 @@ class Document:
         cur.execute("delete from documents where id=%s", (self.id, ))        
         cur.close()
         self.unlink()
-        
+
     def send_again(self):
         """Send document to all userdocuments even if allready have been send"""
         cur=self.mem.con.cursor()
@@ -1198,15 +1247,15 @@ class Document:
             else:
                 self.mem.log(QApplication.translate("DidYouReadMe","Error sending again message {} to {}").format(mail.document.id, mail.user.mail))  
         cur.close()
-        
+
     def unlink(self):
         """Physical deletion of the document"""
         try:
             os.unlink(dirDocs+self.hash)
         except:
             print ("Error deleting {}. Document {}".format(dirDocs+self.hash,  self.id))
-        
-        
+
+
     def save(self):
         """No se puede modificar, solo insertar de nuevo
         Modificar es cambiar expiration
@@ -1227,7 +1276,7 @@ class Document:
             else:
                 self.unlink()
         cur.close()
-        
+
     def bytea_to_file(self, filename):
 #        print("bytea_to_file", filename)
         cur=self.mem.con.cursor()
@@ -1238,7 +1287,7 @@ class Document:
             return True
         cur.close()
         return False
-        
+
     def file_to_bytea(self, filename):
 #        print("file_to_bytea", filename)
         bytea=open(filename,  "rb").read()        
@@ -1255,7 +1304,7 @@ class Document:
         cur.execute("select count(*) from userdocuments where id_documents=%s;", (self.id, ))
         self.numplanned=cur.fetchone()[0]
         cur.close()
-        
+
 class UserDocument:
     def __init__(self, user, document, mem):
         self.user=user
@@ -1275,7 +1324,7 @@ class UserDocument:
             self.numreads=row['numreads']
             self.new=False
         cur.close()
-        
+
     def save(self):
         cur=self.mem.con.cursor()
         if self.new==True:
@@ -1286,11 +1335,11 @@ class UserDocument:
                                 (self.sent, self.read, self.numreads, self.user.id, self.document.id))
         self.mem.con.commit()
         cur.close()
-            
-        
+
+
     def readed(self, localzone):
         """Actualiza datos y salva"""
-        
+
         if self.read==None:
             self.read=datetime.datetime.now(pytz.timezone(localzone))
         self.numreads=self.numreads+1
@@ -1309,11 +1358,11 @@ class Mem:
         self.language=self.languages.find_by_id(self.settings.value("mem/language", "en"))
         self.localzone=self.settings.value("mem/localzone", "Europe/Madrid")
         self.lock_log=multiprocessing.Lock()
-        
+
     def __del__(self):
         if self.con:#Needed when reject frmAccess
             self.con.disconnect()
-            
+
     def log(self, message):
         s="{} {}\n".format(str(datetime.datetime.now()),  message)
         print(s[:-1])
@@ -1321,7 +1370,7 @@ class Mem:
             f=open(dirDocs+"log.txt", "a")
             f.write(s)
             f.close()
-                
+
     def qicon_admin(self):
         icon = QIcon()
         icon.addPixmap(QPixmap(":/admin.png"), QIcon.Normal, QIcon.Off)
@@ -1364,17 +1413,24 @@ def qdatetime(dt, localzone):
         a.setTextColor(QColor(0, 0, 255))
     a.setTextAlignment(Qt.AlignVCenter|Qt.AlignRight)
     return a
-    
-    
+
+
 def qcenter(text):
     a=QTableWidgetItem(str(text))
     a.setTextAlignment(Qt.AlignVCenter|Qt.AlignCenter)
     return a    
+
 def qleft(text):
     a=QTableWidgetItem(str(text))
     a.setTextAlignment(Qt.AlignVCenter|Qt.AlignLeft)
     return a
-    
+
+## Returns a QTableWidgetItem aligned to right
+def qright(s):
+    a=QTableWidgetItem(str(s))
+    a.setTextAlignment(Qt.AlignVCenter|Qt.AlignRight)
+    return a
+
 def dt(date, hour, zonename):
     """Función que devuleve un datetime con zone info.
     Zone is an object."""
@@ -1407,7 +1463,7 @@ def c2b(state):
         return True
     else:
         return False
-        
+
 
 
 def b2c(booleano):
@@ -1416,6 +1472,6 @@ def b2c(booleano):
         return Qt.Checked
     else:
         return Qt.Unchecked     
-        
-        
+
+
 
