@@ -12,6 +12,7 @@ class frmSettings(QDialog, Ui_frmSettings):
         self.parent=parent
         self.setupUi(self)
         self.mem.languages.qcombobox(self.cmbLanguage, self.mem.language)
+        self.spnExpiration.setValue(int(self.mem.settings.value("frmSettings/expiration", "90")))
         self.txtWebServerIP.setText(self.mem.settings.value("webserver/ip", "127.0.0.1"))
         self.txtWebServerPort.setText(self.mem.settings.value("webserver/port", "8000"))
         self.txtSupport.setPlainText(self.mem.settings.value("smtp/support", "Please, contact system administrator"))
@@ -48,6 +49,7 @@ class frmSettings(QDialog, Ui_frmSettings):
         self.mem.settings.setValue("smtp/smtpport",self.txtSMTPPort.text())
         self.mem.settings.setValue("smtp/smtpuser",self.txtSMTPUser.text())
         self.mem.settings.setValue("smtp/from",self.txtSMTPFrom.text())
+        self.mem.settings.setValue("frmSettings/expiration", str(self.spnExpiration.value()))
         if self.chkTLS.checkState()==Qt.Checked:
             self.mem.settings.setValue("smtp/tls","True")
         else:

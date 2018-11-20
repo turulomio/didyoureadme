@@ -393,47 +393,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="32"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="33"/>
         <source>Change expiration to document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="33"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="34"/>
         <source>Change expiration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="41"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="42"/>
         <source>Send document to {0} users</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="56"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="57"/>
         <source>You must add a title of the document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="64"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="65"/>
         <source>I can&apos;t find the document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="72"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="73"/>
         <source>You have not select a file. Please, select one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="80"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="81"/>
         <source>You have to select at least one recipient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="103"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="104"/>
         <source>Document {} added to the system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/frmDocumentsIBM.py" line="109"/>
+        <location filename="../ui/frmDocumentsIBM.py" line="110"/>
         <source>All documents (*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -946,27 +946,27 @@ You can deactivate him.</source>
 <context>
     <name>frmSettings</name>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="181"/>
+        <location filename="../ui/Ui_frmSettings.py" line="195"/>
         <source>Select a language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="180"/>
+        <location filename="../ui/Ui_frmSettings.py" line="194"/>
         <source>DidYouReadMe settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="188"/>
+        <location filename="../ui/Ui_frmSettings.py" line="204"/>
         <source>Main settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="182"/>
+        <location filename="../ui/Ui_frmSettings.py" line="196"/>
         <source>Support text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="183"/>
+        <location filename="../ui/Ui_frmSettings.py" line="197"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -975,75 +975,85 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="195"/>
+        <location filename="../ui/Ui_frmSettings.py" line="211"/>
         <source>Web Server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="189"/>
+        <location filename="../ui/Ui_frmSettings.py" line="205"/>
         <source>Interface IP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="190"/>
+        <location filename="../ui/Ui_frmSettings.py" line="206"/>
         <source>Web server Interface IP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="191"/>
+        <location filename="../ui/Ui_frmSettings.py" line="207"/>
         <source>Server port</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="192"/>
+        <location filename="../ui/Ui_frmSettings.py" line="208"/>
         <source>8000</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="193"/>
+        <location filename="../ui/Ui_frmSettings.py" line="209"/>
         <source>Server name/IP address for mails</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="194"/>
+        <location filename="../ui/Ui_frmSettings.py" line="210"/>
         <source>Must be the IP of the server, with visibility for users</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="205"/>
+        <location filename="../ui/Ui_frmSettings.py" line="221"/>
         <source>SMTP Server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="197"/>
+        <location filename="../ui/Ui_frmSettings.py" line="213"/>
         <source>SMTP user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="198"/>
+        <location filename="../ui/Ui_frmSettings.py" line="214"/>
         <source>SMTP password</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="199"/>
+        <location filename="../ui/Ui_frmSettings.py" line="215"/>
         <source>TLS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="200"/>
+        <location filename="../ui/Ui_frmSettings.py" line="216"/>
         <source>From address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="201"/>
+        <location filename="../ui/Ui_frmSettings.py" line="217"/>
         <source>Port 25 is used to be the normal SMTP port.
 If you use SSL, 465.
 If you use TLS 587</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../ui/Ui_frmSettings.py" line="204"/>
+        <location filename="../ui/Ui_frmSettings.py" line="220"/>
         <source>SMTP Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_frmSettings.py" line="202"/>
+        <source>Default document expiration days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Ui_frmSettings.py" line="203"/>
+        <source> days</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

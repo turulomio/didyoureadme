@@ -13,11 +13,12 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
         self.setupUi(self)   
         self.mem=mem
         self.document=document
+        expiration=int(self.mem.settings.value("frmSettings/expiration", "90"))
         if self.document==None:#New
             self.mem.data.users_active.qlistview(self.lstUsers, SetUsers(self.mem))
             self.mem.data.groups.qlistview(self.lstGroups, SetGroups(self.mem))
             self.selectedUsers=SetUsers(self.mem)
-            self.teExpiration.setDate(datetime.date.today()+datetime.timedelta(days=90))
+            self.teExpiration.setDate(datetime.date.today()+datetime.timedelta(days=expiration))
         else:
             self.lstUsers.setEnabled(False)
             self.txtTitle.setEnabled(False)
@@ -28,7 +29,7 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
             self.cmdFile.setEnabled(False)
             self.txtTitle.setText(self.document.name)
             self.txtComment.setDocument(QTextDocument(self.document.comment))
-            self.teExpiration.setDate(self.document.expiration+datetime.timedelta(days=1))
+            self.teExpiration.setDate(self.document.expiration+datetime.timedelta(days=expiration))
             self.setWindowTitle(self.tr("Change expiration to document"))
             self.cmd.setText(self.tr("Change expiration"))
 

@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_frmSettings(object):
     def setupUi(self, frmSettings):
         frmSettings.setObjectName("frmSettings")
-        frmSettings.resize(485, 396)
+        frmSettings.resize(538, 479)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/configure.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         frmSettings.setWindowIcon(icon)
@@ -76,6 +76,20 @@ class Ui_frmSettings(object):
         self.txtSupport = QtWidgets.QTextEdit(self.tabGenerales)
         self.txtSupport.setObjectName("txtSupport")
         self.formLayout_3.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.txtSupport)
+        self.label_5 = QtWidgets.QLabel(self.tabGenerales)
+        self.label_5.setObjectName("label_5")
+        self.formLayout_3.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.label_5)
+        self.spnExpiration = QtWidgets.QSpinBox(self.tabGenerales)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.spnExpiration.sizePolicy().hasHeightForWidth())
+        self.spnExpiration.setSizePolicy(sizePolicy)
+        self.spnExpiration.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.spnExpiration.setSpecialValueText("")
+        self.spnExpiration.setProperty("value", 90)
+        self.spnExpiration.setObjectName("spnExpiration")
+        self.formLayout_3.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.spnExpiration)
         self.verticalLayout_3.addLayout(self.formLayout_3)
         self.horizontalLayout.addLayout(self.verticalLayout_3)
         self.tab.addTab(self.tabGenerales, "")
@@ -185,6 +199,8 @@ class Ui_frmSettings(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Sans Serif\'; font-size:9pt;\">Please contact DidYouReadMe administrator, for any problem</span></p></body></html>"))
+        self.label_5.setText(_translate("frmSettings", "Default document expiration days"))
+        self.spnExpiration.setSuffix(_translate("frmSettings", " days"))
         self.tab.setTabText(self.tab.indexOf(self.tabGenerales), _translate("frmSettings", "Main settings"))
         self.interfaceIPLabel.setText(_translate("frmSettings", "Interface IP"))
         self.cmbInterfaces.setToolTip(_translate("frmSettings", "Web server Interface IP"))
