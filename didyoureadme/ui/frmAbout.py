@@ -15,7 +15,7 @@ class frmAbout(QDialog, Ui_frmAbout):
         QDialog.__init__(self, parent)
         self.mem=mem
         self.setupUi(self)
-        self.lblVersion.setText(self.tr("version {}").format(__version__))
+        self.lblVersion.setText(self.tr("Version {}").format(__version__))
         self.textBrowser.setHtml(
             self.tr("""Web page is at <a href="https://github.com/Turulomio/didyoureadme">GitHub</a><p> <p>""")+
             self.tr("This app has been developed by Mariano Mu\\xf1oz.<p>")+
