@@ -1377,7 +1377,7 @@ class Mem(QObject):
         self.language=self.languages.find_by_id(self.settings.value("mem/language", "en"))
         self.localzone=self.settings.value("mem/localzone", "Europe/Madrid")
         self.lock_log=multiprocessing.Lock()
-        self.log(self.tr("Iniciando Didyoureadme-{}".format(__version__)))
+        self.log(self.tr("Starting Didyoureadme-{}".format(__version__)))
 
     def __del__(self):
         if self.con:#Needed when reject frmAccess
