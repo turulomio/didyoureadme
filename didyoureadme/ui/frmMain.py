@@ -5,7 +5,7 @@ import os
 import platform
 from PyQt5.QtCore import pyqtSlot, Qt, QUrl, QProcess, QEvent
 from PyQt5.QtGui import QIcon, QDesktopServices, QTextDocument
-from PyQt5.QtWidgets import QMainWindow, QLabel, QDialog, QMessageBox, QApplication,  QMenu
+from PyQt5.QtWidgets import QMainWindow, QLabel, QDialog, QMessageBox, QApplication,  QMenu, QSystemTrayIcon, QAction
 from PyQt5.QtPrintSupport import QPrinter
 from didyoureadme.libdidyoureadme import TWebServer, TSend, dirDocs, dirTmp, now, SetDocuments, qmessagebox
 from didyoureadme.version import __version__, __versiondate__
@@ -36,10 +36,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.tblUsers.setVerticalHeaderHeight(None)
         self.tblGroups.settings(self.mem, "frmMain", "tblGroups")
         self.tblGroups.setVerticalHeaderHeight(None)
-
-        
-        self.confirmclose=True
-        
+       
         self.setWindowTitle(self.tr("DidYouReadMe 2012-{} \xa9").format(__versiondate__.year))
         
         self.lblStatus=QLabel()
@@ -80,6 +77,33 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if datetime.date.today()-datetime.date.fromordinal(int(self.mem.settings.value("frmMain/lastupdate","1")))>=datetime.timedelta(days=30):
             print ("Looking for updates")
             self.checkUpdates(False)
+            
+        # Init QSystemTrayIcon
+        self.__tryIcon()
+    
+    ## Method to set a try icon
+    def __tryIcon(self):
+        def on_show_action():
+            self.show()
+            self.tray_icon.hide()
+        # #######
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon(":/didyoureadme.png"))
+        
+        show_action = QAction("Show DidYouReadMe", self)
+        show_action.setIcon(QIcon(":/didyoureadme.png"))
+        show_action.triggered.connect(on_show_action)
+        
+        quit_action = QAction("Exit", self)
+        quit_action.setIcon(QIcon(":/exit.png"))
+        quit_action.triggered.connect(self.on_actionExit_triggered)
+        
+        tray_menu = QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
+
+
 
     def __del__(self):
         self.tsend.shutdown()
@@ -165,8 +189,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
             m.setIcon(QMessageBox.Information)
             m.setText(self.tr("DidYouReadMe is going to be closed to save settings."))
             m.exec_()    
-            self.confirmclose=False    
-            self.close()
+            self.__del__()
+            self.mem.app.quit()
         
     @pyqtSlot()      
     def on_actionUpdates_triggered(self):
@@ -213,21 +237,18 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
         self.mem.settings.setValue("frmMain/lastupdate",datetime.date.today().toordinal())
 
-                
+
+        
+         
+    ## Override closeEvent, to intercept the window closing event
     @pyqtSlot(QEvent)   
-    def closeEvent(self,event):        
-        if self.confirmclose==True:#Si es un cerrado interactivo
-            reply = QMessageBox.question(self, self.tr("Quit DidYouReadMe?"), self.tr("If you close the app, the web server will be closed too and users won't be able to get files. Do you want to exit?"), QMessageBox.Yes, QMessageBox.No)
-        else:
-            reply=QMessageBox.Yes
-        if reply == QMessageBox.Yes:
-            self.mem.log("DidYouReadMe is closing now...")
-            self.__del__()
-            event.accept()
-        else:
-            event.ignore()
-        
-        
+    def closeEvent(self, event):
+        event.ignore()
+        self.tray_icon.show()
+        self.hide()
+        self.tray_icon.showMessage("DidYouReadMe", self.tr("Application was minimized to Tray"), QSystemTrayIcon.Information,  2000)
+
+
     @pyqtSlot()   
     def on_actionDocumentNew_triggered(self):
         f=frmDocumentsIBM(self.mem)
@@ -360,6 +381,16 @@ class frmMain(QMainWindow, Ui_frmMain):#
         f.exec_()
         self.mem.data.groups.qtablewidget(self.tblGroups)
 
+    @pyqtSlot()   
+    def on_actionExit_triggered(self):
+        reply = QMessageBox.question(self, self.tr("Quit DidYouReadMe?"), self.tr("If you close the app, the web server will be closed too and users won't be able to get files. Do you want to exit?"), QMessageBox.Yes, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.mem.log("DidYouReadMe is closing now...")
+            self.__del__()
+            self.mem.app.quit()
+        else:
+            self.tray_icon.hide()
+            self.show()
 
     @pyqtSlot()   
     def on_actionGroupDelete_triggered(self):

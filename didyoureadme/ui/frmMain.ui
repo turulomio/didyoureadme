@@ -148,7 +148,7 @@
              <item>
               <widget class="QRadioButton" name="radYear">
                <property name="text">
-                <string>Show expired documents from selected year</string>
+                <string>Show e&amp;xpired documents from selected year</string>
                </property>
                <property name="checked">
                 <bool>false</bool>
@@ -282,7 +282,7 @@
    </property>
    <widget class="QMenu" name="menuAyuda">
     <property name="title">
-     <string>H&amp;elp</string>
+     <string>He&amp;lp</string>
     </property>
     <addaction name="actionHelp"/>
     <addaction name="separator"/>
@@ -302,19 +302,19 @@
    </widget>
    <widget class="QMenu" name="menuDocuments">
     <property name="title">
-     <string>D&amp;ocuments</string>
+     <string>&amp;Documents</string>
     </property>
     <addaction name="actionDocumentNew"/>
    </widget>
    <widget class="QMenu" name="menuGroups">
     <property name="title">
-     <string>G&amp;roups</string>
+     <string>&amp;Groups</string>
     </property>
     <addaction name="actionGroupNew"/>
    </widget>
    <widget class="QMenu" name="menuU_sers">
     <property name="title">
-     <string>U&amp;sers</string>
+     <string>&amp;Users</string>
     </property>
     <addaction name="actionUserNew"/>
    </widget>
@@ -338,7 +338,9 @@
    <addaction name="separator"/>
    <addaction name="actionTablesUpdate"/>
    <addaction name="separator"/>
-   <addaction name="actionExit"/>
+   <addaction name="actionSettings"/>
+   <addaction name="separator"/>
+   <addaction name="actionHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
@@ -362,7 +364,7 @@
      <normaloff>:/didyoureadme.png</normaloff>:/didyoureadme.png</iconset>
    </property>
    <property name="text">
-    <string>About DidYouReadMe</string>
+    <string>&amp;About DidYouReadMe</string>
    </property>
    <property name="toolTip">
     <string>About DidYouReadMe</string>
@@ -374,7 +376,7 @@
      <normaloff>:/configure.png</normaloff>:/configure.png</iconset>
    </property>
    <property name="text">
-    <string>Settings</string>
+    <string>&amp;Settings</string>
    </property>
    <property name="toolTip">
     <string>Settings</string>
@@ -386,7 +388,7 @@
      <normaloff>:/help.png</normaloff>:/help.png</iconset>
    </property>
    <property name="text">
-    <string>Help</string>
+    <string>&amp;Help</string>
    </property>
    <property name="toolTip">
     <string>Help</string>
@@ -401,7 +403,7 @@
      <normaloff>:/update.png</normaloff>:/update.png</iconset>
    </property>
    <property name="text">
-    <string>Look for updates</string>
+    <string>&amp;Look for updates</string>
    </property>
    <property name="toolTip">
     <string>Look for updates</string>
@@ -413,7 +415,7 @@
      <normaloff>:/add.png</normaloff>:/add.png</iconset>
    </property>
    <property name="text">
-    <string>New Document</string>
+    <string>&amp;New Document</string>
    </property>
   </action>
   <action name="actionDocumentDelete">
@@ -434,7 +436,7 @@
      <normaloff>:/add.png</normaloff>:/add.png</iconset>
    </property>
    <property name="text">
-    <string>New Group</string>
+    <string>&amp;New Group</string>
    </property>
    <property name="toolTip">
     <string>New Group</string>
@@ -470,7 +472,7 @@
      <normaloff>:/user-add.png</normaloff>:/user-add.png</iconset>
    </property>
    <property name="text">
-    <string>New User</string>
+    <string>&amp;New User</string>
    </property>
    <property name="toolTip">
     <string>New User</string>
@@ -506,7 +508,7 @@
      <normaloff>:/update.png</normaloff>:/update.png</iconset>
    </property>
    <property name="text">
-    <string>Update tables</string>
+    <string>&amp;Update tables</string>
    </property>
    <property name="toolTip">
     <string>Update tables</string>
@@ -595,22 +597,5 @@
  <resources>
   <include location="../images/didyoureadme.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>actionExit</sender>
-   <signal>triggered()</signal>
-   <receiver>frmMain</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>259</x>
-     <y>275</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
