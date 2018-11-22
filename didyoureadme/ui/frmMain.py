@@ -3,9 +3,9 @@ import urllib.request
 import shutil
 import os
 import platform
-from PyQt5.QtCore import pyqtSlot, Qt, QUrl, QProcess, QEvent
+from PyQt5.QtCore import pyqtSlot, Qt, QUrl, QProcess, QEvent, QSize
 from PyQt5.QtGui import QIcon, QDesktopServices, QTextDocument
-from PyQt5.QtWidgets import QMainWindow, QLabel, QDialog, QMessageBox, QApplication,  QMenu, QSystemTrayIcon, QAction
+from PyQt5.QtWidgets import QMainWindow, QLabel, QDialog, QMessageBox, QApplication,  QMenu, QSystemTrayIcon, QAction, QVBoxLayout
 from PyQt5.QtPrintSupport import QPrinter
 from didyoureadme.libdidyoureadme import TWebServer, TSend, dirDocs, dirTmp, now, SetDocuments, qmessagebox
 from didyoureadme.version import __version__, __versiondate__, get_remote
@@ -17,7 +17,8 @@ from didyoureadme.ui.frmHelp import frmHelp
 from didyoureadme.ui.frmDocumentsIBM import frmDocumentsIBM
 from didyoureadme.ui.frmGroupsIBM import frmGroupsIBM
 from didyoureadme.ui.frmUsersIBM import frmUsersIBM
-
+from didyoureadme.ui.wdgDocumentsPurge import wdgDocumentsPurge
+from didyoureadme.ui.wdgDocumentsSearch import wdgDocumentsSearch
 
 class frmMain(QMainWindow, Ui_frmMain):#    
     def __init__(self, mem, parent = 0,  flags = False):
@@ -45,8 +46,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.statusBar.addWidget(self.lblStatusMail)        
         
         self.grp.hide()
+        self.wy.label.setText("")
         self.wy.initiate(2011, datetime.date.today().year, datetime.date.today().year)
         self.wy.changed.connect(self.on_wy_changed)
+        self.wym.label.setText("")
         self.wym.initiate(2011,  datetime.date.today().year, datetime.date.today().year, datetime.date.today().month)
         self.wym.changed.connect(self.on_wym_changed)
                         
@@ -300,6 +303,30 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
         self.openWithDefaultApp(file)
         QApplication.restoreOverrideCursor();
+        
+    @pyqtSlot()
+    def on_actionDocumentsPurge_triggered(self):
+        d=QDialog()       
+        d.resize(self.mem.settings.value("wdgDocumentsPurge/QDialog", QSize(1024, 768)))
+        d.setWindowTitle(self.tr("Purge documents"))
+        w=wdgDocumentsPurge(self.mem, d)
+        lay = QVBoxLayout(d)
+        lay.addWidget(w)
+        d.exec_()
+        self.mem.settings.setValue("wdgDocumentsPurge/QDialog", d.size())        
+
+    @pyqtSlot()
+    def on_actionDocumentsSearch_triggered(self):
+        d=QDialog()       
+        d.resize(self.mem.settings.value("wdgDocumentsSearch/QDialog", QSize(1024, 768)))
+        d.setWindowTitle(self.tr("Search documents"))
+        w=wdgDocumentsSearch(self.mem, d)
+        lay = QVBoxLayout(d)
+        lay.addWidget(w)
+        d.exec_()
+        self.mem.settings.setValue("wdgDocumentsSearch/QDialog", d.size())
+        
+        
 
     @pyqtSlot()   
     def on_actionDocumentExpire_triggered(self):

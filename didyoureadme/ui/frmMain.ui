@@ -305,6 +305,10 @@
      <string>&amp;Documents</string>
     </property>
     <addaction name="actionDocumentNew"/>
+    <addaction name="separator"/>
+    <addaction name="actionDocumentsSearch"/>
+    <addaction name="separator"/>
+    <addaction name="actionDocumentsPurge"/>
    </widget>
    <widget class="QMenu" name="menuGroups">
     <property name="title">
@@ -336,11 +340,14 @@
    </attribute>
    <addaction name="actionDocumentNew"/>
    <addaction name="separator"/>
+   <addaction name="actionDocumentsSearch"/>
+   <addaction name="separator"/>
    <addaction name="actionTablesUpdate"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
-   <addaction name="separator"/>
    <addaction name="actionHelp"/>
+   <addaction name="separator"/>
+   <addaction name="actionAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
@@ -556,7 +563,7 @@
      <normaloff>:/admin.png</normaloff>:/admin.png</iconset>
    </property>
    <property name="text">
-    <string>Delete document by administrator</string>
+    <string>Delete document by Administrator</string>
    </property>
    <property name="toolTip">
     <string>Delete document by administrator</string>
@@ -572,6 +579,30 @@
    </property>
    <property name="toolTip">
     <string>Send document again</string>
+   </property>
+  </action>
+  <action name="actionDocumentsPurge">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/admin.png</normaloff>:/admin.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Documents purge by Administrator</string>
+   </property>
+   <property name="toolTip">
+    <string>Documents purge by Administrator</string>
+   </property>
+  </action>
+  <action name="actionDocumentsSearch">
+   <property name="icon">
+    <iconset resource="../images/didyoureadme.qrc">
+     <normaloff>:/search.png</normaloff>:/search.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Search documents</string>
+   </property>
+   <property name="toolTip">
+    <string>Search documents</string>
    </property>
   </action>
  </widget>

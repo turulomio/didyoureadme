@@ -1071,6 +1071,12 @@ class SetDocuments(SetCommons):
 
         table.setCurrentCell(len(self.arr)-1, 0)       
         table.clearSelection()    
+        
+    def datetime_first_document(self):
+        try:
+            return self.mem.con.cursor_one_field("select datetime from documents order by datetime limit 1")
+        except:
+            return None
 
 
     def order_by_datetime(self):
