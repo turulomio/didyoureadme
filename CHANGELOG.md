@@ -1,3 +1,12 @@
+20181122
+--------
+- Added statistics in about dialog
+- Added didyoureadme_shortcuts command in Windows
+- Added default document expiration in settings
+- Added system tray to minimize Didyoureadme when necessary
+- Added document purge
+- Added document search
+
 20181118
 --------
 - Added more images

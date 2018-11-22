@@ -1,8 +1,8 @@
 ## @brief Package with didyoureadme version information
 import datetime
 
-__version__ ='20181118'
-__versiondate__=datetime.date(2018,11,18)
+__version__ ='20181122'
+__versiondate__=datetime.date(2018,11,22)
 
 ## This function expectss __version__= 'VERSION' file
 ## @return String removeversion or None if it couln't be found
