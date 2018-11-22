@@ -1,3 +1,8 @@
+Snapshots
+=========
+
+![Snapshot main windows](https://raw.githubusercontent.com/Turulomio/didyoureadme/master/doc/didyoureadme-snapshots-01.jpg)
+
 Links
 =====
 Doxygen documentation:
