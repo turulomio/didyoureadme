@@ -838,10 +838,11 @@ class TSend(QThread):
         while self.stop_request==False:
             con=self.mem.con.newConnection()#NO SE PORQUE NO ACTUALIZABA SI USABA CONEXIóN DE PARAMETRO
             cur=con.cursor()
+            cur2=con.cursor()
             #5 minutos delay
             cur.execute("select id_documents, id_users from userdocuments, documents where userdocuments.id_documents=documents.id and sent is null and now() > datetime + interval '1 minute';")
             for row in cur:
-                doc=self.mem.data.documents_active.find(row['id_documents'])
+                doc=Document(self.mem).init__from_db(row['id_documents'])
                 u=self.mem.data.users_active.find(row['id_users'])
                 mail=Mail(doc, u, self.mem)
                 mail.send()
@@ -859,6 +860,7 @@ class TSend(QThread):
                     self.mem.log(QApplication.translate("DidYouReadMe","Error sending message {} to {}").format(mail.document.id, mail.user.mail))  
                 self.sleep(2) 
             cur.close()
+            cur2.close()
             con.disconnect()
             #Interactive wait
             for i in range(self.interval):
@@ -1156,9 +1158,6 @@ class DBData:
         self.users_inactive.load("select * from users where active=false order by name")    
         self.groups=SetGroups(self.mem)
         self.groups.load( "select * from groups order by name")
-        self.documents_active=SetDocuments(self.mem)
-        self.documents_active.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration>now() order by datetime")
-        self.documents_inactive=SetDocuments(self.mem)#Carga solo los de un mes y un año.
         self.mem.log(QApplication.translate("DidYouReadMe","Loading data from database took {}".format(datetime.datetime.now()-inicio)))
 
     def users_all(self):
@@ -1195,6 +1194,13 @@ class Document:
         self.numplanned=0
         self.expiration=expiration
         return self
+        
+    def init__from_db(self, id):
+        cur=self.mem.con.cursor()
+        cur.execute("select  id, datetime, title, comment, filename, hash, expiration  from documents where id=%s", (id, ))
+        row=cur.fetchone()
+        cur.close()
+        return self.init__create(row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'],  row['hash'], row['id']  )
 
     def init__from_hash(self, hash):
         cur=self.mem.con.cursor()

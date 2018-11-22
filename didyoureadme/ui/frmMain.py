@@ -140,13 +140,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
             u.updateSent()
             u.updateRead()
         #Consulta
-        for i, d in enumerate(self.mem.data.documents_active.arr):
-            if d.isExpired()==False:
-                d.updateNums()
-
+        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        
         self.users.qtablewidget(self.tblUsers)
         self.mem.data.groups.qtablewidget(self.tblGroups)
-        self.documents.qtablewidget(self.tblDocuments)
         
         for table in [self.tblDocuments,  self.tblGroups, self.tblUsers]:
             table.resizeRowsToContents()
@@ -345,7 +342,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
                 self.documents.selected.expiration=now(self.mem.localzone)
                 self.documents.selected.save()#Update changes expiration
                 self.mem.con.commit()
-                self.mem.data.documents_active.remove(self.documents.selected)    
         self.on_actionTablesUpdate_triggered()
                 
     @pyqtSlot()   
@@ -589,15 +585,15 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
     def on_chkDocumentsExpired_stateChanged(self, state):
         if state==Qt.Unchecked:        
-            self.documents=self.mem.data.documents_active
+            self.documents=SetDocuments(self.mem)
+            self.documents.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration>now() order by datetime")
             self.grp.hide()
         else:
-            self.mem.data.documents_inactive=SetDocuments(self.mem)
+            self.documents=SetDocuments(self.mem)
             if self.radYear.isChecked()==True:
-                self.mem.data.documents_inactive.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} order by datetime;".format(self.wy.year))
+                self.documents.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} order by datetime;".format(self.wy.year))
             else:
-                self.mem.data.documents_inactive.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
-            self.documents=self.mem.data.documents_inactive
+                self.documents.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
             self.grp.show()
             
         self.documents.qtablewidget(self.tblDocuments)

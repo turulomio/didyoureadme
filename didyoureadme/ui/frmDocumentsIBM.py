@@ -90,16 +90,10 @@ class frmDocumentsIBM(QDialog, Ui_frmDocumentsIBM):
                 if u.active==True:
                     ud=UserDocument(u, self.document, self.mem)
                     ud.save()
-            self.mem.data.documents_active.append(self.document)
-            self.mem.data.documents_active.order_by_datetime()
             self.document.updateNums()
         else:
             self.document.expiration=dt(self.teExpiration.date().toPyDate(), datetime.time(23,59), self.mem.localzone)
             self.document.save()
-            if self.document.isExpired()==False:
-                self.mem.data.documents_inactive.remove(self.document)
-                self.mem.data.documents_active.append(self.document)        
-                self.mem.data.documents_active.order_by_datetime()
         self.mem.con.commit()
         self.mem.log(self.tr("Document {} added to the system".format(self.document.id)))
         self.done(0)

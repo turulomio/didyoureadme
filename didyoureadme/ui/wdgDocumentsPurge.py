@@ -27,9 +27,19 @@ class wdgDocumentsPurge(QWidget, Ui_wdgDocumentsPurge):
         self.tblDocuments_update()  
         
     def on_calFrom_selectionChanged(self):
+        self.date_from=self.calFrom.selectedDate().toPyDate()
+        self.error_dates()
         self.tblDocuments_update()
+
     def on_calTo_selectionChanged(self):
+        self.date_to=self.calTo.selectedDate().toPyDate()
+        self.error_dates()
         self.tblDocuments_update()
+        
+    def error_dates(self):
+        if self.date_to<self.date_from:
+            qmessagebox(self.tr("To date can be before From date"))
+            self.calTo.setSelectedDate(self.date_from)
         
     def tblDocuments_update(self):
         self.documents=SetDocuments(self.mem)  
