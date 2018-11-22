@@ -303,7 +303,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
         
     @pyqtSlot()
     def on_actionDocumentsPurge_triggered(self):
-        d=QDialog()       
+        d=QDialog()
+        d.setWindowIcon(QIcon(":/didyoureadme.png"))
         d.resize(self.mem.settings.value("wdgDocumentsPurge/QDialog", QSize(1024, 768)))
         d.setWindowTitle(self.tr("Purge documents"))
         w=wdgDocumentsPurge(self.mem, d)
@@ -314,7 +315,8 @@ class frmMain(QMainWindow, Ui_frmMain):#
 
     @pyqtSlot()
     def on_actionDocumentsSearch_triggered(self):
-        d=QDialog()       
+        d=QDialog()
+        d.setWindowIcon(QIcon(":/didyoureadme.png"))
         d.resize(self.mem.settings.value("wdgDocumentsSearch/QDialog", QSize(1024, 768)))
         d.setWindowTitle(self.tr("Search documents"))
         w=wdgDocumentsSearch(self.mem, d)
