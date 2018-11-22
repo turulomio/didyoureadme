@@ -36,11 +36,7 @@ You must open a console with Administrator privileges and type:
 
 If you want to create a Desktop shortcut to launch didyoureadme you must write:
 
-`didyoureadme.exe --shortcuts-create`
-
-If you want to delete that Desktop shortcut you can write:
-
-`didyoureadme.exe --shortcuts-remove`
+`didyoureadme_shortcuts.exe`
 
 Install in Windows as a standalone application
 ==============================================
