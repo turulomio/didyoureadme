@@ -1,23 +1,24 @@
 ## @namespace didyoureadme.libdidyoureadme
 ## @brief Didyoureadme core library
-import os
 import datetime
 import hashlib
+import http.server
+import io
 import multiprocessing
+import os
+import pkg_resources
 import psycopg2
 import psycopg2.extras
 import pytz
+import shutil
 import smtplib 
-import urllib.parse
-import io
+import socketserver
 import sys
+import urllib.parse
 
 from PyQt5.QtCore import QTranslator, QObject, QFile, Qt, QSettings, QThread
 from PyQt5.QtWidgets import QApplication, QMessageBox, QTableWidgetItem
 from PyQt5.QtGui import QIcon, QStandardItem, QStandardItemModel, QColor, QPixmap
-import http.server
-import socketserver
-import pkg_resources
 from didyoureadme.version import __version__
 
 dirTmp=os.path.expanduser("~/.didyoureadme/tmp/").replace("\\", "/")#The replace is for windows, but works in linux
@@ -1356,8 +1357,11 @@ class UserDocument:
 class Mem(QObject):
     def __init__(self): 
         QObject.__init__(self)
-        makedirs(dirTmp)
-        makedirs(dirDocs)
+        shutil.rmtree(dirTmp, ignore_errors=True)
+        os.makedirs(dirTmp, exist_ok=True)
+
+        os.makedirs(dirDocs, exist_ok=True)
+        
       
         #To avoid problemes with argpare and UI
         self.app = QApplication(sys.argv)
@@ -1464,13 +1468,6 @@ def dt_changes_tz(dt,  tztarjet):
     tarjet=tzt.normalize(dt.astimezone(tzt))
     return tarjet
 
-
-def makedirs(dir):
-    try:
-        os.makedirs(dir)
-    except:
-        pass
-
 def now(localzone):
     return datetime.datetime.now(pytz.timezone(localzone))
 
@@ -1481,14 +1478,9 @@ def c2b(state):
     else:
         return False
 
-
-
 def b2c(booleano):
     """QCheckstate to python bool"""
     if booleano==True:
         return Qt.Checked
     else:
         return Qt.Unchecked     
-
-
-
