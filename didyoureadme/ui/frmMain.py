@@ -8,7 +8,7 @@ from PyQt5.QtGui import QIcon, QDesktopServices, QTextDocument
 from PyQt5.QtWidgets import QMainWindow, QLabel, QDialog, QMessageBox, QApplication,  QMenu, QSystemTrayIcon, QAction
 from PyQt5.QtPrintSupport import QPrinter
 from didyoureadme.libdidyoureadme import TWebServer, TSend, dirDocs, dirTmp, now, SetDocuments, qmessagebox
-from didyoureadme.version import __version__, __versiondate__
+from didyoureadme.version import __version__, __versiondate__, get_remote
 
 from didyoureadme.ui.Ui_frmMain import Ui_frmMain
 from didyoureadme.ui.frmAbout import frmAbout
@@ -75,7 +75,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.on_chkUsersInactive_stateChanged(self.chkUsersInactive.checkState())
 
         if datetime.date.today()-datetime.date.fromordinal(int(self.mem.settings.value("frmMain/lastupdate","1")))>=datetime.timedelta(days=30):
-            print ("Looking for updates")
+            self.mem.log("Looking for updates")
             self.checkUpdates(False)
             
         # Init QSystemTrayIcon
@@ -197,49 +197,24 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.checkUpdates(True)
         
     def checkUpdates(self, showdialogwhennoupdates=False):
-        try:
-            web=urllib.request.urlopen('https://sourceforge.net/projects/didyoureadme/files/didyoureadme/').read()
-        except:
-            web=None
-        if web==None:
-            m=QMessageBox()
-            m.setWindowIcon(QIcon(":/didyoureadme.png"))
-            m.setIcon(QMessageBox.Information)
-            m.setText(self.tr("I couldn't look for updates. Try it later.."))
-            m.exec_() 
+        remoteversion=get_remote("https://raw.githubusercontent.com/Turulomio/didyoureadme/master/didyoureadme/version.py")
+        if remoteversion==None:
+            qmessagebox(self.tr("I couldn't look for updates. Try it later.."))
             return
 
-        #Saca la version de internet
-        remoteversion=None
-        for line in web.split(b"\n"):
-            if line.find(b'Click to enter didyoureadme-')!=-1:
-                remoteversion=line.decode("utf-8").split('"')[1].split('-')[1]
-                break
-        #Si no hay version sale
-        print ("Remote version",  remoteversion)
-        if remoteversion==None:
-            return
-                
-        if remoteversion==__version__.replace("+", ""):#Quita el más de desarrollo 
+        if remoteversion.replace("+", "")==__version__.replace("+", ""):#Quita el más de desarrollo 
             if showdialogwhennoupdates==True:
-                m=QMessageBox()
-                m.setWindowIcon(QIcon(":/didyoureadme.png"))
-                m.setIcon(QMessageBox.Information)
-                m.setText(self.tr("DidYouReadMe is in the last version"))
-                m.exec_() 
+                qmessagebox(self.tr("DidYouReadMe is in the last version"))
         else:
             m=QMessageBox()
             m.setWindowIcon(QIcon(":/didyoureadme.png"))
             m.setIcon(QMessageBox.Information)
             m.setTextFormat(Qt.RichText)#this is what makes the links clickable
-            m.setText(self.tr("There is a new DidYouReadMe version. You can download it from <a href='http://didyoureadme.sourceforge.net'>http://didyoureadme.sourceforge.net</a> or directly from <a href='https://sourceforge.net/projects/didyoureadme/files/didyoureadme/didyoureadme-")+remoteversion+"/'>Sourceforge</a>")
+            m.setText(self.tr("There is a new DidYouReadMe version. You can download it from <a href='https://github.com/Turulomio/didyoureadme/releases'>GitHub</a>."))
             m.exec_()                 
 
-        self.mem.settings.setValue("frmMain/lastupdate",datetime.date.today().toordinal())
+        self.mem.settings.setValue("frmMain/lastupdate", datetime.date.today().toordinal())
 
-
-        
-         
     ## Override closeEvent, to intercept the window closing event
     @pyqtSlot(QEvent)   
     def closeEvent(self, event):
