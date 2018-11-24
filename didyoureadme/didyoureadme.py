@@ -33,7 +33,7 @@ def main(parameters=None):
     mem.con=access.con
     access.hide()
 
-    if mem.hasDidyoureadmeRole()==False:
+    if mem.con.hasDidyoureadmeRole()==False:
         qmessagebox(mem.tr( "Database user hasn't a valid DidYouReadMe role"))
         sys.exit(2)
         

@@ -68,7 +68,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
         if self.mem.isAdminMode()==True:
             self.setWindowTitle(self.tr("DidYouReadMe 2012-{0} \xa9 (Admin mode)").format(__versiondate__.year))
             self.setWindowIcon(self.mem.qicon_admin())
+            self.actionDocumentsPurge.setEnabled(True)
             self.update()
+        else:
+            self.actionDocumentsPurge.setEnabled(False)
 
         self.mem.data.groups.qtablewidget(self.tblGroups)
         self.on_cmbVisualization_currentIndexChanged(self.cmbVisualization.currentIndex())

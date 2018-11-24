@@ -2,38 +2,24 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.2
--- Dumped by pg_dump version 9.5.3
+-- Dumped from database version 11.1
+-- Dumped by pg_dump version 11.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
-SET search_path = public, pg_catalog;
-
---
 -- Name: lo_readall(oid); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION lo_readall(oid) RETURNS bytea
+CREATE FUNCTION public.lo_readall(oid) RETURNS bytea
     LANGUAGE sql STRICT
     AS $_$
 
@@ -58,7 +44,7 @@ SET default_with_oids = false;
 -- Name: documents; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE documents (
+CREATE TABLE public.documents (
     id bigint NOT NULL,
     datetime timestamp with time zone DEFAULT now() NOT NULL,
     title text NOT NULL,
@@ -70,13 +56,13 @@ CREATE TABLE documents (
 );
 
 
-ALTER TABLE documents OWNER TO postgres;
+ALTER TABLE public.documents OWNER TO postgres;
 
 --
 -- Name: documents_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE documents_id_seq
+CREATE SEQUENCE public.documents_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -84,45 +70,45 @@ CREATE SEQUENCE documents_id_seq
     CACHE 1;
 
 
-ALTER TABLE documents_id_seq OWNER TO postgres;
+ALTER TABLE public.documents_id_seq OWNER TO postgres;
 
 --
 -- Name: documents_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE documents_id_seq OWNED BY documents.id;
+ALTER SEQUENCE public.documents_id_seq OWNED BY public.documents.id;
 
 
 --
 -- Name: globals; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE globals (
+CREATE TABLE public.globals (
     global text NOT NULL,
     value text
 );
 
 
-ALTER TABLE globals OWNER TO postgres;
+ALTER TABLE public.globals OWNER TO postgres;
 
 --
 -- Name: groups; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE groups (
+CREATE TABLE public.groups (
     id bigint NOT NULL,
     name text NOT NULL,
     members bigint[]
 );
 
 
-ALTER TABLE groups OWNER TO postgres;
+ALTER TABLE public.groups OWNER TO postgres;
 
 --
 -- Name: posts_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE posts_id_seq
+CREATE SEQUENCE public.posts_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -130,20 +116,20 @@ CREATE SEQUENCE posts_id_seq
     CACHE 1;
 
 
-ALTER TABLE posts_id_seq OWNER TO postgres;
+ALTER TABLE public.posts_id_seq OWNER TO postgres;
 
 --
 -- Name: posts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE posts_id_seq OWNED BY groups.id;
+ALTER SEQUENCE public.posts_id_seq OWNED BY public.groups.id;
 
 
 --
 -- Name: userdocuments; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE userdocuments (
+CREATE TABLE public.userdocuments (
     id_users bigint NOT NULL,
     id_documents bigint NOT NULL,
     read timestamp with time zone,
@@ -152,20 +138,20 @@ CREATE TABLE userdocuments (
 );
 
 
-ALTER TABLE userdocuments OWNER TO postgres;
+ALTER TABLE public.userdocuments OWNER TO postgres;
 
 --
 -- Name: COLUMN userdocuments.read; Type: COMMENT; Schema: public; Owner: postgres
 --
 
-COMMENT ON COLUMN userdocuments.read IS 'First time user read';
+COMMENT ON COLUMN public.userdocuments.read IS 'First time user read';
 
 
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE users (
+CREATE TABLE public.users (
     id bigint NOT NULL,
     datetime timestamp with time zone DEFAULT now() NOT NULL,
     name text,
@@ -176,13 +162,13 @@ CREATE TABLE users (
 );
 
 
-ALTER TABLE users OWNER TO postgres;
+ALTER TABLE public.users OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE users_id_seq
+CREATE SEQUENCE public.users_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -190,220 +176,186 @@ CREATE SEQUENCE users_id_seq
     CACHE 1;
 
 
-ALTER TABLE users_id_seq OWNER TO postgres;
+ALTER TABLE public.users_id_seq OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE users_id_seq OWNED BY users.id;
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: documents id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY documents ALTER COLUMN id SET DEFAULT nextval('documents_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('posts_id_seq'::regclass);
+ALTER TABLE ONLY public.documents ALTER COLUMN id SET DEFAULT nextval('public.documents_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: groups id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+ALTER TABLE ONLY public.groups ALTER COLUMN id SET DEFAULT nextval('public.posts_id_seq'::regclass);
 
 
 --
--- Name: documents_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY documents
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: documents documents_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.documents
     ADD CONSTRAINT documents_pk PRIMARY KEY (id);
 
 
 --
--- Name: globals_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: globals globals_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY globals
+ALTER TABLE ONLY public.globals
     ADD CONSTRAINT globals_pk PRIMARY KEY (global);
 
 
 --
--- Name: pk_posts; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: groups pk_posts; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY groups
+ALTER TABLE ONLY public.groups
     ADD CONSTRAINT pk_posts PRIMARY KEY (id);
 
 
 --
--- Name: userdocuments_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: userdocuments userdocuments_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY userdocuments
+ALTER TABLE ONLY public.userdocuments
     ADD CONSTRAINT userdocuments_pk PRIMARY KEY (id_users, id_documents);
 
 
 --
--- Name: users_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY users
+ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pk PRIMARY KEY (id);
 
 
 --
--- Name: userdocuments_fk_documents; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: userdocuments userdocuments_fk_documents; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY userdocuments
-    ADD CONSTRAINT userdocuments_fk_documents FOREIGN KEY (id_documents) REFERENCES documents(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: userdocuments_fk_users; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY userdocuments
-    ADD CONSTRAINT userdocuments_fk_users FOREIGN KEY (id_users) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY public.userdocuments
+    ADD CONSTRAINT userdocuments_fk_documents FOREIGN KEY (id_documents) REFERENCES public.documents(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
--- Name: public; Type: ACL; Schema: -; Owner: postgres
+-- Name: userdocuments userdocuments_fk_users; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
--- Name: documents; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE documents FROM PUBLIC;
-REVOKE ALL ON TABLE documents FROM postgres;
-GRANT ALL ON TABLE documents TO postgres;
-GRANT ALL ON TABLE documents TO didyoureadme_user;
-GRANT ALL ON TABLE documents TO didyoureadme_admin;
-
-
---
--- Name: documents_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON SEQUENCE documents_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE documents_id_seq FROM postgres;
-GRANT ALL ON SEQUENCE documents_id_seq TO postgres;
-GRANT ALL ON SEQUENCE documents_id_seq TO didyoureadme_user;
-GRANT ALL ON SEQUENCE documents_id_seq TO didyoureadme_admin;
-
-
---
--- Name: globals; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE globals FROM PUBLIC;
-REVOKE ALL ON TABLE globals FROM postgres;
-GRANT ALL ON TABLE globals TO postgres;
-GRANT ALL ON TABLE globals TO didyoureadme_user;
-GRANT ALL ON TABLE globals TO didyoureadme_admin;
-
-
---
--- Name: groups; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE groups FROM PUBLIC;
-REVOKE ALL ON TABLE groups FROM postgres;
-GRANT ALL ON TABLE groups TO postgres;
-GRANT ALL ON TABLE groups TO didyoureadme_user;
-GRANT ALL ON TABLE groups TO didyoureadme_admin;
-
-
---
--- Name: posts_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON SEQUENCE posts_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE posts_id_seq FROM postgres;
-GRANT ALL ON SEQUENCE posts_id_seq TO postgres;
-GRANT ALL ON SEQUENCE posts_id_seq TO didyoureadme_user;
-GRANT ALL ON SEQUENCE posts_id_seq TO didyoureadme_admin;
-
-
---
--- Name: userdocuments; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE userdocuments FROM PUBLIC;
-REVOKE ALL ON TABLE userdocuments FROM postgres;
-GRANT ALL ON TABLE userdocuments TO postgres;
-GRANT ALL ON TABLE userdocuments TO didyoureadme_user;
-GRANT ALL ON TABLE userdocuments TO didyoureadme_admin;
-
-
---
--- Name: users; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE users FROM PUBLIC;
-REVOKE ALL ON TABLE users FROM postgres;
-GRANT ALL ON TABLE users TO postgres;
-GRANT ALL ON TABLE users TO didyoureadme_user;
-GRANT ALL ON TABLE users TO didyoureadme_admin;
-
-
---
--- Name: users_id_seq; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON SEQUENCE users_id_seq FROM PUBLIC;
-REVOKE ALL ON SEQUENCE users_id_seq FROM postgres;
-GRANT ALL ON SEQUENCE users_id_seq TO postgres;
-GRANT ALL ON SEQUENCE users_id_seq TO didyoureadme_user;
-GRANT ALL ON SEQUENCE users_id_seq TO didyoureadme_admin;
+ALTER TABLE ONLY public.userdocuments
+    ADD CONSTRAINT userdocuments_fk_users FOREIGN KEY (id_users) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
 -- PostgreSQL database dump complete
 --
 
-COPY groups (id, name, members) FROM stdin;
+COPY public.groups (id, name, members) FROM stdin;
 1	Todos	\N
 \.
-SELECT pg_catalog.setval('posts_id_seq', 8, true);
+SELECT pg_catalog.setval('public.posts_id_seq', 8, true);
+CREATE ROLE didyoureadme_user;
+CREATE ROLE didyoureadme_admin;
+REVOKE ALL ON SCHEMA public FROM PUBLIC; 
+REVOKE ALL ON SCHEMA public FROM postgres; 
+REVOKE ALL ON SCHEMA public FROM didyoureadme_user; 
+REVOKE ALL ON SCHEMA public FROM didyoureadme_admin; 
+GRANT ALL ON SCHEMA public TO postgres; 
+GRANT ALL ON SCHEMA public TO PUBLIC; 
+REVOKE ALL ON TABLE public.documents FROM PUBLIC; 
+REVOKE ALL ON TABLE public.documents FROM postgres; 
+REVOKE ALL ON TABLE public.documents FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.documents FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.documents TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.documents TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.documents TO didyoureadme_admin; 
+REVOKE ALL ON SEQUENCE public.documents_id_seq FROM PUBLIC; 
+REVOKE ALL ON SEQUENCE public.documents_id_seq FROM postgres; 
+REVOKE ALL ON SEQUENCE public.documents_id_seq FROM didyoureadme_user; 
+REVOKE ALL ON SEQUENCE public.documents_id_seq FROM didyoureadme_admin; 
+GRANT ALL ON SEQUENCE public.documents_id_seq TO postgres; 
+GRANT SELECT, UPDATE ON SEQUENCE public.documents_id_seq TO didyoureadme_user; 
+GRANT SELECT, UPDATE ON SEQUENCE public.documents_id_seq TO didyoureadme_admin; 
+REVOKE ALL ON TABLE public.globals FROM PUBLIC; 
+REVOKE ALL ON TABLE public.globals FROM postgres; 
+REVOKE ALL ON TABLE public.globals FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.globals FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.globals TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.globals TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.globals TO didyoureadme_admin; 
+REVOKE ALL ON TABLE public.groups FROM PUBLIC; 
+REVOKE ALL ON TABLE public.groups FROM postgres; 
+REVOKE ALL ON TABLE public.groups FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.groups FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.groups TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.groups TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.groups TO didyoureadme_admin; 
+REVOKE ALL ON SEQUENCE public.posts_id_seq FROM PUBLIC; 
+REVOKE ALL ON SEQUENCE public.posts_id_seq FROM postgres; 
+REVOKE ALL ON SEQUENCE public.posts_id_seq FROM didyoureadme_user; 
+REVOKE ALL ON SEQUENCE public.posts_id_seq FROM didyoureadme_admin; 
+GRANT ALL ON SEQUENCE public.posts_id_seq TO postgres; 
+GRANT SELECT, UPDATE ON SEQUENCE public.posts_id_seq TO didyoureadme_user; 
+GRANT SELECT, UPDATE ON SEQUENCE public.posts_id_seq TO didyoureadme_admin; 
+REVOKE ALL ON TABLE public.userdocuments FROM PUBLIC; 
+REVOKE ALL ON TABLE public.userdocuments FROM postgres; 
+REVOKE ALL ON TABLE public.userdocuments FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.userdocuments FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.userdocuments TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.userdocuments TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.userdocuments TO didyoureadme_admin; 
+REVOKE ALL ON TABLE public.users FROM PUBLIC; 
+REVOKE ALL ON TABLE public.users FROM postgres; 
+REVOKE ALL ON TABLE public.users FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.users FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.users TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.users TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.users TO didyoureadme_admin; 
+REVOKE ALL ON SEQUENCE public.users_id_seq FROM PUBLIC; 
+REVOKE ALL ON SEQUENCE public.users_id_seq FROM postgres; 
+REVOKE ALL ON SEQUENCE public.users_id_seq FROM didyoureadme_user; 
+REVOKE ALL ON SEQUENCE public.users_id_seq FROM didyoureadme_admin; 
+GRANT ALL ON SEQUENCE public.users_id_seq TO postgres; 
+GRANT SELECT, UPDATE ON SEQUENCE public.users_id_seq TO didyoureadme_user; 
+GRANT SELECT, UPDATE ON SEQUENCE public.users_id_seq TO didyoureadme_admin; 
 --
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.2
--- Dumped by pg_dump version 9.5.3
+-- Dumped from database version 11.1
+-- Dumped by pg_dump version 11.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
-
-SET search_path = public, pg_catalog;
 
 --
 -- Data for Name: globals; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO globals VALUES ('version_date', '201605191906');
+INSERT INTO public.globals VALUES ('version_date', '201811240702');
 
 
 --

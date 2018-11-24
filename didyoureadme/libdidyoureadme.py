@@ -39,7 +39,6 @@ class Connection(QObject):
         self._con=None
         self._active=False
         self.init=None
-        self.roles=None #Se carga al realizar la conexi´on
 
     def init__create(self, user, password, server, port, db):
         self.user=user
@@ -111,7 +110,6 @@ class Connection(QObject):
             return
         self._active=True
         self.init=datetime.datetime.now()
-        self.roles=self.getUserRoles()
 
 
     def newConnection(self):
@@ -127,40 +125,38 @@ class Connection(QObject):
     def is_active(self):
         return self._active
 
+    ## Returs postgresql roles current users belong to
+    ## @return List of strings
+    def current_user_roles(self):
+        if self.is_superuser():
+            return ['didyoureadme_admin', 'didyoureadme_user']
+
+        cur=self.cursor()
+        cur.execute("""SELECT groname FROM pg_user, pg_group WHERE usename = current_user and usesysid=ANY(grolist)""")
+        r=[]
+        for row in cur:
+            r.append(row['groname'])
+        cur.close()
+        return r
 
     def is_superuser(self):
         """Checks if the user has superuser role"""
         res=False
         cur=self.cursor()
-        cur.execute("SELECT rolsuper FROM pg_roles where rolname=%s;", (self.user, ))
+        cur.execute("SELECT rolsuper FROM pg_roles where rolname=current_user;")
         if cur.rowcount==1:
             if cur.fetchone()[0]==True:
                 res=True
         cur.close()
         return res
-
-    def getUserRoles(self):
-        """Returns a list with the roles of the connection user"""
-        if self.user=="postgres":
-            return ["didyoureadme_user", "didyoureadme_admin"]
-        cur=self.cursor()
-        #Saca el id del usuario actual
-        cur.execute("SELECT usesysid FROM pg_user WHERE usename = current_user")
-        userid=cur.fetchone()[0]
-        #Saca los grupos que empiezan con didyoureadme_ en los que est´e el usuario
-        return self.cursor_one_column("select groname from pg_group where %s=ANY(grolist) and groname like 'didyoureadme_%%'", (userid, ))
+    def hasDidyoureadmeRole(self):
+        roles=self.current_user_roles()
+        if "didyoureadme_admin" in roles or "didyoureadme_user" in roles:
+            return True
+        return False
 
     def server_datetime(self):
         return self.cursor_one_row("SELECT NOW()")[0]
-
-class Backup:
-    def __init__(self):
-        pass
-    def save(self):
-        pass
-
-
-
 
 class MyHTTPServer(socketserver.TCPServer):
     """Clase usada para pasar el objeto mem, al servidor y a sus request"""
@@ -1411,12 +1407,8 @@ class Mem(QObject):
         icon.addPixmap(QPixmap(":/admin.png"), QIcon.Normal, QIcon.Off)
         return icon
 
-    def hasDidyoureadmeRole(self):
-        if "didyoureadme_admin" in self.con.roles or "didyoureadme_user" in self.con.roles:
-            return True
-        return False
     def isAdminMode(self):
-        if "didyoureadme_admin" in self.con.roles:
+        if "didyoureadme_admin" in self.con.current_user_roles():
             return True
         return False
 

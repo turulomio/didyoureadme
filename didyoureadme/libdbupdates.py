@@ -20,7 +20,7 @@ class Update:
         self.mem=mem
         
         self.dbversion=self.get_database_version_date()     
-        self.lastcodeupdate=201605191906    
+        self.lastcodeupdate=201811240702    
         
     def need_update(self):
         """Returns if update must be done"""
@@ -122,6 +122,75 @@ $_$ LANGUAGE sql STRICT;""")
             cur.close()
             self.mem.con.commit()
             self.set_database_version_date(201605191906)   
+        if self.dbversion<201811240702:
+            cur=self.mem.con.cursor()
+            cur.execute("""
+REVOKE ALL ON SCHEMA public FROM PUBLIC; 
+REVOKE ALL ON SCHEMA public FROM postgres; 
+REVOKE ALL ON SCHEMA public FROM didyoureadme_user; 
+REVOKE ALL ON SCHEMA public FROM didyoureadme_admin; 
+GRANT ALL ON SCHEMA public TO postgres; 
+GRANT ALL ON SCHEMA public TO PUBLIC; 
+REVOKE ALL ON TABLE public.documents FROM PUBLIC; 
+REVOKE ALL ON TABLE public.documents FROM postgres; 
+REVOKE ALL ON TABLE public.documents FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.documents FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.documents TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.documents TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.documents TO didyoureadme_admin; 
+REVOKE ALL ON SEQUENCE public.documents_id_seq FROM PUBLIC; 
+REVOKE ALL ON SEQUENCE public.documents_id_seq FROM postgres; 
+REVOKE ALL ON SEQUENCE public.documents_id_seq FROM didyoureadme_user; 
+REVOKE ALL ON SEQUENCE public.documents_id_seq FROM didyoureadme_admin; 
+GRANT ALL ON SEQUENCE public.documents_id_seq TO postgres; 
+GRANT SELECT, UPDATE ON SEQUENCE public.documents_id_seq TO didyoureadme_user; 
+GRANT SELECT, UPDATE ON SEQUENCE public.documents_id_seq TO didyoureadme_admin; 
+REVOKE ALL ON TABLE public.globals FROM PUBLIC; 
+REVOKE ALL ON TABLE public.globals FROM postgres; 
+REVOKE ALL ON TABLE public.globals FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.globals FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.globals TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.globals TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.globals TO didyoureadme_admin; 
+REVOKE ALL ON TABLE public.groups FROM PUBLIC; 
+REVOKE ALL ON TABLE public.groups FROM postgres; 
+REVOKE ALL ON TABLE public.groups FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.groups FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.groups TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.groups TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.groups TO didyoureadme_admin; 
+REVOKE ALL ON SEQUENCE public.posts_id_seq FROM PUBLIC; 
+REVOKE ALL ON SEQUENCE public.posts_id_seq FROM postgres; 
+REVOKE ALL ON SEQUENCE public.posts_id_seq FROM didyoureadme_user; 
+REVOKE ALL ON SEQUENCE public.posts_id_seq FROM didyoureadme_admin; 
+GRANT ALL ON SEQUENCE public.posts_id_seq TO postgres; 
+GRANT SELECT, UPDATE ON SEQUENCE public.posts_id_seq TO didyoureadme_user; 
+GRANT SELECT, UPDATE ON SEQUENCE public.posts_id_seq TO didyoureadme_admin; 
+REVOKE ALL ON TABLE public.userdocuments FROM PUBLIC; 
+REVOKE ALL ON TABLE public.userdocuments FROM postgres; 
+REVOKE ALL ON TABLE public.userdocuments FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.userdocuments FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.userdocuments TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.userdocuments TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.userdocuments TO didyoureadme_admin; 
+REVOKE ALL ON TABLE public.users FROM PUBLIC; 
+REVOKE ALL ON TABLE public.users FROM postgres; 
+REVOKE ALL ON TABLE public.users FROM didyoureadme_user; 
+REVOKE ALL ON TABLE public.users FROM didyoureadme_admin; 
+GRANT ALL ON TABLE public.users TO postgres; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.users TO didyoureadme_user; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.users TO didyoureadme_admin; 
+REVOKE ALL ON SEQUENCE public.users_id_seq FROM PUBLIC; 
+REVOKE ALL ON SEQUENCE public.users_id_seq FROM postgres; 
+REVOKE ALL ON SEQUENCE public.users_id_seq FROM didyoureadme_user; 
+REVOKE ALL ON SEQUENCE public.users_id_seq FROM didyoureadme_admin; 
+GRANT ALL ON SEQUENCE public.users_id_seq TO postgres; 
+GRANT SELECT, UPDATE ON SEQUENCE public.users_id_seq TO didyoureadme_user; 
+GRANT SELECT, UPDATE ON SEQUENCE public.users_id_seq TO didyoureadme_admin; 
+""")
+            cur.close()
+            self.mem.con.commit()
+            self.set_database_version_date(201811240702)   
             
 
         """AFTER EXECUTING I MUST RUN SQL UPDATE SCRIPT TO UPDATE FUTURE INSTALLATIONS
