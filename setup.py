@@ -1,4 +1,4 @@
-## @package Setup script
+## @package Setup script 
 from setuptools import setup, Command
 import os
 import platform
