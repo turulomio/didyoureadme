@@ -1232,11 +1232,15 @@ class Document:
         if self.expiration>now(self.mem.localzone):
             return False
         return True
+        
+    ## Searches in database length of the document
+    def getSize(self):
+        return humanize_bytes(self.mem.con.cursor_one_field("select length(fileb) from documents where id=%s", (self.id, )))
+
 
     def calculateHash(self):
         """Se mete el datetime porque sino se podría adivinar el ocmunicado"""
         return hashlib.sha256(("d."+str(self.id)+str(self.datetime)).encode('utf-8')).hexdigest()
-
 
     def delete(self):
         """Database delete and fisical delete"""
@@ -1470,6 +1474,13 @@ def dt_changes_tz(dt,  tztarjet):
     tzt=pytz.timezone(tztarjet)
     tarjet=tzt.normalize(dt.astimezone(tzt))
     return tarjet
+
+def humanize_bytes(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
 
 def now(localzone):
     return datetime.datetime.now(pytz.timezone(localzone))

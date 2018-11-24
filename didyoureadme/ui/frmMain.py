@@ -281,6 +281,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
            self.tr("name")+": {0}".format(self.documents.selected.name) + "<p>"+
            self.tr("Internal id")+": {0}".format(self.documents.selected.id) + "<p>"+
            self.tr("Filename")+": <a href='http://{0}:{1}/get/adminl{2}/{3}'>{4}</a><p>".format(self.mem.settings.value("webserver/ip", "127.0.0.1"),  self.mem.settings.value("webserver/port", "8000"),  self.documents.selected.hash, urllib.parse.quote(os.path.basename(self.documents.selected.filename.lower())), os.path.basename(self.documents.selected.filename )) +
+           self.tr("File size in Mb")+": {0}".format(self.documents.selected.getSize()) + "<p>"+
             self.tr("Comment")+": {0}".format(comment) +"<p>"+
            "<h2>"+self.tr("User reads")+"</h2>"+
            "<p><table border='1'><thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th></tr></thead>".format(self.tr("User"), self.tr("Sent"), self.tr("First read"), self.tr("Number of reads"))
