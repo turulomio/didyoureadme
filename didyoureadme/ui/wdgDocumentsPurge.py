@@ -38,7 +38,7 @@ class wdgDocumentsPurge(QWidget, Ui_wdgDocumentsPurge):
         
     def error_dates(self):
         if self.date_to<self.date_from:
-            qmessagebox(self.tr("To date can be before From date"))
+            qmessagebox(self.tr("To date can't be before From date"))
             self.calTo.setSelectedDate(self.date_from)
         
     def tblDocuments_update(self):

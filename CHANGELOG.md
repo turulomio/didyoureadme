@@ -1,3 +1,9 @@
+20181124
+--------
+- Added combobox to select active, obsolete documents. You can search documents too
+- Improved database privileges
+- Added file size to reports
+
 20181122
 --------
 - Added statistics in about dialog
