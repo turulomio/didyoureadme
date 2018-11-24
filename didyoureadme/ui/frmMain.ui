@@ -11,7 +11,7 @@
     <x>0</x>
     <y>0</y>
     <width>843</width>
-    <height>475</height>
+    <height>601</height>
    </rect>
   </property>
   <property name="cursor">
@@ -129,141 +129,254 @@
        <attribute name="title">
         <string>Documents</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
-         <widget class="QCheckBox" name="chkDocumentsExpired">
-          <property name="text">
-           <string>Show documents expired</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="grp">
-          <property name="title">
-           <string>List options</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="QRadioButton" name="radYear">
-               <property name="text">
-                <string>Show e&amp;xpired documents from selected year</string>
-               </property>
-               <property name="checked">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="wdgYear" name="wy" native="true">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QRadioButton" name="radYearMonth">
-               <property name="text">
-                <string>Show expired documents from selected year and month</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="wdgYearMonth" name="wym" native="true"/>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="myQTableWidget" name="tblDocuments">
-          <property name="contextMenuPolicy">
-           <enum>Qt::CustomContextMenu</enum>
-          </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>true</bool>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
-          </property>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <attribute name="verticalHeaderHighlightSections">
-           <bool>false</bool>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Datetime</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Planned</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Sent</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Read</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Expiration</string>
-           </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Title</string>
-           </property>
-          </column>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string>Select a visualization mode</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cmbVisualization">
+                  <property name="insertPolicy">
+                   <enum>QComboBox::NoInsert</enum>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QComboBox::AdjustToContents</enum>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Active documents</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../images/didyoureadme.qrc">
+                     <normaloff>:/document.png</normaloff>:/document.png</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Expired documents</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../images/didyoureadme.qrc">
+                     <normaloff>:/expired.png</normaloff>:/expired.png</iconset>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Search documents</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../images/didyoureadme.qrc">
+                     <normaloff>:/search.png</normaloff>:/search.png</iconset>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="grpExpired">
+                <property name="title">
+                 <string>List options for expired documents</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_2">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <item>
+                    <widget class="QRadioButton" name="radYear">
+                     <property name="text">
+                      <string>Show e&amp;xpired documents from selected year</string>
+                     </property>
+                     <property name="checked">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="wdgYear" name="wy" native="true">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                   <item>
+                    <widget class="QRadioButton" name="radYearMonth">
+                     <property name="text">
+                      <string>Show expired documents from selected year and month</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="wdgYearMonth" name="wym" native="true"/>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="grpSearch">
+                <property name="title">
+                 <string>Search documents</string>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_7">
+                   <item>
+                    <widget class="QLabel" name="label_2">
+                     <property name="text">
+                      <string>Write a string to search</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="txtSearch"/>
+                   </item>
+                   <item>
+                    <widget class="QToolButton" name="cmdSearch">
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../images/didyoureadme.qrc">
+                       <normaloff>:/search.png</normaloff>:/search.png</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="myQTableWidget" name="tblDocuments">
+            <property name="contextMenuPolicy">
+             <enum>Qt::CustomContextMenu</enum>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::NoEditTriggers</set>
+            </property>
+            <property name="alternatingRowColors">
+             <bool>true</bool>
+            </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
+            </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderHighlightSections">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Datetime</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Planned</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Sent</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Read</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Expiration</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Title</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -306,7 +419,6 @@
     </property>
     <addaction name="actionDocumentNew"/>
     <addaction name="separator"/>
-    <addaction name="actionDocumentsSearch"/>
     <addaction name="separator"/>
     <addaction name="actionDocumentsPurge"/>
    </widget>
@@ -340,13 +452,11 @@
    </attribute>
    <addaction name="actionDocumentNew"/>
    <addaction name="separator"/>
-   <addaction name="actionDocumentsSearch"/>
-   <addaction name="separator"/>
    <addaction name="actionTablesUpdate"/>
    <addaction name="separator"/>
    <addaction name="actionSettings"/>
-   <addaction name="actionHelp"/>
    <addaction name="separator"/>
+   <addaction name="actionHelp"/>
    <addaction name="actionAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -591,18 +701,6 @@
    </property>
    <property name="toolTip">
     <string>Documents purge by Administrator</string>
-   </property>
-  </action>
-  <action name="actionDocumentsSearch">
-   <property name="icon">
-    <iconset resource="../images/didyoureadme.qrc">
-     <normaloff>:/search.png</normaloff>:/search.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Search documents</string>
-   </property>
-   <property name="toolTip">
-    <string>Search documents</string>
    </property>
   </action>
  </widget>

@@ -67,7 +67,7 @@ class Compile(Command):
         # Overwriting didyoureadme_rc
         for filename in os.listdir("didyoureadme/ui/"):
              if filename.startswith("Ui_"):
-                 os.system("sed -i -e 's/didyoureadme_rc/didyoureadme.images.didyoureadme_rc/' didyoureadme/ui/{}".format(filename))
+                 os.system("sed -i -e 's/ didyoureadme_rc/ didyoureadme.images.didyoureadme_rc/' didyoureadme/ui/{}".format(filename))
                  os.system("sed -i -e 's/from myqtablewidget/from didyoureadme.ui.myqtablewidget/' didyoureadme/ui/{}".format(filename))
                  os.system("sed -i -e 's/from wdgYear/from didyoureadme.ui.wdgYear/' didyoureadme/ui/{}".format(filename))
 

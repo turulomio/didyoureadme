@@ -1038,8 +1038,7 @@ class SetDocuments(SetCommons):
         cur.execute(sql)
         for row in cur:
             d=Document(self.mem).init__create( row['datetime'], row['title'], row['filename'], row['comment'],  row['expiration'],  row['hash'], row['id']  )
-            self.append(d)        
-        for d in self.arr:
+            self.append(d)
             d.updateNums()
         cur.close()
 
@@ -1054,7 +1053,7 @@ class SetDocuments(SetCommons):
         table.setHorizontalHeaderItem(4, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Expiration" )))    
         table.setHorizontalHeaderItem(5, QTableWidgetItem(QApplication.translate("DidYouReadMe", "Title" )))    
         table.clearContents()
-        table.setRowCount(len(self.arr))
+        table.setRowCount(self.length())
         table.applySettings()
         for i, d in enumerate(self.arr):
             table.setItem(i, 0, qdatetime(d.datetime, self.mem.localzone))

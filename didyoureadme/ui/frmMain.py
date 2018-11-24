@@ -18,7 +18,6 @@ from didyoureadme.ui.frmDocumentsIBM import frmDocumentsIBM
 from didyoureadme.ui.frmGroupsIBM import frmGroupsIBM
 from didyoureadme.ui.frmUsersIBM import frmUsersIBM
 from didyoureadme.ui.wdgDocumentsPurge import wdgDocumentsPurge
-from didyoureadme.ui.wdgDocumentsSearch import wdgDocumentsSearch
 
 class frmMain(QMainWindow, Ui_frmMain):#    
     def __init__(self, mem, parent = 0,  flags = False):
@@ -29,7 +28,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.mem.data.load()
         
         self.users=None#Pointer
-        self.documents=None#Pointer
         
         self.tblDocuments.settings(self.mem, "frmMain", "tblDocuments")
         self.tblDocuments.setVerticalHeaderHeight(None)
@@ -45,7 +43,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         self.statusBar.addWidget(self.lblStatus)
         self.statusBar.addWidget(self.lblStatusMail)        
         
-        self.grp.hide()
         self.wy.label.setText("")
         self.wy.initiate(2011, datetime.date.today().year, datetime.date.today().year)
         self.wy.changed.connect(self.on_wy_changed)
@@ -74,7 +71,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.update()
 
         self.mem.data.groups.qtablewidget(self.tblGroups)
-        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        self.on_cmbVisualization_currentIndexChanged(self.cmbVisualization.currentIndex())
         self.on_chkUsersInactive_stateChanged(self.chkUsersInactive.checkState())
 
         if datetime.date.today()-datetime.date.fromordinal(int(self.mem.settings.value("frmMain/lastupdate","1")))>=datetime.timedelta(days=30):
@@ -140,25 +137,25 @@ class frmMain(QMainWindow, Ui_frmMain):#
             u.updateSent()
             u.updateRead()
         #Consulta
-        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        self.on_cmbVisualization_currentIndexChanged(self.cmbVisualization.currentIndex())
         
         self.users.qtablewidget(self.tblUsers)
         self.mem.data.groups.qtablewidget(self.tblGroups)
         
-        for table in [self.tblDocuments,  self.tblGroups, self.tblUsers]:
-            table.resizeRowsToContents()
-            table.resizeColumnsToContents()
+#        for table in [self.tblDocuments,  self.tblGroups, self.tblUsers]:
+#            table.resizeRowsToContents()
+#            table.resizeColumnsToContents()
             
         self.updateStatusBar()
         self.mem.log(self.tr("Update tables took {}".format(datetime.datetime.now()-inicio)))
 
     @pyqtSlot()      
     def on_wym_changed(self):
-        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        self.on_cmbVisualization_currentIndexChanged(self.cmbVisualization.currentIndex())
         
     @pyqtSlot()      
     def on_wy_changed(self):
-        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        self.on_cmbVisualization_currentIndexChanged(self.cmbVisualization.currentIndex())
 
     @pyqtSlot()      
     def on_actionAbout_triggered(self):
@@ -228,6 +225,10 @@ class frmMain(QMainWindow, Ui_frmMain):#
     def on_actionDocumentNew_triggered(self):
         f=frmDocumentsIBM(self.mem)
         f.exec_()
+        if self.cmbVisualization.currentIndex()!=0:
+            self.cmbVisualization.blockSignals(True)
+            self.cmbVisualization.setCurrentIndex(0)
+            self.cmbVisualization.blockSignals(False)
         self.on_actionTablesUpdate_triggered()
     
     @pyqtSlot()   
@@ -313,20 +314,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         d.exec_()
         self.mem.settings.setValue("wdgDocumentsPurge/QDialog", d.size())        
 
-    @pyqtSlot()
-    def on_actionDocumentsSearch_triggered(self):
-        d=QDialog()
-        d.setWindowIcon(QIcon(":/didyoureadme.png"))
-        d.resize(self.mem.settings.value("wdgDocumentsSearch/QDialog", QSize(1024, 768)))
-        d.setWindowTitle(self.tr("Search documents"))
-        w=wdgDocumentsSearch(self.mem, d)
-        lay = QVBoxLayout(d)
-        lay.addWidget(w)
-        d.exec_()
-        self.mem.settings.setValue("wdgDocumentsSearch/QDialog", d.size())
-        
-        
-
     @pyqtSlot()   
     def on_actionDocumentExpire_triggered(self):
         if self.documents.selected.isExpired():#Already expired
@@ -353,7 +340,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.documents.selected.delete()
             self.mem.con.commit()
             self.documents.remove(self.documents.selected)
-            self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+            self.on_cmbVisualization_currentIndexChanged(self.cmbVisualization.currentIndex())
         else:
             m=QMessageBox()
             m.setIcon(QMessageBox.Information)
@@ -365,6 +352,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         """Deletes everything"""
         self.documents.selected.delete()#Delete ya lo quita del array self.mem.documents
         self.mem.con.commit()
+        self.mem.log(self.tr("Document {} has been deleted by Administrator").format(self.documents.selected.id))
         self.documents.remove(self.documents.selected)
         self.documents.qtablewidget(self.tblDocuments)
         
@@ -444,13 +432,7 @@ class frmMain(QMainWindow, Ui_frmMain):#
         menu.addSeparator()
         menu.addAction(self.actionDocumentOpen)
         menu.addAction(self.actionDocumentReport)
-                    
-                    
-        if self.chkDocumentsExpired.checkState()==Qt.Checked:#Si está en expirados no puedo añadir documento
-            self.actionDocumentNew.setEnabled(False)
-        else:
-            self.actionDocumentNew.setEnabled(True)
-                    
+
         if self.documents.selected==None:
             self.actionDocumentDelete.setEnabled(False)
             self.actionDocumentDeleteAdmin.setEnabled(False)
@@ -553,7 +535,6 @@ class frmMain(QMainWindow, Ui_frmMain):#
         for i in self.tblUsers.selectedItems():
             if i.column()==0:#only once per row
                 self.users.selected=self.users.arr[i.row()]
-#        print (self.users.selected)
         
     def on_tblDocuments_cellDoubleClicked(self, row, column):
         if self.documents.selected==None:
@@ -585,19 +566,23 @@ class frmMain(QMainWindow, Ui_frmMain):#
             self.users=self.mem.data.users_inactive
         self.users.qtablewidget(self.tblUsers)
         
-    def on_chkDocumentsExpired_stateChanged(self, state):
-        if state==Qt.Unchecked:        
-            self.documents=SetDocuments(self.mem)
+    @pyqtSlot(int)      
+    def on_cmbVisualization_currentIndexChanged(self, index):
+        self.documents=SetDocuments(self.mem)
+        if index==0:#Index
             self.documents.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration>now() order by datetime")
-            self.grp.hide()
-        else:
-            self.documents=SetDocuments(self.mem)
+            self.grpSearch.hide()
+            self.grpExpired.hide()
+        elif index==1:#Expired
             if self.radYear.isChecked()==True:
                 self.documents.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} order by datetime;".format(self.wy.year))
             else:
                 self.documents.load("select  id, datetime, title, comment, filename, hash, expiration  from documents where expiration<now() and date_part('year',datetime)={0} and date_part('month',datetime)={1} order by datetime;".format(self.wym.year, self.wym.month))
-            self.grp.show()
-            
+            self.grpExpired.show()
+            self.grpSearch.hide()
+        elif index==2:#Search
+            self.grpSearch.show()
+            self.grpExpired.hide()
         self.documents.qtablewidget(self.tblDocuments)
 
     def on_radYear_toggled(self, toggle):
@@ -607,4 +592,17 @@ class frmMain(QMainWindow, Ui_frmMain):#
         else:
             self.wym.setEnabled(True)
             self.wy.setEnabled(False)
-        self.on_chkDocumentsExpired_stateChanged(self.chkDocumentsExpired.checkState())
+        self.on_cmbVisualization_currentIndexChanged(self.cmbVisualization.currentIndex())
+
+    def on_cmdSearch_released(self):
+        self.documents=SetDocuments(self.mem)
+        sql=self.mem.con.mogrify("""
+            select 
+                id, datetime, title, filename, comment, expiration, hash 
+            from 
+                documents 
+            where 
+                upper(title) like %s ESCAPE ''
+            order by datetime""", ("%%{}%%".format(self.txtSearch.text()).upper(), ))
+        self.documents.load(sql)
+        self.documents.qtablewidget(self.tblDocuments)
